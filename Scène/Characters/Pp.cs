@@ -3,8 +3,9 @@ using System;
 
 public partial class Pp : CharacterBody2D
 {
-    [Export]
-    private int SPEED = 400;
+    [Export] private int SPEED = 400;
+    private float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
+    [Export] private int MAX_FALL_SPEED = 30;
 
     private AnimatedSprite2D animatedSprite;
     private CollisionShape2D collisionShape2D;
@@ -19,6 +20,8 @@ public partial class Pp : CharacterBody2D
     public override void _Process(double delta)
     {
         velocity = new Vector2();
+        velocity.Y = velocity.Normalized().Y + gravity * (float)delta;
+        Mathf.Clamp(velocity.Y, -10, MAX_FALL_SPEED);
         if(Input.IsActionPressed("ui_right")){
             velocity.X++;
         }
@@ -32,7 +35,7 @@ public partial class Pp : CharacterBody2D
         else{
             animatedSprite.Stop();
         }
-
+        
         Position += velocity * (float)delta;
         Position = new Vector2(
             Mathf.Clamp(Position.X, 0, screenSize.X), 
@@ -44,6 +47,10 @@ public partial class Pp : CharacterBody2D
             animatedSprite.FlipH = velocity.X > 0;
             animatedSprite.FlipV = false;
         }
+
+        Velocity = velocity; //Car la fonction MoveAndSlide() utilise la variable Velocity et pas velocity
+        MoveAndSlide();
+        velocity = Velocity;
     }
 
 }

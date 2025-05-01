@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://2skah2dv817a"]
+
+[ext_resource type="PackedScene" uid="uid://cqfctxhllrw8x" path="res://Scène/Enemies/Enemy1.tscn" id="1_hfcn4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vfbr6"]
+size = Vector2(150, 20)
+
+[node name="Main" type="Node2D"]
+
+[node name="Sol_Test" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sol_Test"]
+position = Vector2(75, 60)
+shape = SubResource("RectangleShape2D_vfbr6")
+
+[node name="ColorRect" type="ColorRect" parent="Sol_Test"]
+custom_minimum_size = Vector2(150, 20)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 50.0
+offset_right = 150.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Enemy1" parent="." instance=ExtResource("1_hfcn4")]

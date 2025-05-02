@@ -99,7 +99,7 @@ public partial class Pp : CharacterBody2D
 
         if (jump_elapsed < max_jump_hold_time && Input.IsActionPressed("ui_accept"))
         {
-            velocity.Y += jump_power ;
+            velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 1.0f);
         }
         else
         {

@@ -4,7 +4,7 @@ using System;
 public partial class Enemy1 : CharacterBody2D
 {
     [Export] public int Health = 3;
-    [Export] public float Speed = 50f;
+    [Export] public float Speed = 150f;
     [Export] public float Gravity = 800f;
     [Export] public float MaxFallSpeed = 200f;
 
@@ -50,7 +50,7 @@ public partial class Enemy1 : CharacterBody2D
             var collision = GetSlideCollision(i);
             if (collision.GetCollider() is Pp player)
             {
-                // player.TakeDamage(1); // à activer quand le joueur a des PV
+                player.TakeDamage(1);
                 isFrozen = true;
                 freezeTimer = FreezeDuration;
                 break;

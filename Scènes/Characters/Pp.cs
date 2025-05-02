@@ -8,9 +8,10 @@ public partial class Pp : CharacterBody2D
     [Export] private int MAX_FALL_SPEED = 30;
 
     [Export] private float jump_time = 0.25f; // durée de la force jumppower 
-    [Export] private float jump_power = -700f; // force 
+    [Export] private float jump_power = -970f; // force 
     private float jump_elapsed = 0f;// chronomètre
     private bool isJumping = false;
+    [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton 
 
     private AnimatedSprite2D animatedSprite;
     private CollisionShape2D collisionShape2D;
@@ -92,11 +93,11 @@ public partial class Pp : CharacterBody2D
 
 
    private void gravity_gestion(double delta){
-
     if (isJumping)
     {
-        jump_elapsed += (float)delta; // delta temps écoulé entre deux frames 
-        if (jump_elapsed < jump_time)
+        jump_elapsed += (float)delta; // delta durée entre deux frame
+
+        if (jump_elapsed < max_jump_hold_time && Input.IsActionPressed("ui_accept"))
         {
             velocity.Y += jump_power ;
         }
@@ -104,15 +105,14 @@ public partial class Pp : CharacterBody2D
         {
             isJumping = false;
         }
+
     }
-
-        else if (!IsOnFloor()){
-            velocity.Y += (gravity/2);
-        }
-
-        else{
-            velocity.Y = 0;
-        }
+    else if (!IsOnFloor()) {
+        velocity.Y += (gravity/2);
+    }
+    else {
+        velocity.Y = 0;
+    }
 
     Velocity = velocity;
     MoveAndSlide();

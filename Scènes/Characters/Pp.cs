@@ -7,6 +7,11 @@ public partial class Pp : CharacterBody2D
     private float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
     [Export] private int MAX_FALL_SPEED = 30;
 
+    [Export] private float jump_time = 0.25f; // durée de la force jumppower 
+    [Export] private float jump_power = -700f; // force 
+    private float jump_elapsed = 0f;// chronomètre
+    private bool isJumping = false;
+
     private AnimatedSprite2D animatedSprite;
     private CollisionShape2D collisionShape2D;
     private Vector2 velocity;
@@ -16,6 +21,9 @@ public partial class Pp : CharacterBody2D
     private bool IsAttacking, isHitBoxTriggered = false;
     private bool LookingLeft = false;
     private int maxHealth, currentHealth = 3;
+
+
+
 
     public override void _Ready(){
         screenSize = GetViewportRect().Size;
@@ -30,22 +38,19 @@ public partial class Pp : CharacterBody2D
 
     public override void _Process(double delta)
     {
+        
+        
         velocity = new Vector2();
-
+        Sauter();
         Mouvements_Limits(delta);
         Marche();
         gravity_gestion(delta);
         Attaque();
+        
         //Damage();
         
 
-        
-
-        
     }
-
-
-
 
 
 
@@ -84,18 +89,38 @@ public partial class Pp : CharacterBody2D
         Mathf.Clamp(velocity.Y, -10, MAX_FALL_SPEED);
     }
 
-    private void gravity_gestion(double delta){
-        if(!IsOnFloor()){
-            velocity.Y += gravity;
+
+
+   private void gravity_gestion(double delta){
+
+    if (isJumping)
+    {
+        jump_elapsed += (float)delta; // delta temps écoulé entre deux frames 
+        if (jump_elapsed < jump_time)
+        {
+            velocity.Y += jump_power ;
         }
+        else
+        {
+            isJumping = false;
+        }
+    }
+
+        else if (!IsOnFloor()){
+            velocity.Y += (gravity/2);
+        }
+
         else{
             velocity.Y = 0;
         }
 
-        Velocity = velocity; //Car la fonction MoveAndSlide() utilise la variable Velocity et pas velocity
-        MoveAndSlide();
-        velocity = Velocity;
-    }
+    Velocity = velocity;
+    MoveAndSlide();
+    velocity = Velocity;
+}
+
+
+
 
     private void Attaque(){
         zone_atk.SetDisabled(true);
@@ -143,4 +168,13 @@ public partial class Pp : CharacterBody2D
         }
 
     }
+
+private void Sauter(){
+
+    if (IsOnFloor() && Input.IsActionJustPressed("ui_accept")) {
+        isJumping = true;
+        jump_elapsed = 0f;
+    }
+}
+
 }

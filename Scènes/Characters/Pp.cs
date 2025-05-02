@@ -15,7 +15,9 @@ public partial class Pp : CharacterBody2D
     private Area2D Test_hitBoxArea;
     private bool IsAttacking, isHitBoxTriggered = false;
     private bool LookingLeft = false;
-    private int maxHealth, currentHealth = 3;
+    private int maxHealth = 3;
+    private int currentHealth;
+    private HBoxContainer heartsContainer;
 
     public override void _Ready(){
         screenSize = GetViewportRect().Size;
@@ -24,7 +26,10 @@ public partial class Pp : CharacterBody2D
         zone_atk = (CollisionShape2D)GetNode("ZoneAtk/CollisionShape2D");
         Test_hitBoxArea = GetNode<Area2D>("../../HurtBox/hitBox");
         Test_hitBoxArea.BodyEntered += OnHitBoxBodyEntered;
-
+        currentHealth = maxHealth;
+        heartsContainer = GetNode<HealthBar>("../../CanvasLayer/HealthBar");
+        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        
         
     }
 
@@ -36,7 +41,6 @@ public partial class Pp : CharacterBody2D
         Marche();
         gravity_gestion(delta);
         Attaque();
-        //Damage();
         
 
         
@@ -133,11 +137,12 @@ public partial class Pp : CharacterBody2D
     private void OnHitBoxBodyEntered(Node body){
     if (body == this)
         {
-            if(currentHealth < 0){
+            if(currentHealth <= 0){
                 currentHealth = maxHealth;
             }
             else{
                 currentHealth -= 1;
+                ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
             }
             GD.Print("Vie restante : " + currentHealth);
         }

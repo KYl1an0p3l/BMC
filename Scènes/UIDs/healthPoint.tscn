@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs543qbvoctan"]
+
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_8kg80"]
+
+[node name="HealthPoint" type="Panel"]
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(80, 80)
+anchors_preset = -1
+offset_right = 80.0
+offset_bottom = 80.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.625, 0.601563)
+texture = ExtResource("1_8kg80")
+centered = false

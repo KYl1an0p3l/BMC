@@ -30,12 +30,16 @@ public partial class Enemy1 : CharacterBody2D
         {
             freezeTimer -= (float)delta;
             if (freezeTimer <= 0f)
+            {
                 isFrozen = false;
+                CollisionMask |= 1u; // Repermet la détection du joueur
+            }
 
             Velocity = new Vector2(0, Velocity.Y + Gravity * (float)delta);
             MoveAndSlide();
             return;
         }
+
 
         _velocity.Y += Gravity * (float)delta;
         if (_velocity.Y > MaxFallSpeed)
@@ -50,12 +54,20 @@ public partial class Enemy1 : CharacterBody2D
             var collision = GetSlideCollision(i);
             if (collision.GetCollider() is Pp player)
             {
+                if (player.IsInvincible())
+                {
+                    CollisionMask &= ~1u; 
+                    return;
+                }
+
                 player.TakeDamage(1);
                 isFrozen = true;
                 freezeTimer = FreezeDuration;
-                break;
+                CollisionMask &= ~1u; 
             }
+
         }
+        
 
         _velocity = Velocity;
 

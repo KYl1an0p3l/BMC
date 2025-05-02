@@ -3,10 +3,10 @@
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="2_n3fv6"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fvxkj"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
 size = Vector2(80, 110)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_3ibu7"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_ywf8h"]
 animations = [{
 "frames": [],
 "loop": true,
@@ -19,19 +19,17 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plho4"]
 size = Vector2(63, 90)
 
-[node name="Pp" type="Node2D"]
-
-[node name="PP" type="CharacterBody2D" parent="."]
+[node name="PP" type="CharacterBody2D"]
 collision_mask = 6
 script = ExtResource("1_71e7l")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PP"]
-shape = SubResource("RectangleShape2D_fvxkj")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v8d1e")
 
-[node name="ColorRect" type="ColorRect" parent="PP"]
+[node name="ColorRect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(80, 110)
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,22 +38,22 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 1, 0, 1)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PP"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.75, 1)
-sprite_frames = SubResource("SpriteFrames_3ibu7")
+sprite_frames = SubResource("SpriteFrames_ywf8h")
 animation = &"gauche"
 
-[node name="ZoneAtk" type="Area2D" parent="PP"]
+[node name="ZoneAtk" type="Area2D" parent="."]
 position = Vector2(87, 61)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PP/ZoneAtk"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ZoneAtk"]
 position = Vector2(-7.5, -64)
-shape = SubResource("RectangleShape2D_v8d1e")
+shape = SubResource("RectangleShape2D_plho4")
 
-[node name="Sprite2D" type="Sprite2D" parent="PP/ZoneAtk"]
+[node name="Sprite2D" type="Sprite2D" parent="ZoneAtk"]
 position = Vector2(-2.25, -61.5)
 scale = Vector2(0.582031, 0.398438)
 texture = ExtResource("2_n3fv6")
 
-[node name="InvincibilityTimer" type="Timer" parent="PP"]
+[node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true

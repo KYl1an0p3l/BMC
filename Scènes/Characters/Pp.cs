@@ -24,9 +24,11 @@ public partial class Pp : CharacterBody2D
         collisionShape2D = (CollisionShape2D)GetNode("CollisionShape2D");
         zone_atk = (CollisionShape2D)GetNode("ZoneAtk/CollisionShape2D");
         invincibilityTimer = GetNode<Timer>("InvincibilityTimer");
-        invincibilityTimer.Timeout += () => isHitBoxTriggered = false;
         invincibilityTimer.Timeout += OnInvincibilityTimeout;
-        
+        invincibilityTimer.Timeout += () => {
+            isHitBoxTriggered = false;
+            CollisionMask |= 2u;
+        };
     }
 
     public override void _Process(double delta)
@@ -115,32 +117,24 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void OnHitBoxEntered(Node body)
+    public bool IsInvincible()
     {
-        if (body is Enemy1)
-        {
-            isHitBoxTriggered = true;
-            GD.Print("Touché par un ennemi !");
-        }
+        return isHitBoxTriggered; 
     }
-
 
     public void TakeDamage(int amount)
     {
-        if (isInvincible) return;
+        if (isHitBoxTriggered) return; // Évite de déclencher plusieurs fois
 
-        currentHealth -= amount;
         isHitBoxTriggered = true;
         isInvincible = true;
-
-        GD.Print($"Vie restante du joueur : {currentHealth}");
-
-        // Désactive la collision avec les ennemis uniquement
-        CollisionMask &= ~(uint)2;
-
-
+        CollisionMask &= ~2u; // Ignore collisions avec layer 2 (ennemis)
         invincibilityTimer.Start();
+
+        currentHealth -= amount;
+        GD.Print($"Vie restante du joueur : {currentHealth}");
     }
+
 
 
     private void OnInvincibilityTimeout()

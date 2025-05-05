@@ -14,63 +14,34 @@ public partial class Enemy1 : CharacterBody2D
     private RayCast2D rayLeft;
     private RayCast2D rayRight;
 
-    private bool isFrozen = false;
-    private float freezeTimer = 0f;
-    private const float FreezeDuration = 1.0f;
-
     public override void _Ready()
     {
         rayLeft = GetNode<RayCast2D>("RayLeft");
         rayRight = GetNode<RayCast2D>("RayRight");
+
+        var damageArea = GetNode<Area2D>("DamageArea");
+        damageArea.BodyEntered += OnBodyEntered;
+
+        // Ne pas bloquer le joueur, uniquement collision avec le sol
+        CollisionLayer = 1 << 2; // Layer 3 : Ennemi
+        CollisionMask = 1 << 0;  // Mask 1 : Sol
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (isFrozen)
-        {
-            freezeTimer -= (float)delta;
-            if (freezeTimer <= 0f)
-            {
-                isFrozen = false;
-                CollisionMask |= 1u; // Repermet la détection du joueur
-            }
-
-            Velocity = new Vector2(0, Velocity.Y + Gravity * (float)delta);
-            MoveAndSlide();
-            return;
-        }
-
-
+        // Appliquer la gravité
         _velocity.Y += Gravity * (float)delta;
         if (_velocity.Y > MaxFallSpeed)
             _velocity.Y = MaxFallSpeed;
 
+        // Déplacement horizontal
         _velocity.X = direction.X * Speed;
+
         Velocity = _velocity;
         MoveAndSlide();
-
-        for (int i = 0; i < GetSlideCollisionCount(); i++)
-        {
-            var collision = GetSlideCollision(i);
-            if (collision.GetCollider() is Pp player)
-            {
-                if (player.IsInvincible())
-                {
-                    CollisionMask &= ~1u; 
-                    return;
-                }
-
-                player.TakeDamage(1);
-                isFrozen = true;
-                freezeTimer = FreezeDuration;
-                CollisionMask &= ~1u; 
-            }
-
-        }
-        
-
         _velocity = Velocity;
 
+        // Changement de direction si besoin
         if (direction == Vector2.Left && !rayLeft.IsColliding())
         {
             direction = Vector2.Right;
@@ -83,9 +54,18 @@ public partial class Enemy1 : CharacterBody2D
         }
     }
 
+    private void OnBodyEntered(Node body)
+    {
+        if (body is Pp player && !player.IsInvincible())
+        {
+            player.TakeDamage(1);
+        }
+    }
+
     public void TakeDamage(int amount)
     {
         Health -= amount;
+        GD.Print($"Vie restante de l'ennemi : {Health}");
         if (Health <= 0)
         {
             QueueFree();

@@ -14,6 +14,7 @@ public partial class Enemy1 : CharacterBody2D
     private RayCast2D rayLeft;
     private RayCast2D rayRight;
 
+    private Pp overlappingPlayer = null;
     public override void _Ready()
     {
         rayLeft = GetNode<RayCast2D>("RayLeft");
@@ -21,27 +22,33 @@ public partial class Enemy1 : CharacterBody2D
 
         var damageArea = GetNode<Area2D>("DamageArea");
         damageArea.BodyEntered += OnBodyEntered;
+        damageArea.BodyExited += OnBodyExited;
+
 
         // Ne pas bloquer le joueur, uniquement collision avec le sol
         CollisionLayer = 1 << 2; // Layer 3 : Ennemi
         CollisionMask = 1 << 0;  // Mask 1 : Sol
     }
 
+    public override void _Process(double delta)
+    {
+        if (overlappingPlayer != null && !overlappingPlayer.IsInvincible())
+        {
+            overlappingPlayer.TakeDamage(1);
+        }
+    }
     public override void _PhysicsProcess(double delta)
     {
-        // Appliquer la gravité
         _velocity.Y += Gravity * (float)delta;
         if (_velocity.Y > MaxFallSpeed)
             _velocity.Y = MaxFallSpeed;
 
-        // Déplacement horizontal
         _velocity.X = direction.X * Speed;
 
         Velocity = _velocity;
         MoveAndSlide();
         _velocity = Velocity;
 
-        // Changement de direction si besoin
         if (direction == Vector2.Left && !rayLeft.IsColliding())
         {
             direction = Vector2.Right;
@@ -56,9 +63,21 @@ public partial class Enemy1 : CharacterBody2D
 
     private void OnBodyEntered(Node body)
     {
-        if (body is Pp player && !player.IsInvincible())
+        if (body is Pp player)
         {
-            player.TakeDamage(1);
+            overlappingPlayer = player;
+
+            if (!player.IsInvincible())
+            {
+                player.TakeDamage(1);
+            }
+        }
+    }
+    private void OnBodyExited(Node body)
+    {
+        if (body == overlappingPlayer)
+        {
+            overlappingPlayer = null;
         }
     }
 

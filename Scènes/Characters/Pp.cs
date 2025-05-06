@@ -5,7 +5,7 @@ public partial class Pp : CharacterBody2D
 {
     [Export] private int SPEED = 200;
     private float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
-    [Export] private int MAX_FALL_SPEED = 20;
+    [Export] private int MAX_FALL_SPEED = 50;
 
     private AnimatedSprite2D animatedSprite;
     private CollisionShape2D collisionShape2D;
@@ -175,15 +175,13 @@ public partial class Pp : CharacterBody2D
             }
 
             // Désactive zone et visuel après courte durée (attaque visuelle)
-            var disableTimer = GetTree().CreateTimer(0.3f);
+            var disableTimer = GetTree().CreateTimer(0.1f);
             disableTimer.Timeout += () =>
             {
                 GetNode<Sprite2D>("ZoneAtk/Sprite2D").Visible = false;
             };
         }
     }
-
-
 
     public bool IsInvincible() => isHitBoxTriggered;
 
@@ -198,6 +196,11 @@ public partial class Pp : CharacterBody2D
 
         currentHealth -= amount;
         GD.Print($"Vie restante du joueur : {currentHealth}");
+        if (currentHealth <= 0)
+        {
+            QueueFree();
+        }
+
     }
 
     private void OnInvincibilityTimeout()

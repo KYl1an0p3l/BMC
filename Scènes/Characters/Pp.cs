@@ -14,6 +14,12 @@ public partial class Pp : CharacterBody2D
     private CollisionShape2D zoneAtkCollision;
     private Sprite2D zoneAtkSprite;
 
+    [Export] private float jump_time = 0.25f; // durée de la force jumppower 
+    [Export] private float jump_power = -970f; // force 
+    private float jump_elapsed = 0f;// chronomètre
+    private bool isJumping = false;
+    [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton 
+
     private Vector2 velocity;
     private Vector2 screenSize;
     private bool LookingLeft = false;
@@ -52,12 +58,18 @@ public partial class Pp : CharacterBody2D
     public override void _Process(double delta)
     {
         velocity = new Vector2();
-
+        Sauter();
         HandleMovement(delta);
         HandleGravity(delta);
         HandleAttack();
     }
 
+    private void Sauter(){
+        if (IsOnFloor() && Input.IsActionJustPressed("ui_accept")) {
+            isJumping = true;
+            jump_elapsed = 0f;
+        }
+    }
     private void HandleMovement(double delta)
     {
         if (Input.IsActionPressed("d"))
@@ -94,10 +106,26 @@ public partial class Pp : CharacterBody2D
 
     private void HandleGravity(double delta)
     {
-        if (!IsOnFloor())
-            velocity.Y += gravity;
-        else
+        if (isJumping)
+        {
+            jump_elapsed += (float)delta; 
+
+            if (jump_elapsed < max_jump_hold_time && Input.IsActionPressed("ui_accept"))
+            {
+                velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 1.0f);
+            }
+            else
+            {
+                isJumping = false;
+            }
+
+        }
+        else if (!IsOnFloor()) {
+        velocity.Y += (gravity/2);
+        }
+        else {
             velocity.Y = 0;
+        }
 
         Velocity = velocity;
         MoveAndSlide();

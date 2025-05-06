@@ -42,7 +42,7 @@ color = Color(0, 1, 0, 1)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.75, 1)
 sprite_frames = SubResource("SpriteFrames_ywf8h")
-animation = &"gauche"
+animation = &"atk"
 
 [node name="ZoneAtk" type="Area2D" parent="."]
 position = Vector2(87, 61)

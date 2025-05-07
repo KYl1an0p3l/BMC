@@ -39,6 +39,14 @@ public partial class Pp : CharacterBody2D
     private bool isHitBoxTriggered = false;
 
     private Timer invincibilityTimer;
+    [Export] private float knockback_jump_power = -500f;
+    [Export] private float knockback_horizontal_force = 250f;
+    private bool isKnockback = false;
+    private bool knockbackJumped = false;
+    private float knockback_elapsed = 0f;
+    [Export] private float knockback_duration = 0.25f;
+
+
 
     public override void _Ready()
     {
@@ -71,6 +79,11 @@ public partial class Pp : CharacterBody2D
 
     public override void _Process(double delta)
     {
+        if (isKnockback)
+        {
+            HandleGravity(delta);
+            return;
+        }
         velocity = new Vector2();
         Sauter();
         UpdateAttackDirection();
@@ -153,6 +166,8 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleMovement(double delta)
     {
+        if (isKnockback) return;
+        velocity.X = 0;
         if (Input.IsActionPressed("d"))
         {
             velocity.X++;
@@ -187,10 +202,21 @@ public partial class Pp : CharacterBody2D
 
     private void HandleGravity(double delta)
     {
-        if (isJumping)
+        if (knockbackJumped)
+        {
+            knockback_elapsed += (float)delta;
+            if (knockback_elapsed < knockback_duration)
+            {
+                velocity.Y = Mathf.Lerp(velocity.Y, knockback_jump_power, 1.0f);
+            }
+            else
+            {
+                knockbackJumped = false;
+            }
+        }
+        else if (isJumping)
         {
             jump_elapsed += (float)delta;
-
             if (jump_elapsed < max_jump_hold_time && (Input.IsActionPressed("jump")))
             {
                 velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 1.0f);
@@ -200,8 +226,8 @@ public partial class Pp : CharacterBody2D
                 isJumping = false;
             }
         }
-        
-        else if(pogoJumped){
+        else if (pogoJumped)
+        {
             jump_elapsed += (float)delta;
             if (jump_elapsed < pogo_jump_duration)
             {
@@ -212,27 +238,30 @@ public partial class Pp : CharacterBody2D
                 pogoJumped = false;
             }
         }
-
         else if (!IsOnFloor())
         {
-            // Ignore la gravité si pogo juste effectué
-            if (!pogoJumped)
-            {
-                velocity.Y += (gravity / 2);
-            }
+            velocity.Y += (gravity / 2);
         }
         else
         {
             velocity.Y = 0;
         }
 
+
         Velocity = velocity;
         MoveAndSlide();
         velocity = Velocity;
+
+        if (isKnockback && IsOnFloor())
+        {
+            isKnockback = false;
+            invincibilityTimer.Start(); 
+        }
     }
 
     private void HandleAttack()
     {
+        if (isKnockback) return;
         if (Input.IsActionJustPressed("atk") && !isAttacking)
         {
             isAttacking = true;
@@ -274,24 +303,34 @@ public partial class Pp : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        if (isHitBoxTriggered)
+        if (isHitBoxTriggered || isKnockback)
             return;
 
         isHitBoxTriggered = true;
+        isKnockback = true;
+        knockbackJumped = true;
+        knockback_elapsed = 0f;
+
+        // On annule tout saut en cours
+        isJumping = false;
+        jump_elapsed = 0f;
+
         CollisionMask &= ~2u;
-        invincibilityTimer.Start();
 
         currentHealth -= amount;
         currentHealth = Mathf.Max(0, currentHealth);
-        
-        ((HealthBar)heartsContainer).UpdateHearts(currentHealth); // <-- met à jour l'affichage !
+        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
 
         GD.Print($"Vie restante du joueur : {currentHealth}");
+
+        // Knockback horizontal
+        velocity.X = LookingLeft ? knockback_horizontal_force : -knockback_horizontal_force;
+
         if (currentHealth <= 0)
-        {
             QueueFree();
-        }
     }
+
+
 
 
     private void OnInvincibilityTimeout()

@@ -18,9 +18,6 @@ public partial class Pp : CharacterBody2D
     private Vector2 screenSize;
     private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
     private Area2D Test_hitBoxArea, zone_get_rifle;
-    private bool IsAttacking, isHitBoxTriggered, hasGun = false;
-    private CollisionShape2D zone_atk, zone_atk_rifle;
-    private Area2D Test_hitBoxArea;
     private bool IsAttacking, isHitBoxTriggered, hasGun, isDead = false;
     private bool LookingLeft = false;
     private DeadScreen deadScreen;

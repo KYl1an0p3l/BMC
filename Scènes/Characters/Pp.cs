@@ -91,33 +91,37 @@ public partial class Pp : CharacterBody2D
     }
 
 
-
-   private void gravity_gestion(double delta){
+private void gravity_gestion(double delta){
     if (isJumping)
     {
-        jump_elapsed += (float)delta; // delta durée entre deux frame
+        jump_elapsed += (float)delta; // Delta durée entre deux frames
 
         if (jump_elapsed < max_jump_hold_time && Input.IsActionPressed("ui_accept"))
         {
-            velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 1.0f);
+            velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 0.9f);
         }
         else
         {
+            // Le saut est terminé
             isJumping = false;
         }
+    }
+    else if (!IsOnFloor()) 
+    {
 
+        velocity.Y += Mathf.Lerp(gravity / 3, gravity, 0.5f); 
     }
-    else if (!IsOnFloor()) {
-        velocity.Y += (gravity/2);
-    }
-    else {
+    else 
+    {
         velocity.Y = 0;
     }
 
+    // Applique la nouvelle vitesse calculée
     Velocity = velocity;
     MoveAndSlide();
     velocity = Velocity;
 }
+
 
 
 

@@ -5,7 +5,6 @@
 [node name="HealthPoint" type="Panel"]
 self_modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(80, 80)
-anchors_preset = -1
 offset_right = 80.0
 offset_bottom = 80.0
 

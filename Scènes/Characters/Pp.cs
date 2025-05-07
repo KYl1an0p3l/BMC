@@ -18,8 +18,9 @@ public partial class Pp : CharacterBody2D
     private Vector2 screenSize;
     private CollisionShape2D zone_atk, zone_atk_rifle;
     private Area2D Test_hitBoxArea;
-    private bool IsAttacking, isHitBoxTriggered, hasGun = false;
+    private bool IsAttacking, isHitBoxTriggered, hasGun, isDead = false;
     private bool LookingLeft = false;
+    private DeadScreen deadScreen;
     private int maxHealth = 3;
     private int currentHealth;
     private HBoxContainer heartsContainer;
@@ -35,12 +36,16 @@ public partial class Pp : CharacterBody2D
         currentHealth = maxHealth;
         heartsContainer = GetNode<HealthBar>("../../CanvasLayer/HealthBar");
         ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        deadScreen = GetNode<DeadScreen>("../../deadScreen");
         
         
     }
 
     public override void _Process(double delta)
     {
+        if (isDead){ //Si le joueur est mort, on ne peut pas continuer à jouer en arrière-plan
+            return;
+        }
         velocity = new Vector2();
 
         Mouvements_Limits(delta);
@@ -195,8 +200,11 @@ public partial class Pp : CharacterBody2D
     private void OnHitBoxBodyEntered(Node body){
     if (body == this)
         {
-            if(currentHealth <= 0){
-                currentHealth = maxHealth;
+            if(currentHealth <= 1){
+                currentHealth -= 1;
+                ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+                deadScreen.death_screen();
+                isDead = true;
             }
             else{
                 currentHealth -= 1;

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://rl66xgvjto6r"]
+[gd_scene load_steps=7 format=3 uid="uid://rl66xgvjto6r"]
 
 [ext_resource type="PackedScene" uid="uid://dm7x7l6f8rjjw" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
 [ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://tyeoijnyrv63" path="res://Scènes/Objects/hurt_box.tscn" id="3_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
+[ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -21,3 +22,5 @@ position = Vector2(12, 37)
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_4abne")]
+
+[node name="deadScreen" parent="." instance=ExtResource("6_0r5kt")]

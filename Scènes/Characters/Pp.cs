@@ -13,18 +13,29 @@ public partial class Pp : CharacterBody2D
     private Area2D zoneAtkArea;
     private CollisionShape2D zoneAtkCollision;
     private Sprite2D zoneAtkSprite;
-
-    [Export] private float jump_time = 0.25f; // durée de la force jumppower 
+    private enum AttackDirection { Left, Right, Up, Down }
+    private AttackDirection currentAttackDirection = AttackDirection.Right;
+    private AttackDirection lastHorizontalDirection = AttackDirection.Right;
+    private bool isDownwardAttack = false;
+    private bool isAttacking = false;
+    
+    [Export] private float pogo_jump_power = -670f;
+    [Export] private float pogo_jump_duration = 0.25f; 
     [Export] private float jump_power = -970f; // force 
     private float jump_elapsed = 0f;// chronomètre
     private bool isJumping = false;
-    [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton 
+    [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton
+    private bool pogoJumped = false;
+ 
 
     private Vector2 velocity;
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    private int currentHealth = 3;
+    private int maxHealth = 3;
+    private int currentHealth;
+    private HBoxContainer heartsContainer;
+
     private bool isHitBoxTriggered = false;
 
     private Timer invincibilityTimer;
@@ -52,6 +63,9 @@ public partial class Pp : CharacterBody2D
         CollisionLayer = 1 << 1; // couche 2 : joueur
         CollisionMask = 1 << 0;  // couche 1 : sol
 
+        currentHealth = maxHealth;
+        heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
+        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
     }   
 
 
@@ -59,13 +73,80 @@ public partial class Pp : CharacterBody2D
     {
         velocity = new Vector2();
         Sauter();
+        UpdateAttackDirection();
         HandleMovement(delta);
         HandleGravity(delta);
         HandleAttack();
     }
 
+    private void UpdateAttackDirection()
+    {
+        isDownwardAttack=false;
+        Vector2 atkOffset;
+        if (Input.IsActionPressed("z"))
+        {
+            currentAttackDirection = AttackDirection.Up;
+        }
+        else if (Input.IsActionPressed("s") && !IsOnFloor())
+        {
+            currentAttackDirection = AttackDirection.Down;
+        }
+        else if (Input.IsActionPressed("q"))
+        {
+            currentAttackDirection = AttackDirection.Left;
+            lastHorizontalDirection = AttackDirection.Left;
+        }
+        else if (Input.IsActionPressed("d"))
+        {
+            currentAttackDirection = AttackDirection.Right;
+            lastHorizontalDirection = AttackDirection.Right;
+        }
+        else
+        {
+            currentAttackDirection = lastHorizontalDirection;
+        }
+        switch (currentAttackDirection)
+        {
+            case AttackDirection.Up:
+                atkOffset = new Vector2(5, -30);
+                break;
+
+            case AttackDirection.Down:
+                atkOffset = new Vector2(5, 165);
+                isDownwardAttack=true;
+                break;
+
+            case AttackDirection.Left:
+                atkOffset = new Vector2(-70, 60);
+                break;
+
+            case AttackDirection.Right:
+            default:
+                atkOffset = new Vector2(85, 60);
+                break;
+        }
+        var shape = zoneAtkCollision.Shape as RectangleShape2D;
+        if (shape != null)
+        {
+            switch (currentAttackDirection)
+            {
+                case AttackDirection.Up:
+                case AttackDirection.Down:
+                    shape.Size = new Vector2(90, 60); // étroit et haut
+                    break;
+
+                case AttackDirection.Left:
+                case AttackDirection.Right:
+                default:
+                    shape.Size = new Vector2(60, 90); // large et bas
+                    break;
+            }
+        }
+        zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
+    }
+
     private void Sauter(){
-        if (IsOnFloor() && Input.IsActionJustPressed("ui_accept")) {
+        if (IsOnFloor() && Input.IsActionJustPressed("jump")) {
             isJumping = true;
             jump_elapsed = 0f;
         }
@@ -108,9 +189,9 @@ public partial class Pp : CharacterBody2D
     {
         if (isJumping)
         {
-            jump_elapsed += (float)delta; 
+            jump_elapsed += (float)delta;
 
-            if (jump_elapsed < max_jump_hold_time && Input.IsActionPressed("ui_accept"))
+            if (jump_elapsed < max_jump_hold_time && (Input.IsActionPressed("jump")))
             {
                 velocity.Y = Mathf.Lerp(velocity.Y, jump_power, 1.0f);
             }
@@ -118,12 +199,30 @@ public partial class Pp : CharacterBody2D
             {
                 isJumping = false;
             }
+        }
+        
+        else if(pogoJumped){
+            jump_elapsed += (float)delta;
+            if (jump_elapsed < pogo_jump_duration)
+            {
+                velocity.Y = Mathf.Lerp(velocity.Y, pogo_jump_power, 1.0f);
+            }
+            else
+            {
+                pogoJumped = false;
+            }
+        }
 
+        else if (!IsOnFloor())
+        {
+            // Ignore la gravité si pogo juste effectué
+            if (!pogoJumped)
+            {
+                velocity.Y += (gravity / 2);
+            }
         }
-        else if (!IsOnFloor()) {
-        velocity.Y += (gravity/2);
-        }
-        else {
+        else
+        {
             velocity.Y = 0;
         }
 
@@ -134,51 +233,39 @@ public partial class Pp : CharacterBody2D
 
     private void HandleAttack()
     {
-        if (Input.IsActionJustPressed("atk"))
+        if (Input.IsActionJustPressed("atk") && !isAttacking)
         {
-            // Définir la position d’attaque
-            Vector2 atkOffset;
-            if (Input.IsActionPressed("z"))
+            isAttacking = true;
+            zoneAtkSprite.Visible = true;
+
+            // Capture les ennemis présents au moment de l'attaque
+            var initialTargets = new Godot.Collections.Array<Node>();
+            foreach (var body in zoneAtkArea.GetOverlappingBodies())
             {
-                atkOffset = new Vector2(0, -30);
-            }
-            else if (Input.IsActionPressed("s") && !IsOnFloor())
-            {
-                atkOffset = new Vector2(0, 165);
-            }
-            else if (Input.IsActionPressed("q"))
-            {
-                atkOffset = new Vector2(-85, 60);
-            }
-            else if (Input.IsActionPressed("d"))
-            {
-                atkOffset = new Vector2(85, 60);
-            }
-            else
-            {
-                atkOffset = LookingLeft ? new Vector2(-85, 60) : new Vector2(85, 60);
+                if (body is Enemy1)
+                    initialTargets.Add(body);
             }
 
-            zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
-            GetNode<Sprite2D>("ZoneAtk/Sprite2D").Visible = true;
-
-            // Maintenant, on détecte immédiatement les corps
-            var bodies = zoneAtkArea.GetOverlappingBodies();
-            GD.Print("Corps détectés : ", bodies.Count);
-            foreach (var body in bodies)
+            // Inflige les dégâts une seule fois
+            foreach (var body in initialTargets)
             {
-                GD.Print("Touché : ", body.Name);
                 if (body is Enemy1 enemy)
                 {
                     enemy.TakeDamage(1);
+                    if (isDownwardAttack)
+                    {
+                        jump_elapsed = 0f;
+                        pogoJumped = true;
+                    }
                 }
             }
 
-            // Désactive zone et visuel après courte durée (attaque visuelle)
-            var disableTimer = GetTree().CreateTimer(0.1f);
+            // Timer pour désactiver la zone d'attaque et réactiver l'attaque
+            var disableTimer = GetTree().CreateTimer(0.5f);
             disableTimer.Timeout += () =>
             {
-                GetNode<Sprite2D>("ZoneAtk/Sprite2D").Visible = false;
+                zoneAtkSprite.Visible = false;
+                isAttacking = false;
             };
         }
     }
@@ -195,13 +282,17 @@ public partial class Pp : CharacterBody2D
         invincibilityTimer.Start();
 
         currentHealth -= amount;
+        currentHealth = Mathf.Max(0, currentHealth);
+        
+        ((HealthBar)heartsContainer).UpdateHearts(currentHealth); // <-- met à jour l'affichage !
+
         GD.Print($"Vie restante du joueur : {currentHealth}");
         if (currentHealth <= 0)
         {
             QueueFree();
         }
-
     }
+
 
     private void OnInvincibilityTimeout()
     {

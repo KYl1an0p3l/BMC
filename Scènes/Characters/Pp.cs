@@ -201,7 +201,7 @@ public partial class Pp : CharacterBody2D
     }
 
     private void OnHitBoxBodyEntered(Node body){
-    if (body == this)
+    if (body == this) 
         {
             if(currentHealth <= 1){
                 currentHealth -= 1;

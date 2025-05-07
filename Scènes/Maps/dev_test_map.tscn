@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
 [ext_resource type="PackedScene" uid="uid://b2li0c7pspmnc" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://d0rtghxjlevok" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
-[ext_resource type="PackedScene" uid="uid://cqfctxhllrw8x" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
+[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")

@@ -16,6 +16,9 @@ public partial class Pp : CharacterBody2D
     private CollisionShape2D collisionShape2D;
     private Vector2 velocity;
     private Vector2 screenSize;
+    private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
+    private Area2D Test_hitBoxArea, zone_get_rifle;
+    private bool IsAttacking, isHitBoxTriggered, hasGun = false;
     private CollisionShape2D zone_atk, zone_atk_rifle;
     private Area2D Test_hitBoxArea;
     private bool IsAttacking, isHitBoxTriggered, hasGun, isDead = false;
@@ -31,6 +34,8 @@ public partial class Pp : CharacterBody2D
         collisionShape2D = (CollisionShape2D)GetNode("CollisionShape2D");
         zone_atk = (CollisionShape2D)GetNode("ZoneAtk/CollisionShape2D");
         zone_atk_rifle = (CollisionShape2D)GetNode("RifleAtk/RifleCollision");
+        zone_get_rifle = GetNode<Area2D>("../../rifleGet");
+        zone_get_rifle.BodyEntered += rifle_get;
         Test_hitBoxArea = GetNode<Area2D>("../../HurtBox/hitBox");
         Test_hitBoxArea.BodyEntered += OnHitBoxBodyEntered;
         currentHealth = maxHealth;
@@ -54,6 +59,7 @@ public partial class Pp : CharacterBody2D
         Sauter();
         Attaque();
         Rifle();
+        dropAll();
         
 
         
@@ -165,7 +171,7 @@ public partial class Pp : CharacterBody2D
         zone_atk_rifle.SetDisabled(true);
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
         GetNode<Area2D>("RifleAtk").RotationDegrees = 0; //On reset la rotation à 0
-        if(Input.IsActionJustPressed("atk_sec")){ //Lorsqu'on attaque
+        if(Input.IsActionJustPressed("atk_sec") && hasGun){ //Lorsqu'on attaque
             zone_atk_rifle.SetDisabled(false);
             GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
             bool up = Input.IsActionPressed("z");
@@ -218,6 +224,22 @@ public partial class Pp : CharacterBody2D
         if (IsOnFloor() && Input.IsActionJustPressed("ui_accept")) {
             isJumping = true;
             jump_elapsed = 0f;
+        }
+    }
+
+    private void dropAll(){
+        if(Input.IsActionJustPressed("ui_up")){
+            hasGun = false;
+            GetNode<CollisionShape2D>("../../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
+            GetNode<Sprite2D>("../../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
+        }
+    }
+
+    private void rifle_get(Node body){
+        if(body == this){
+            hasGun = true;
+            GetNode<CollisionShape2D>("../../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
+            GetNode<Sprite2D>("../../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
         }
     }
 }

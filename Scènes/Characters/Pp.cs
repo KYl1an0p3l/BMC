@@ -12,7 +12,7 @@ public partial class Pp : CharacterBody2D
 
     private Area2D zoneAtkArea;
     private CollisionShape2D zoneAtkCollision;
-    private Sprite2D zoneAtkSprite;
+    private AnimatedSprite2D zoneAtkSprite;
     private enum AttackDirection { Left, Right, Up, Down }
     private AttackDirection currentAttackDirection = AttackDirection.Right;
     private AttackDirection lastHorizontalDirection = AttackDirection.Right;
@@ -58,7 +58,7 @@ public partial class Pp : CharacterBody2D
         zoneAtkArea = GetNode<Area2D>("ZoneAtk");
 
         zoneAtkCollision = zoneAtkArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        zoneAtkSprite = zoneAtkArea.GetNode<Sprite2D>("Sprite2D");
+        zoneAtkSprite = zoneAtkArea.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         
 
         invincibilityTimer = GetNode<Timer>("InvincibilityTimer");
@@ -86,7 +86,8 @@ public partial class Pp : CharacterBody2D
         }
         velocity = new Vector2();
         Sauter();
-        UpdateAttackDirection();
+        if (!isAttacking)
+            UpdateAttackDirection();
         HandleMovement(delta);
         HandleGravity(delta);
         HandleAttack();
@@ -96,13 +97,17 @@ public partial class Pp : CharacterBody2D
     {
         isDownwardAttack=false;
         Vector2 atkOffset;
+        float spriteRotation = 0f;
+        bool flipH = false;
         if (Input.IsActionPressed("z"))
         {
             currentAttackDirection = AttackDirection.Up;
+            spriteRotation = -Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("s") && !IsOnFloor())
         {
             currentAttackDirection = AttackDirection.Down;
+            spriteRotation = Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("q"))
         {
@@ -131,11 +136,13 @@ public partial class Pp : CharacterBody2D
 
             case AttackDirection.Left:
                 atkOffset = new Vector2(-70, 60);
+                flipH = true;
                 break;
 
             case AttackDirection.Right:
             default:
                 atkOffset = new Vector2(85, 60);
+                flipH = false;
                 break;
         }
         var shape = zoneAtkCollision.Shape as RectangleShape2D;
@@ -156,6 +163,9 @@ public partial class Pp : CharacterBody2D
             }
         }
         zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
+        zoneAtkSprite.Rotation = spriteRotation;
+        zoneAtkSprite.FlipH = flipH;
+        zoneAtkSprite.FlipV = false;
     }
 
     private void Sauter(){
@@ -191,7 +201,10 @@ public partial class Pp : CharacterBody2D
         }
 
         animatedSprite.Animation = "gauche";
-        animatedSprite.FlipH = velocity.X > 0;
+
+        if (!isAttacking)
+            animatedSprite.FlipH = velocity.X > 0;
+
 
         Position += velocity * (float)delta;
         Position = new Vector2(
@@ -265,7 +278,10 @@ public partial class Pp : CharacterBody2D
         if (Input.IsActionJustPressed("atk") && !isAttacking)
         {
             isAttacking = true;
+            UpdateAttackDirection();
+            animatedSprite.FlipH = (currentAttackDirection == AttackDirection.Left);
             zoneAtkSprite.Visible = true;
+            zoneAtkSprite.Play("default");
 
             // Capture les ennemis présents au moment de l'attaque
             var initialTargets = new Godot.Collections.Array<Node>();
@@ -290,11 +306,13 @@ public partial class Pp : CharacterBody2D
             }
 
             // Timer pour désactiver la zone d'attaque et réactiver l'attaque
-            var disableTimer = GetTree().CreateTimer(0.5f);
+            var disableTimer = GetTree().CreateTimer(0.6f);
             disableTimer.Timeout += () =>
             {
-                zoneAtkSprite.Visible = false;
                 isAttacking = false;
+                zoneAtkSprite.Stop();
+                zoneAtkSprite.Frame = 0;
+                zoneAtkSprite.Visible = false;
             };
         }
     }
@@ -311,7 +329,6 @@ public partial class Pp : CharacterBody2D
         knockbackJumped = true;
         knockback_elapsed = 0f;
 
-        // On annule tout saut en cours
         isJumping = false;
         jump_elapsed = 0f;
 
@@ -329,9 +346,6 @@ public partial class Pp : CharacterBody2D
         if (currentHealth <= 0)
             QueueFree();
     }
-
-
-
 
     private void OnInvincibilityTimeout()
     {

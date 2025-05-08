@@ -1,7 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://bd57jpff7t3ks"]
+[gd_scene load_steps=12 format=3 uid="uid://bd57jpff7t3ks"]
 
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="2_n3fv6"]
+[ext_resource type="Texture2D" uid="uid://dw0oiro3lrde6" path="res://Texture/faux_01.png" id="2_gccba"]
+[ext_resource type="Texture2D" uid="uid://e6vhh72sdns5" path="res://Texture/faux_02.png" id="3_otdr5"]
+[ext_resource type="Texture2D" uid="uid://djb4hqk1o7ppi" path="res://Texture/faux_03.png" id="4_2t5d6"]
+[ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="5_4ecj2"]
+[ext_resource type="Texture2D" uid="uid://m6odku1iqier" path="res://Texture/faux_05.png" id="6_hu6i4"]
+[ext_resource type="Texture2D" uid="uid://csgr6cjffqkhj" path="res://Texture/faux_06.png" id="7_blu11"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
 size = Vector2(80, 110)
@@ -21,6 +26,32 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plho4"]
 size = Vector2(60, 90)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kueoj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_gccba")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_otdr5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2t5d6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_4ecj2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_hu6i4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_blu11")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
 
 [node name="PP" type="CharacterBody2D"]
 collision_layer = 2
@@ -53,10 +84,9 @@ collision_mask = 4
 position = Vector2(-7.5, -64)
 shape = SubResource("RectangleShape2D_plho4")
 
-[node name="Sprite2D" type="Sprite2D" parent="ZoneAtk"]
-position = Vector2(-2.25, -61.5)
-scale = Vector2(0.582031, 0.398438)
-texture = ExtResource("2_n3fv6")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ZoneAtk"]
+position = Vector2(-10, -64)
+sprite_frames = SubResource("SpriteFrames_kueoj")
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true

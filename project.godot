@@ -15,9 +15,17 @@ run/main_scene="uid://68yecwkwx2v2"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[aseprite_importers]
+
+aseprite_executable_path="C:/Program Files (x86)/Steam/steamapps/common/Aseprite/Aseprite.exe"
+
 [dotnet]
 
 project/assembly_name="BMC"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/nklbdev.aseprite_importers/plugin.cfg")
 
 [input]
 

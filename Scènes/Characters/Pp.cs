@@ -13,6 +13,13 @@ public partial class Pp : CharacterBody2D
     private bool isJumping = false;
     [Export] private float max_jump_hold_time = 0.25f;
 
+//SAUT COMPTEUR 
+    private int jumpCount = 0;
+    [Export] private int maxJumps = 2;
+
+
+
+
     // DASH
     [Export] private float dashSpeed = 600f; //longueur
     [Export] private float dashDuration = 0.2f;
@@ -147,6 +154,7 @@ public partial class Pp : CharacterBody2D
         else
         {
             velocity.Y = 0;
+            jumpCount = 0; //remis à 0 QUAND ON RETOUCHE LE SOL 
         }
 
         Velocity = velocity;
@@ -186,12 +194,14 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void Sauter()
+   private void Sauter(){
+
+    if (Input.IsActionJustPressed("ui_accept") && jumpCount < maxJumps)
     {
-        if (IsOnFloor() && Input.IsActionJustPressed("ui_accept"))
-        {
-            isJumping = true;
-            jump_elapsed = 0f;
-        }
+        velocity.Y = jump_power;
+        isJumping = true;
+        jump_elapsed = 0f;
+        jumpCount++;
     }
+}
 }

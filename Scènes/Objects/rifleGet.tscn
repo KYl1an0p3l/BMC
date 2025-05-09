@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8xjs6ffhpvlw"]
+
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_wxcnb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ttufa"]
+size = Vector2(52.5, 48.5)
+
+[node name="rifleGet" type="Area2D"]
+collision_mask = 2
+
+[node name="rifleGetCollision" type="CollisionShape2D" parent="."]
+position = Vector2(562, 362)
+shape = SubResource("RectangleShape2D_ttufa")
+
+[node name="rifleGetSprite" type="Sprite2D" parent="rifleGetCollision"]
+scale = Vector2(0.40625, 0.375)
+texture = ExtResource("1_wxcnb")

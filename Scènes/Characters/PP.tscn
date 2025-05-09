@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bd57jpff7t3ks"]
+[gd_scene load_steps=15 format=3 uid="uid://bd57jpff7t3ks"]
 
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://dw0oiro3lrde6" path="res://Texture/faux_01.png" id="2_gccba"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="5_4ecj2"]
 [ext_resource type="Texture2D" uid="uid://m6odku1iqier" path="res://Texture/faux_05.png" id="6_hu6i4"]
 [ext_resource type="Texture2D" uid="uid://csgr6cjffqkhj" path="res://Texture/faux_06.png" id="7_blu11"]
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="8_otdr5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
 size = Vector2(80, 110)
@@ -53,6 +54,20 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gccba"]
+size = Vector2(1088, 9)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gccba"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_otdr5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="PP" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 17
@@ -90,3 +105,17 @@ sprite_frames = SubResource("SpriteFrames_kueoj")
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="RifleAtk" type="Area2D" parent="."]
+position = Vector2(0, -20)
+collision_layer = 8
+collision_mask = 4
+
+[node name="RifleCollision" type="CollisionShape2D" parent="RifleAtk"]
+position = Vector2(584, 0)
+shape = SubResource("RectangleShape2D_gccba")
+
+[node name="RifleAnimation" type="AnimatedSprite2D" parent="RifleAtk"]
+position = Vector2(584, 0)
+scale = Vector2(8.46094, 0.0625)
+sprite_frames = SubResource("SpriteFrames_gccba")

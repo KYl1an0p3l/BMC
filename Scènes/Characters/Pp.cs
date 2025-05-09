@@ -21,7 +21,7 @@ public partial class Pp : CharacterBody2D
     private Vector2 velocity;
     private Vector2 screenSize;
     private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
-    private Area2D Test_hitBoxArea, zone_get_rifle;
+    private Area2D hitBoxArea, zone_get_rifle;
     private bool IsAttacking, isHitBoxTriggered, hasGun, isDead, isDownwardAttack = false;
     private bool LookingLeft = false;
     private DeadScreen deadScreen;
@@ -57,8 +57,8 @@ public partial class Pp : CharacterBody2D
         zone_get_rifle = GetNode<Area2D>("../../rifleGet");
         zone_get_rifle.BodyEntered += rifle_get;
 
-        Test_hitBoxArea = GetNode<Area2D>("../../HurtBox/hitBox");
-        Test_hitBoxArea.BodyEntered += OnHitBoxBodyEntered;
+        hitBoxArea = GetNode<Area2D>("../../HurtBox/hitBox");
+        hitBoxArea.BodyEntered += OnHitBoxBodyEntered;
 
         currentHealth = maxHealth;
         heartsContainer = GetNode<HealthBar>("../../CanvasLayer/HealthBar");

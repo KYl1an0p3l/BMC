@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://rl66xgvjto6r"]
+[gd_scene load_steps=9 format=3 uid="uid://rl66xgvjto6r"]
 
 [ext_resource type="PackedScene" uid="uid://dm7x7l6f8rjjw" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://tyeoijnyrv63" path="res://Scènes/Objects/hurt_box.tscn" id="3_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
+[ext_resource type="PackedScene" uid="uid://dl72yjyra1pwb" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 [ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
-[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -25,9 +25,9 @@ position = Vector2(12, 37)
 
 [node name="deadScreen" parent="." instance=ExtResource("6_0r5kt")]
 
+[node name="Enemy1" parent="." instance=ExtResource("5_th3oj")]
+position = Vector2(806, 459)
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_4abne")]
-
-[node name="Enemy1" parent="." instance=ExtResource("5_th3oj")]
-position = Vector2(806, 459)

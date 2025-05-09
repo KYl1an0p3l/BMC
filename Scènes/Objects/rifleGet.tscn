@@ -6,6 +6,7 @@
 size = Vector2(52.5, 48.5)
 
 [node name="rifleGet" type="Area2D"]
+collision_mask = 2
 
 [node name="rifleGetCollision" type="CollisionShape2D" parent="."]
 position = Vector2(562, 362)

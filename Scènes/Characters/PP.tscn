@@ -1,92 +1,84 @@
-[gd_scene load_steps=12 format=3 uid="uid://bd57jpff7t3ks"]
+[gd_scene load_steps=8 format=3 uid="uid://dm7x7l6f8rjjw"]
 
-[ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
-[ext_resource type="Texture2D" uid="uid://dw0oiro3lrde6" path="res://Texture/faux_01.png" id="2_gccba"]
-[ext_resource type="Texture2D" uid="uid://e6vhh72sdns5" path="res://Texture/faux_02.png" id="3_otdr5"]
-[ext_resource type="Texture2D" uid="uid://djb4hqk1o7ppi" path="res://Texture/faux_03.png" id="4_2t5d6"]
-[ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="5_4ecj2"]
-[ext_resource type="Texture2D" uid="uid://m6odku1iqier" path="res://Texture/faux_05.png" id="6_hu6i4"]
-[ext_resource type="Texture2D" uid="uid://csgr6cjffqkhj" path="res://Texture/faux_06.png" id="7_blu11"]
+[ext_resource type="Script" uid="uid://ddel2hkbdg4jg" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="2_n3fv6"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
-size = Vector2(80, 110)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fvxkj"]
+size = Vector2(88, 117)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_ywf8h"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_3ibu7"]
 animations = [{
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_n3fv6")
+}],
 "loop": true,
 "name": &"atk",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_n3fv6")
+}],
 "loop": true,
 "name": &"gauche",
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plho4"]
-size = Vector2(60, 90)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
+size = Vector2(63, 90)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_kueoj"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ywf8h"]
+size = Vector2(1088.5, 9)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_plho4"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_gccba")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_otdr5")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_2t5d6")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_4ecj2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_hu6i4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("7_blu11")
+"texture": ExtResource("2_n3fv6")
 }],
 "loop": true,
 "name": &"default",
-"speed": 10.0
+"speed": 5.0
 }]
 
-[node name="PP" type="CharacterBody2D"]
-collision_layer = 2
-collision_mask = 17
+[node name="Pp" type="Node2D"]
+
+[node name="PP" type="CharacterBody2D" parent="."]
 script = ExtResource("1_71e7l")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_v8d1e")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PP"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_fvxkj")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(80, 110)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 1, 0, 1)
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PP"]
 scale = Vector2(0.75, 1)
-sprite_frames = SubResource("SpriteFrames_ywf8h")
+sprite_frames = SubResource("SpriteFrames_3ibu7")
 animation = &"atk"
 
-[node name="ZoneAtk" type="Area2D" parent="."]
+[node name="ZoneAtk" type="Area2D" parent="PP"]
 position = Vector2(87, 61)
-collision_layer = 8
-collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ZoneAtk"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PP/ZoneAtk"]
 position = Vector2(-7.5, -64)
-shape = SubResource("RectangleShape2D_plho4")
+shape = SubResource("RectangleShape2D_v8d1e")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ZoneAtk"]
-position = Vector2(-10, -64)
-sprite_frames = SubResource("SpriteFrames_kueoj")
+[node name="Sprite2D" type="Sprite2D" parent="PP/ZoneAtk"]
+position = Vector2(-2.25, -61.5)
+scale = Vector2(0.582031, 0.398438)
+texture = ExtResource("2_n3fv6")
 
-[node name="InvincibilityTimer" type="Timer" parent="."]
+[node name="RifleAtk" type="Area2D" parent="PP"]
+
+[node name="RifleCollision" type="CollisionShape2D" parent="PP/RifleAtk"]
+position = Vector2(589.75, -12)
+shape = SubResource("RectangleShape2D_ywf8h")
+
+[node name="RifleAnimation" type="AnimatedSprite2D" parent="PP/RifleAtk"]
+position = Vector2(590, -12)
+scale = Vector2(8.46094, 0.0625)
+sprite_frames = SubResource("SpriteFrames_plho4")
+
+[node name="InvincibilityTimer" type="Timer" parent="PP"]
+wait_time = 0.25
 one_shot = true

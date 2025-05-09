@@ -34,7 +34,7 @@ public partial class Enemy1 : CharacterBody2D
     {
         if (overlappingPlayer != null && !overlappingPlayer.IsInvincible())
         {
-            overlappingPlayer.TakeDamage(1);
+            overlappingPlayer.TakeDamage();
         }
     }
     public override void _PhysicsProcess(double delta)
@@ -69,7 +69,7 @@ public partial class Enemy1 : CharacterBody2D
 
             if (!player.IsInvincible())
             {
-                player.TakeDamage(1);
+                player.TakeDamage();
             }
         }
     }

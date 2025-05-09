@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://6b7dr5eh7u6e"]
+[gd_scene load_steps=3 format=3 uid="uid://b2li0c7pspmnc"]
 
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_7xj8n"]
 
@@ -8,6 +8,7 @@ size = Vector2(1045, 63)
 [node name="DevGround" type="Node2D"]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_mask = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
 position = Vector2(427, 444)

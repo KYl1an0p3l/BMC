@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://68yecwkwx2v2"]
+[gd_scene load_steps=9 format=3 uid="uid://68yecwkwx2v2"]
 
 [ext_resource type="PackedScene" uid="uid://bd57jpff7t3ks" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 [ext_resource type="PackedScene" uid="uid://cep8owe86uo5r" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
 [ext_resource type="PackedScene" uid="uid://b8xjs6ffhpvlw" path="res://Scènes/Objects/rifleGet.tscn" id="7_n2upc"]
+[ext_resource type="PackedScene" uid="uid://bm6j4pnhjqnv3" path="res://Scènes/Enemies/enemy_2.tscn" id="8_6oefj"]
 
 [node name="DevTestMap" type="Node2D"]
 position = Vector2(3, 0)
@@ -28,3 +29,6 @@ position = Vector2(806, 459)
 [node name="DeadScreen" parent="." instance=ExtResource("6_0r5kt")]
 
 [node name="rifleGet" parent="." instance=ExtResource("7_n2upc")]
+
+[node name="Enemy2" parent="." instance=ExtResource("8_6oefj")]
+position = Vector2(939, 403)

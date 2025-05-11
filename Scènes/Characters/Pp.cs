@@ -316,16 +316,25 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1)
+                if (body is Enemy1 || body is Enemy2)
                     initialTargets.Add(body);
             }
 
-            // Inflige les dégâts une seule fois
             foreach (var body in initialTargets)
             {
-                if (body is Enemy1 enemy)
+                if (body is Enemy1 enemy1)
                 {
-                    enemy.TakeDamage(1);
+                    enemy1.TakeDamage(1);
+                    if (isDownwardAttack)
+                    {
+                        jump_elapsed = 0f;
+                        pogoJumped = true;
+                    }
+                }
+                else if (body is Enemy2 enemy2)
+                {
+                    GD.Print("Enemy2 touché !");
+                    enemy2.TakeDamage(1);
                     if (isDownwardAttack)
                     {
                         jump_elapsed = 0f;
@@ -333,6 +342,7 @@ public partial class Pp : CharacterBody2D
                     }
                 }
             }
+
 
             // Timer pour désactiver la zone d'attaque et réactiver l'attaque
             var disableTimer = GetTree().CreateTimer(0.6f);
@@ -359,13 +369,21 @@ public partial class Pp : CharacterBody2D
             {
                 if (body is Enemy1)
                     initialTargets.Add(body);
+                else if(body is Enemy2)
+                    initialTargets.Add(body);
             }
 
             // Inflige les dégâts une seule fois
             foreach (var body in initialTargets)
             {
-                if (body is Enemy1 enemy)
+                if (body is Enemy1)
                 {
+                    Enemy1 enemy = (Enemy1)body;
+                    enemy.TakeDamage(1);
+                }
+                else if(body is Enemy2)
+                {
+                    Enemy2 enemy = (Enemy2)body;
                     enemy.TakeDamage(1);
                 }
             }

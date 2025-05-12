@@ -21,8 +21,9 @@ public partial class Pp : CharacterBody2D
     private Vector2 velocity;
     private Vector2 screenSize;
     private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
-    private Area2D hitBoxArea, zone_get_rifle;
-    private bool IsAttacking, isHitBoxTriggered, hasGun, isDead, isDownwardAttack = false;
+    private Area2D hitBoxArea;
+    private RifleGet zone_get_rifle;
+    private bool IsAttacking, isHitBoxTriggered, isDead, isDownwardAttack = false;
     private bool LookingLeft = false;
     private DeadScreen deadScreen;
     private int maxHealth = 3;
@@ -33,11 +34,14 @@ public partial class Pp : CharacterBody2D
     private Timer invincibilityTimer;
     [Export] private float knockback_jump_power = -500f;
     [Export] private float knockback_horizontal_force = 250f;
+    [Export] private float knockback_duration = 0.25f;
+    [Export] private Inventory inventory;
     private bool isKnockback = false;
     private bool knockbackJumped = false;
     private float knockback_elapsed = 0f;
-    [Export] private float knockback_duration = 0.25f;
+    
     private bool pogoJumped = false;
+    private InventoryGui inventory_ui;
 
     public override void _Ready(){
         screenSize = GetViewportRect().Size;
@@ -54,8 +58,9 @@ public partial class Pp : CharacterBody2D
         CollisionMask = 1 << 0;  // couche 1 : sol
 
         zone_atk_rifle = (CollisionShape2D)GetNode("RifleAtk/RifleCollision");
-        zone_get_rifle = GetNode<Area2D>("../../rifleGet");
-        zone_get_rifle.BodyEntered += rifle_get;
+
+        zone_get_rifle = GetNode<RifleGet>("../../rifleGet");
+        
 
         hitBoxArea = GetNode<Area2D>("../../HurtBox/hitBox");
         hitBoxArea.BodyEntered += OnHitBoxBodyEntered;
@@ -66,6 +71,7 @@ public partial class Pp : CharacterBody2D
 
         deadScreen = GetNode<DeadScreen>("../../deadScreen");
         
+        inventory_ui = GetNode<InventoryGui>("../../CanvasLayer/InventoryGui");
         
     }
 
@@ -81,12 +87,16 @@ public partial class Pp : CharacterBody2D
         }
         velocity = new Vector2();
 
-        HandleMovement(delta);
+        if(!inventory_ui.Visible){
+            Sauter();
+            Attaque();
+            Rifle();
+            dropAll();
+        }
         HandleGravity(delta);
-        Sauter();
-        Attaque();
-        Rifle();
-        dropAll();
+        HandleMovement(delta);
+        inventory_ui.toggle_inventory_gui();
+        
         
 
         
@@ -272,7 +282,7 @@ public partial class Pp : CharacterBody2D
         zone_atk_rifle.SetDisabled(true);
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
         GetNode<Area2D>("RifleAtk").RotationDegrees = 0; //On reset la rotation à 0
-        if(Input.IsActionJustPressed("atk_sec") && hasGun){ //Lorsqu'on attaque
+        if(Input.IsActionJustPressed("atk_sec") && zone_get_rifle.hasGun){ //Lorsqu'on attaque
             zone_atk_rifle.SetDisabled(false);
             GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
             bool up = Input.IsActionPressed("z");
@@ -310,6 +320,9 @@ public partial class Pp : CharacterBody2D
             if(currentHealth <= 1){
                 currentHealth -= 1;
                 ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+                if(inventory_ui.Visible){//Si l'inventaire est ouvert et que l'on meurt, on le ferme avant d'afficher l'écran de mort
+                    inventory_ui.Visible = !inventory_ui.Visible;
+                }
                 deadScreen.death_screen();
                 isDead = true;
                 QueueFree();
@@ -331,17 +344,9 @@ public partial class Pp : CharacterBody2D
 
     private void dropAll(){
         if(Input.IsActionJustPressed("ui_up")){
-            hasGun = false;
+            zone_get_rifle.hasGun = false;
             GetNode<CollisionShape2D>("../../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
             GetNode<Sprite2D>("../../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
-        }
-    }
-
-    private void rifle_get(Node body){
-        if(body == this){
-            hasGun = true;
-            GetNode<CollisionShape2D>("../../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
-            GetNode<Sprite2D>("../../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
         }
     }
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://dm7x7l6f8rjjw"]
+[gd_scene load_steps=9 format=3 uid="uid://dm7x7l6f8rjjw"]
 
 [ext_resource type="Script" uid="uid://ddel2hkbdg4jg" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="2_n3fv6"]
+[ext_resource type="Resource" uid="uid://2a77alagkar1" path="res://Inventory/playerInventory.tres" id="2_ywf8h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fvxkj"]
 size = Vector2(88, 117)
@@ -46,6 +47,7 @@ animations = [{
 
 [node name="PP" type="CharacterBody2D" parent="."]
 script = ExtResource("1_71e7l")
+inventory = ExtResource("2_ywf8h")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PP"]
 position = Vector2(0, -0.5)

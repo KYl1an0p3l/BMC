@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpibpk2mo4uwe"]
+[gd_scene load_steps=4 format=3 uid="uid://cpibpk2mo4uwe"]
 
+[ext_resource type="Script" uid="uid://cu78i6swy4f5x" path="res://Scènes/Objects/RifleGet.cs" id="1_q6f4a"]
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_wxcnb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ttufa"]
@@ -7,6 +8,7 @@ size = Vector2(52.5, 48.5)
 
 [node name="rifleGet" type="Area2D"]
 collision_mask = 2
+script = ExtResource("1_q6f4a")
 
 [node name="rifleGetCollision" type="CollisionShape2D" parent="."]
 position = Vector2(562, 362)

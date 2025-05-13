@@ -22,7 +22,7 @@ public partial class Enemy2 : CharacterBody2D
     {
         _rayCast = GetNode<RayCast2D>("RayCast2D");
         _timer = GetNode<Timer>("Timer");
-        _player = GetNode<Pp>("../../Pp");
+        _player = GetNode<Pp>("../../PP");
         _timer.Timeout += OnTimerTimeout;
 
         var damageArea = GetNode<Area2D>("DamageArea");

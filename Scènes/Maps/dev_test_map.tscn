@@ -1,37 +1,49 @@
-[gd_scene load_steps=9 format=3 uid="uid://68yecwkwx2v2"]
+[gd_scene load_steps=11 format=3 uid="uid://rl66xgvjto6r"]
 
-[ext_resource type="PackedScene" uid="uid://bd57jpff7t3ks" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
+[ext_resource type="PackedScene" uid="uid://dm7x7l6f8rjjw" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
-[ext_resource type="PackedScene" uid="uid://b2li0c7pspmnc" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
-[ext_resource type="PackedScene" uid="uid://d0rtghxjlevok" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
+[ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
+[ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
+[ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
 [ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
-[ext_resource type="PackedScene" uid="uid://cep8owe86uo5r" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
-[ext_resource type="PackedScene" uid="uid://b8xjs6ffhpvlw" path="res://Scènes/Objects/rifleGet.tscn" id="7_n2upc"]
-[ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_pqyoj"]
+[ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
+[ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_kddde"]
+[ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
+[ext_resource type="PackedScene" uid="uid://dhrm6i3ps1tu6" path="res://Scènes/Enemies/enemy_2.tscn" id="10_kddde"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
 
-[node name="Pp" parent="." instance=ExtResource("1_5o6mk")]
-position = Vector2(440, 532)
+[node name="PP" parent="." instance=ExtResource("1_5o6mk")]
+position = Vector2(159, 256)
 
 [node name="DevGround" parent="." instance=ExtResource("2_qqe0n")]
 position = Vector2(123, 175)
+
+[node name="rifleGet" parent="." instance=ExtResource("5_n2upc")]
+position = Vector2(4, 0)
+
+[node name="DeadScreen" parent="." instance=ExtResource("6_0r5kt")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_4abne")]
 
+[node name="InventoryGui" parent="CanvasLayer" instance=ExtResource("9_pqyoj")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -230.0
+offset_right = 360.0
+offset_bottom = 230.0
+
 [node name="Enemy1" parent="." instance=ExtResource("5_th3oj")]
-position = Vector2(794, 547)
+position = Vector2(900, 551)
 
-[node name="DeadScreen" parent="." instance=ExtResource("6_0r5kt")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1
+[node name="MenuPause" parent="." instance=ExtResource("9_kddde")]
 
-[node name="rifleGet" parent="." instance=ExtResource("7_n2upc")]
-
-[node name="MenuPause" parent="." instance=ExtResource("9_pqyoj")]
+[node name="Enemy2" parent="." instance=ExtResource("10_kddde")]
+position = Vector2(737, 343)

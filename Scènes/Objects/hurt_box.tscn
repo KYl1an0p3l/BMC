@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://6ktl6jvxk45y"]
+[gd_scene load_steps=2 format=3 uid="uid://tyeoijnyrv63"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vghkm"]
 size = Vector2(16.9259, 124.51)
@@ -6,6 +6,7 @@ size = Vector2(16.9259, 124.51)
 [node name="HurtBox" type="Node2D"]
 
 [node name="hitBox" type="Area2D" parent="."]
+collision_mask = 2
 
 [node name="hitBoxCollision" type="CollisionShape2D" parent="hitBox"]
 position = Vector2(899, 497)

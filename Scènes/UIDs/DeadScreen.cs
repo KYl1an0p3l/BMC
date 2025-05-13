@@ -23,12 +23,10 @@ public partial class DeadScreen : Control
             deathScreen.Visible = false;
         }
     }
-    
     public bool IsDeathScreenVisible()
     {
         return deathScreen.Visible;
     }
-
     private void load_restart_scene(){
         GetTree().ReloadCurrentScene();
         //GetTree().ChangeSceneToPacked(restartScene);

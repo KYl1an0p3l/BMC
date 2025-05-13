@@ -86,7 +86,7 @@ position = Vector2(3, -4)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_uiome")
 animation = &"left"
-frame_progress = 0.487151
+frame_progress = 0.892523
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 16

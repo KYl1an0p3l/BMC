@@ -59,6 +59,8 @@ public partial class Pp : CharacterBody2D
     private float parryKnockbackForce = 800f;
     [Export] private float parry_knockback_duration = 0.5f;
     private float parry_knockback_elapsed = 0f;
+    [Export] private Inventory inventory;
+    private InventoryGui inventory_ui;
     public override void _Ready()
     {
         screenSize = GetViewportRect().Size;
@@ -92,6 +94,8 @@ public partial class Pp : CharacterBody2D
         CollisionMask = 1 << 0;  // couche 1 : sol
 
         deadScreen = GetNode<DeadScreen>("../DeadScreen");
+        
+        inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
 
         currentHealth = maxHealth;
         heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
@@ -126,13 +130,16 @@ public partial class Pp : CharacterBody2D
 
         if (!isAttacking)
             UpdateAttackDirection();
+        if(!inventory_ui.Visible){
+            Sauter();
+            HandleAttack();
+            Rifle(); 
+            HandleParry();
+            dropAll();
+        }
         HandleMovement(delta);
         HandleGravity(delta);
-        Sauter();
-        HandleAttack();
-        Rifle(); 
-        HandleParry();
-        dropAll();
+        inventory_ui.toggle_inventory_gui();
     }
 
     private void Sauter(){
@@ -194,16 +201,16 @@ public partial class Pp : CharacterBody2D
 
     private void HandleGravity(double delta)
     {
-        if (isParryKnockback)
+        if (knockbackJumped)
         {
-            parry_knockback_elapsed += (float)delta;
-            if (parry_knockback_elapsed < parry_knockback_duration)
+            knockback_elapsed += (float)delta;
+            if (knockback_elapsed < knockback_duration)
             {
-                velocity.X = Mathf.Lerp(0, parryKnockbackForce, 1.0f); 
+                velocity.Y = Mathf.Lerp(velocity.Y, knockback_jump_power, 1.0f);
             }
             else
             {
-                isParryKnockback = false;
+                knockbackJumped = false;
             }
         }
 
@@ -255,7 +262,8 @@ public partial class Pp : CharacterBody2D
     private void UpdateAttackDirection()
     {
         isDownwardAttack=false;
-        Vector2 atkOffset, atkRifleOffset;
+        Vector2 atkOffset;
+        GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
         float spriteRotation = 0f;
         bool flipH = false;
         if (Input.IsActionPressed("z"))
@@ -287,50 +295,48 @@ public partial class Pp : CharacterBody2D
         {
             case AttackDirection.Up:
                 atkOffset = new Vector2(5, -30);
-                atkRifleOffset = new Vector2(-584,-600);
+                GetNode<Area2D>("RifleAtk").Position = new Vector2(10, -30);
+                GetNode<Area2D>("RifleAtk").RotationDegrees = -90;
                 break;
 
             case AttackDirection.Down:
                 atkOffset = new Vector2(5, 165);
-                atkRifleOffset = new Vector2(-584, 600);
                 isDownwardAttack = true;
+                GetNode<Area2D>("RifleAtk").Position = new Vector2(-13, 40);
+                GetNode<Area2D>("RifleAtk").RotationDegrees = 90;
                 break;
 
             case AttackDirection.Left:
                 atkOffset = new Vector2(-70, 60);
-                atkRifleOffset = new Vector2(-1168, -10);
                 flipH = true;
+                GetNode<Area2D>("RifleAtk").Position = new Vector2(-1200, -20);
                 break;
 
             case AttackDirection.Right:
             default:
                 atkOffset = new Vector2(85, 60);
-                atkRifleOffset = new Vector2(0, -10);
                 flipH = false;
+                GetNode<Area2D>("RifleAtk").Position = new Vector2(0, -20);
                 break;
         }
 
         var shape = zone_atk.Shape as RectangleShape2D;
-        var rifle_shape = zone_atk_rifle.Shape as RectangleShape2D;
-        if (shape != null && rifle_shape != null)
+        if (shape != null)
         {
             switch (currentAttackDirection)
             {
                 case AttackDirection.Up:
                 case AttackDirection.Down:
-                    shape.Size = new Vector2(90, 60); 
-                    rifle_shape.Size = new Vector2(9, 1088);
+                    shape.Size = new Vector2(90, 60);
                     break;
 
                 case AttackDirection.Left:
                 case AttackDirection.Right:
                 default:
-                    shape.Size = new Vector2(60, 90); 
-                    rifle_shape.Size = new Vector2(1088, 9);
+                    shape.Size = new Vector2(60, 90);
                     break;
             }
         }
-        zoneRifleAtkArea.GlobalPosition = GlobalPosition + atkRifleOffset;
         zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
         zoneAtkSprite.Rotation = spriteRotation;
         zoneAtkSprite.FlipH = flipH;
@@ -380,7 +386,7 @@ public partial class Pp : CharacterBody2D
 
 
             // Timer pour désactiver la zone d'attaque et réactiver l'attaque
-            var disableTimer = GetTree().CreateTimer(0.6f);
+            var disableTimer = GetTree().CreateTimer(0.5f);
             disableTimer.Timeout += () =>
             {
                 isAttacking = false;
@@ -391,22 +397,15 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void Rifle()
-    {
-        zoneRifleSprite.Visible = false;
-        GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
-
+    private void Rifle(){
+        GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
         if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback)
             return;
-
-        if (Input.IsActionJustPressed("atk_sec"))
-        {
-            isAttacking = true;
+        if(Input.IsActionJustPressed("atk_sec")){
             bulletsFired++;
-
             UpdateAttackDirection();
-            zoneRifleSprite.Visible = true;
-
+            GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
+            // Capture les ennemis présents au moment de l'attaque
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
             {
@@ -416,19 +415,21 @@ public partial class Pp : CharacterBody2D
 
             foreach (var body in initialTargets)
             {
-                if (body is Enemy1 e1)
-                    e1.TakeDamage(1);
-                else if (body is Enemy2 e2)
-                    e2.TakeDamage(1);
+                if (body is Enemy1 enemy1)
+                {
+                    enemy1.TakeDamage(1);
+                }
+                else if (body is Enemy2 enemy2)
+                {
+                    GD.Print("Enemy2 touché !");
+                    enemy2.TakeDamage(1);
+                }
             }
-
-            // Si le chargeur est vide après ce tir
             if (bulletsFired >= maxBullets)
             {
                 isReloading = true;
                 reloadTimer.Start();
             }
-
             var disableTimer = GetTree().CreateTimer(0.3f);
             disableTimer.Timeout += () =>
             {
@@ -474,7 +475,7 @@ public partial class Pp : CharacterBody2D
     
 
     private void dropAll(){
-        if(Input.IsActionJustPressed("ui_up")){
+        if(Input.IsActionJustPressed("drop")){
             hasGun = false;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;

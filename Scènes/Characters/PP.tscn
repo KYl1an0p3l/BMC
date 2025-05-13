@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bd57jpff7t3ks"]
+[gd_scene load_steps=16 format=3 uid="uid://dm7x7l6f8rjjw"]
 
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://dw0oiro3lrde6" path="res://Texture/faux_01.png" id="2_gccba"]
@@ -51,7 +51,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 10.0
+"speed": 12.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gccba"]
@@ -105,6 +105,7 @@ shape = SubResource("RectangleShape2D_plho4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ZoneAtk"]
 position = Vector2(-10, -64)
 sprite_frames = SubResource("SpriteFrames_kueoj")
+frame_progress = 0.860984
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true
@@ -119,7 +120,7 @@ position = Vector2(584, 0)
 shape = SubResource("RectangleShape2D_gccba")
 
 [node name="RifleAnimation" type="AnimatedSprite2D" parent="RifleAtk"]
-position = Vector2(584, 0)
+position = Vector2(585, 0)
 scale = Vector2(8.46094, 0.0625)
 sprite_frames = SubResource("SpriteFrames_gccba")
 

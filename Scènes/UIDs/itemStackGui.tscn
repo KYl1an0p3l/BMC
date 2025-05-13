@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://ukxbm3qd14ex"]
+
+[ext_resource type="Script" uid="uid://b738420a0tb2o" path="res://Scènes/UIDs/ItemStackGui.cs" id="1_r0lbo"]
+
+[node name="Panel" type="Panel"]
+self_modulate = Color(1, 1, 1, 0)
+script = ExtResource("1_r0lbo")
+
+[node name="item" type="Sprite2D" parent="."]
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(35, 40)
+layout_mode = 0
+offset_left = 25.0
+offset_top = 23.0
+offset_right = 60.0
+offset_bottom = 63.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "99"
+horizontal_alignment = 2

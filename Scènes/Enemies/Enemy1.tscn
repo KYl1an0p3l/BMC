@@ -1,27 +1,76 @@
-[gd_scene load_steps=4 format=3 uid="uid://dl72yjyra1pwb"]
+[gd_scene load_steps=12 format=3 uid="uid://hbkda834us1g"]
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
+[ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80chd"]
-size = Vector2(64, 64)
+size = Vector2(46.6667, 32.4167)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aiow1"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 0, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbi8g"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 37, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y0o3x"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 74, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mwefl"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 0, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_anb5e"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 37, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bmuou"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 74, 56, 37)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uiome"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aiow1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lbi8g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y0o3x")
+}],
+"loop": true,
+"name": &"left",
+"speed": 3.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mwefl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_anb5e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bmuou")
+}],
+"loop": true,
+"name": &"right",
+"speed": 3.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q02qh"]
-size = Vector2(64, 64)
+size = Vector2(46.6667, 32.25)
 
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("1_80chd")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(64, 64)
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 0, 0, 1)
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3, -4)
+scale = Vector2(2.4, 2.4)
 shape = SubResource("RectangleShape2D_80chd")
 
 [node name="RayLeft" type="RayCast2D" parent="."]
@@ -32,11 +81,18 @@ collision_mask = 5
 target_position = Vector2(32, 48)
 collision_mask = 5
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(3, -4)
+scale = Vector2(2.1, 2.1)
+sprite_frames = SubResource("SpriteFrames_uiome")
+animation = &"left"
+frame_progress = 0.892523
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(3, -4.3)
+scale = Vector2(2.4, 2.4)
 shape = SubResource("RectangleShape2D_q02qh")

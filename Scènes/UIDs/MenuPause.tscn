@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://dh3b6mrl6pl2u"]
+
+[ext_resource type="Script" uid="uid://1ghpt8g1mqc3" path="res://Scènes/UIDs/PauseMenu.cs" id="1_thlu7"]
+
+[sub_resource type="Theme" id="Theme_l7g78"]
+default_font_size = 78
+
+[node name="MenuPause" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_thlu7")
+
+[node name="screenPanel" type="Panel" parent="."]
+self_modulate = Color(0, 0, 0, 1)
+top_level = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="screenVBox" type="VBoxContainer" parent="screenPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -106.0
+offset_right = 400.0
+offset_bottom = 106.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="screenPanel/screenVBox"]
+custom_minimum_size = Vector2(800, 200)
+layout_mode = 2
+theme = SubResource("Theme_l7g78")
+bbcode_enabled = true
+text = "[wave amp=1 freq=2 connected=0][center]PAUSE[/center][/wave]"
+
+[node name="ResumeButton" type="Button" parent="screenPanel/screenVBox"]
+layout_mode = 2
+text = "Resume"
+
+[node name="QuitButton" type="Button" parent="screenPanel/screenVBox"]
+layout_mode = 2
+text = "Quit"

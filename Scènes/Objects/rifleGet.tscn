@@ -1,12 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpibpk2mo4uwe"]
+[gd_scene load_steps=6 format=3 uid="uid://cpibpk2mo4uwe"]
 
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_wxcnb"]
+[ext_resource type="Script" uid="uid://cu78i6swy4f5x" path="res://Scènes/Objects/RifleGet.cs" id="1_q6f4a"]
+[ext_resource type="Resource" uid="uid://d3ocdpomrbf8b" path="res://Inventory/Gun.tres" id="2_2vex5"]
+[ext_resource type="Resource" uid="uid://2a77alagkar1" path="res://Inventory/playerInventory.tres" id="3_p5xjv"]
+[ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="4_2vex5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ttufa"]
 size = Vector2(52.5, 48.5)
 
 [node name="rifleGet" type="Area2D"]
 collision_mask = 2
+script = ExtResource("1_q6f4a")
+itemRes = ExtResource("2_2vex5")
+inv = ExtResource("3_p5xjv")
 
 [node name="rifleGetCollision" type="CollisionShape2D" parent="."]
 position = Vector2(562, 362)
@@ -14,4 +20,4 @@ shape = SubResource("RectangleShape2D_ttufa")
 
 [node name="rifleGetSprite" type="Sprite2D" parent="rifleGetCollision"]
 scale = Vector2(0.40625, 0.375)
-texture = ExtResource("1_wxcnb")
+texture = ExtResource("4_2vex5")

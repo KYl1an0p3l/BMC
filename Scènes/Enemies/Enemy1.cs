@@ -3,20 +3,21 @@ using System;
 
 public partial class Enemy1 : CharacterBody2D
 {
-    [Export] public int Health = 3;
+    [Export] public int Health = 6;
     [Export] public float Speed = 150f;
     [Export] public float Gravity = 800f;
     [Export] public float MaxFallSpeed = 200f;
 
     private Vector2 _velocity = Vector2.Zero;
     private Vector2 direction = Vector2.Left;
-
+    private AnimatedSprite2D Sprite;
     private RayCast2D rayLeft;
     private RayCast2D rayRight;
 
     private Pp overlappingPlayer = null;
     public override void _Ready()
     {
+        Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         rayLeft = GetNode<RayCast2D>("RayLeft");
         rayRight = GetNode<RayCast2D>("RayRight");
 
@@ -39,6 +40,12 @@ public partial class Enemy1 : CharacterBody2D
     }
     public override void _PhysicsProcess(double delta)
     {
+        if(direction==Vector2.Left){
+            Sprite.Play("left");
+        }
+        else if(direction==Vector2.Right){
+            Sprite.Play("right");
+        }
         _velocity.Y += Gravity * (float)delta;
         if (_velocity.Y > MaxFallSpeed)
             _velocity.Y = MaxFallSpeed;
@@ -52,12 +59,10 @@ public partial class Enemy1 : CharacterBody2D
         if (direction == Vector2.Left && !rayLeft.IsColliding())
         {
             direction = Vector2.Right;
-            FlipSprite();
         }
         else if (direction == Vector2.Right && !rayRight.IsColliding())
         {
             direction = Vector2.Left;
-            FlipSprite();
         }
     }
 

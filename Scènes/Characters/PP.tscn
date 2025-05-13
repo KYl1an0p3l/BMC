@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bd57jpff7t3ks"]
+[gd_scene load_steps=16 format=3 uid="uid://bd57jpff7t3ks"]
 
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://dw0oiro3lrde6" path="res://Texture/faux_01.png" id="2_gccba"]
@@ -68,6 +68,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_otdr5"]
+size = Vector2(60, 90)
+
 [node name="PP" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 17
@@ -119,3 +122,12 @@ shape = SubResource("RectangleShape2D_gccba")
 position = Vector2(584, 0)
 scale = Vector2(8.46094, 0.0625)
 sprite_frames = SubResource("SpriteFrames_gccba")
+
+[node name="Parry" type="Area2D" parent="."]
+position = Vector2(87, 61)
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Parry"]
+position = Vector2(-7.5, -64)
+shape = SubResource("RectangleShape2D_otdr5")

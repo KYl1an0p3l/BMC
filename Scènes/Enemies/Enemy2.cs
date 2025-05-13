@@ -4,7 +4,7 @@ using System;
 public partial class Enemy2 : CharacterBody2D
 {
     [Export] public float MoveSpeed = 100f;
-    [Export] public int Health = 3;
+    [Export] public int Health = 4;
     [Export] public NodePath PlayerPath;
     [Export] public PackedScene ammo;
     [Export] public NodePath LeftLimitPath;

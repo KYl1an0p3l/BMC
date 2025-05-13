@@ -48,8 +48,17 @@ public partial class Pp : CharacterBody2D
     [Export] private float knockback_duration = 0.25f;
 
     private DeadScreen deadScreen;
-     private bool hasGun, isDead = false;
-
+    private bool hasGun, isDead = false;
+    private int bulletsFired = 0;
+    private int maxBullets = 6;
+    private bool isReloading = false;
+    private Timer reloadTimer;    
+    private Area2D parryArea;
+    private CollisionShape2D parryShape; 
+    private bool isParryKnockback = false;
+    private float parryKnockbackForce = 800f;
+    [Export] private float parry_knockback_duration = 0.5f;
+    private float parry_knockback_elapsed = 0f;
     public override void _Ready()
     {
         screenSize = GetViewportRect().Size;
@@ -87,12 +96,25 @@ public partial class Pp : CharacterBody2D
         currentHealth = maxHealth;
         heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
         ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+
+        reloadTimer = new Timer();
+        AddChild(reloadTimer);
+        reloadTimer.OneShot = true;
+        reloadTimer.WaitTime = 2.0f; // 2 secondes pour recharger
+        reloadTimer.Timeout += OnReloadFinished;
+        
+        parryArea = GetNode<Area2D>("Parry");
+        parryShape = parryArea.GetNode<CollisionShape2D>("CollisionShape2D");
+        parryArea.Monitoring = true;
+        parryArea.Monitorable = true;
+        
     }   
 
 
     public override void _Process(double delta)
     {
-        if (isDead){ //Si le joueur est mort, on ne peut pas continuer à jouer en arrière-plan
+        if (isDead){
+            deadScreen.death_screen();
             return;
         }
         if (isKnockback)
@@ -108,7 +130,8 @@ public partial class Pp : CharacterBody2D
         HandleGravity(delta);
         Sauter();
         HandleAttack();
-        Rifle();
+        Rifle(); 
+        HandleParry();
         dropAll();
     }
 
@@ -120,7 +143,19 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleMovement(double delta)
     {
-        if (isKnockback) return;
+        if (isParryKnockback)
+        {
+            parry_knockback_elapsed += (float)delta;
+            if (parry_knockback_elapsed < parry_knockback_duration)
+            {
+                velocity.X = Mathf.Lerp(velocity.X, parryKnockbackForce, 1.0f);
+            }
+            else
+            {
+                isParryKnockback = false;
+            }
+        }
+        if (isKnockback || isParryKnockback) return;
         velocity.X = 0;
         if (Input.IsActionPressed("d"))
         {
@@ -159,18 +194,19 @@ public partial class Pp : CharacterBody2D
 
     private void HandleGravity(double delta)
     {
-        if (knockbackJumped)
+        if (isParryKnockback)
         {
-            knockback_elapsed += (float)delta;
-            if (knockback_elapsed < knockback_duration)
+            parry_knockback_elapsed += (float)delta;
+            if (parry_knockback_elapsed < parry_knockback_duration)
             {
-                velocity.Y = Mathf.Lerp(velocity.Y, knockback_jump_power, 1.0f);
+                velocity.X = Mathf.Lerp(0, parryKnockbackForce, 1.0f); 
             }
             else
             {
-                knockbackJumped = false;
+                isParryKnockback = false;
             }
         }
+
         else if (isJumping)
         {
             jump_elapsed += (float)delta;
@@ -282,14 +318,14 @@ public partial class Pp : CharacterBody2D
             {
                 case AttackDirection.Up:
                 case AttackDirection.Down:
-                    shape.Size = new Vector2(90, 60); // étroit et haut
+                    shape.Size = new Vector2(90, 60); 
                     rifle_shape.Size = new Vector2(9, 1088);
                     break;
 
                 case AttackDirection.Left:
                 case AttackDirection.Right:
                 default:
-                    shape.Size = new Vector2(60, 90); // large et bas
+                    shape.Size = new Vector2(60, 90); 
                     rifle_shape.Size = new Vector2(1088, 9);
                     break;
             }
@@ -299,11 +335,10 @@ public partial class Pp : CharacterBody2D
         zoneAtkSprite.Rotation = spriteRotation;
         zoneAtkSprite.FlipH = flipH;
         zoneAtkSprite.FlipV = false;
-
     }
     private void HandleAttack()
     {
-        if (isKnockback) return;
+        if (isKnockback|| isParryKnockback) return;
         if (Input.IsActionJustPressed("atk") && !isAttacking)
         {
             isAttacking = true;
@@ -324,7 +359,7 @@ public partial class Pp : CharacterBody2D
             {
                 if (body is Enemy1 enemy1)
                 {
-                    enemy1.TakeDamage(1);
+                    enemy1.TakeDamage(2);
                     if (isDownwardAttack)
                     {
                         jump_elapsed = 0f;
@@ -334,7 +369,7 @@ public partial class Pp : CharacterBody2D
                 else if (body is Enemy2 enemy2)
                 {
                     GD.Print("Enemy2 touché !");
-                    enemy2.TakeDamage(1);
+                    enemy2.TakeDamage(2);
                     if (isDownwardAttack)
                     {
                         jump_elapsed = 0f;
@@ -356,40 +391,45 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void Rifle(){
+    private void Rifle()
+    {
         zoneRifleSprite.Visible = false;
-        GetNode<Area2D>("RifleAtk").RotationDegrees = 0; //On reset la rotation à 0
-        if(Input.IsActionJustPressed("atk_sec") && hasGun && !isAttacking){ //Lorsqu'on attaque
+        GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
+
+        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback)
+            return;
+
+        if (Input.IsActionJustPressed("atk_sec"))
+        {
             isAttacking = true;
+            bulletsFired++;
+
             UpdateAttackDirection();
             zoneRifleSprite.Visible = true;
 
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1)
-                    initialTargets.Add(body);
-                else if(body is Enemy2)
+                if (body is Enemy1 || body is Enemy2)
                     initialTargets.Add(body);
             }
 
-            // Inflige les dégâts une seule fois
             foreach (var body in initialTargets)
             {
-                if (body is Enemy1)
-                {
-                    Enemy1 enemy = (Enemy1)body;
-                    enemy.TakeDamage(1);
-                }
-                else if(body is Enemy2)
-                {
-                    Enemy2 enemy = (Enemy2)body;
-                    enemy.TakeDamage(1);
-                }
+                if (body is Enemy1 e1)
+                    e1.TakeDamage(1);
+                else if (body is Enemy2 e2)
+                    e2.TakeDamage(1);
             }
 
-            // Timer pour désactiver la zone d'attaque et réactiver l'attaque
-            var disableTimer = GetTree().CreateTimer(0.6f);
+            // Si le chargeur est vide après ce tir
+            if (bulletsFired >= maxBullets)
+            {
+                isReloading = true;
+                reloadTimer.Start();
+            }
+
+            var disableTimer = GetTree().CreateTimer(0.3f);
             disableTimer.Timeout += () =>
             {
                 isAttacking = false;
@@ -397,6 +437,33 @@ public partial class Pp : CharacterBody2D
             };
         }
     }
+
+
+    private void HandleParry()
+    {
+        if (Input.IsActionJustPressed("parry"))
+        {
+            GD.Print("Parry activée !");
+
+            Vector2 offset = LookingLeft ? new Vector2(-70, 60) : new Vector2(85, 60);
+            parryArea.GlobalPosition = GlobalPosition + offset;
+
+            // Vérifie s'il y a un ennemi dans la zone
+            foreach (var body in parryArea.GetOverlappingBodies())
+            {
+                GD.Print("Détecté dans parry : " + body.Name);
+                if (body is Enemy1 || body is Enemy2)
+                {
+                    GD.Print("Parry réussie !");
+                    isParryKnockback = true;
+                    parry_knockback_elapsed = 0f;
+                    parryKnockbackForce = LookingLeft ? 800f : -800f;
+                    return;
+                }
+            }
+        }
+    }
+
     private void rifle_get(Node body){
         if(body == this){
             hasGun = true;
@@ -418,7 +485,7 @@ public partial class Pp : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        if (isHitBoxTriggered || isKnockback)
+        if (isHitBoxTriggered || isKnockback || isParryKnockback)
             return;
 
         isHitBoxTriggered = true;
@@ -443,7 +510,10 @@ public partial class Pp : CharacterBody2D
         if (currentHealth <= 0){
             isDead = true;
             deadScreen.death_screen();
-            CallDeferred("queue_free");
+            var deathTimer = GetTree().CreateTimer(1.0); 
+            deathTimer.Timeout += () => {
+                CallDeferred("queue_free");
+            };
         }
 
     }
@@ -452,5 +522,11 @@ public partial class Pp : CharacterBody2D
     {
         isHitBoxTriggered = false;
         CollisionMask |= 2u;
+    }
+
+    private void OnReloadFinished()
+    {
+        bulletsFired = 0;
+        isReloading = false;
     }
 }

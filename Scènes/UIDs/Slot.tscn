@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_7ngru"]
 [ext_resource type="Script" uid="uid://bt81dme84b38a" path="res://Scènes/UIDs/Slot.cs" id="1_q636b"]
 
-[node name="Slot" type="Panel"]
+[node name="Slot" type="Button"]
 self_modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(130, 130)
 offset_right = 130.0
@@ -19,9 +19,3 @@ custom_minimum_size = Vector2(130, 130)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="Panel" type="Panel" parent="CenterContainer"]
-self_modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-
-[node name="item" type="Sprite2D" parent="CenterContainer/Panel"]

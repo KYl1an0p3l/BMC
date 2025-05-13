@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
 [ext_resource type="PackedScene" uid="uid://dl72yjyra1pwb" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 [ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
-[ext_resource type="PackedScene" uid="uid://cmf8kvtgwjd8k" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
+[ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -23,6 +23,7 @@ position = Vector2(123, 175)
 position = Vector2(12, 37)
 
 [node name="rifleGet" parent="." instance=ExtResource("5_n2upc")]
+position = Vector2(-339, 0)
 
 [node name="deadScreen" parent="." instance=ExtResource("6_0r5kt")]
 

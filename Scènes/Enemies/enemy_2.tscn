@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhrm6i3ps1tu6"]
+
+[ext_resource type="PackedScene" uid="uid://sdwoc2molucq" path="res://Scènes/Enemies/Enemy2.tscn" id="1_g1cj6"]
+
+[node name="Enemy2" type="Node2D"]
+
+[node name="Enemy2" parent="." instance=ExtResource("1_g1cj6")]
+LeftLimitPath = NodePath("../LeftLimit")
+RightLimitPath = NodePath("../RightLimit")
+
+[node name="LeftLimit" type="Node2D" parent="."]
+position = Vector2(-120, 1)
+
+[node name="RightLimit" type="Node2D" parent="."]
+position = Vector2(118, 0)

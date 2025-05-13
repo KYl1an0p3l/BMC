@@ -36,22 +36,24 @@ public partial class InventoryGui : Control
     }
 
     public void UpdateInventory(){
-        for(int i=0;i < Math.Min(inventory.Slots.Count, slots.Count) ; i++){
+        for(int i = 0; i < Math.Min(inventory.Slots.Count, slots.Count); i++){
             InventorySlot inventorySlot = inventory.Slots[i];
             if(inventorySlot == null || inventorySlot.Item == null){
                 continue;
             }
+
             ItemStackGui isg = slots[i].itemStack;
             if(isg == null){
                 isg = itemStackLoad.Instantiate<ItemStackGui>();
                 slots[i].InsertItem(isg);
             }
-            isg.slot = inventorySlot;
-            isg.UpdateItems(inventorySlot);
-        }
-        
-    }
 
+            if (isg != null) {
+                isg.slot = inventorySlot;
+                isg.UpdateItems(inventorySlot);
+            }
+        }
+    }
     public void onSlotClicked(Slot slot){
         if(slot.isEmpty() && itemInHand != null){
             insertItemInSlot(slot);

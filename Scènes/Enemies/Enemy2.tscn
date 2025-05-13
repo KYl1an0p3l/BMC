@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://sdwoc2molucq"]
+
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_h6lsv"]
+[ext_resource type="Script" uid="uid://d3i6idtp0lhv5" path="res://Scènes/Enemies/Enemy2.cs" id="1_l35c4"]
+[ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_6lnd1"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l35c4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_h6lsv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h6lsv"]
+size = Vector2(50, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6lnd1"]
+size = Vector2(50, 50)
+
+[node name="Enemy2" type="CharacterBody2D"]
+position = Vector2(1, 0)
+collision_layer = 4
+collision_mask = 16
+script = ExtResource("1_l35c4")
+ammo = ExtResource("2_6lnd1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_l35c4")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 3
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -0.5)
+shape = SubResource("RectangleShape2D_h6lsv")
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("RectangleShape2D_6lnd1")

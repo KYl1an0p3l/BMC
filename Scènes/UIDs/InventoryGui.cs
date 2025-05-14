@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 
 public partial class InventoryGui : Control
@@ -9,14 +11,16 @@ public partial class InventoryGui : Control
     private PackedScene itemStackLoad;
     private Godot.Collections.Array<Slot> slots = new();
     private ItemStackGui itemInHand;
-    private int index;
+    private int index, oldIndex;
+    private bool locked = false;
     public override void _Ready()
     {
         Visible = false;
+        oldIndex = -1;
         index = 0;
-        inventory = GD.Load<Inventory>("res://Inventory/playerInventory.tres");
+        inventory = GameState.Instance.PlayerInventory;
         itemStackLoad = GD.Load<PackedScene>("res://Scènes/UIDs/itemStackGui.tscn");
-        var slotNodes = GetNode<GridContainer>("NinePatchRect/GridContainer").GetChildren();
+        var slotNodes = GetNode<Panel>("NinePatchRect/GridContainer").GetChildren();
         foreach (Node node in slotNodes){//On recast les noeuds puisqu'on ne peut pas le faire automatiquement
             if (node is Slot slot){
                 slot.index = index;
@@ -37,11 +41,11 @@ public partial class InventoryGui : Control
 
     public void UpdateInventory(){
         for(int i = 0; i < Math.Min(inventory.Slots.Count, slots.Count); i++){
-            InventorySlot inventorySlot = inventory.Slots[i];
-            if(inventorySlot == null || inventorySlot.Item == null){
+            
+            if(inventory == null || inventory.Slots[i] == null || inventory.Slots[i].Item == null){
                 continue;
             }
-
+            InventorySlot inventorySlot = inventory.Slots[i];
             ItemStackGui isg = slots[i].itemStack;
             if(isg == null){
                 isg = itemStackLoad.Instantiate<ItemStackGui>();
@@ -55,6 +59,7 @@ public partial class InventoryGui : Control
         }
     }
     public void onSlotClicked(Slot slot){
+        if(locked){ return ;}
         if(slot.isEmpty() && itemInHand != null){
             insertItemInSlot(slot);
             return;
@@ -75,8 +80,29 @@ public partial class InventoryGui : Control
         }
     }
 
+    public async Task putItemBack(){
+        locked= true;
+        if(oldIndex < 0){
+            var emptySlots = slots.Where(s => s.isEmpty()).ToList();
+            if(!emptySlots.Any())
+                return;
+            oldIndex = emptySlots[0].index;
+        }
+        var targetSlot = slots[oldIndex];
+
+        var tween = CreateTween(); //On créer l'animation de retour de l'objet dans son slot
+        var targetPosition = targetSlot.GlobalPosition + targetSlot.Size / 2;
+        tween.TweenProperty(itemInHand, "global_position", targetPosition, 0.2);
+        await ToSignal(tween, Tween.SignalName.Finished);
+
+        insertItemInSlot(targetSlot);
+        locked = false;
+    }
     public override void _Input(InputEvent @event)
     {
+        if(Input.IsActionJustPressed("rightClick") && !locked && itemInHand != null){
+            putItemBack();
+        }
         UpdateItemInHand();
     }
 
@@ -86,6 +112,7 @@ public partial class InventoryGui : Control
             AddChild(itemInHand);
             UpdateItemInHand();
         }
+        oldIndex = slot.index;
     }
 
     public void insertItemInSlot(Slot slot){
@@ -95,6 +122,7 @@ public partial class InventoryGui : Control
             itemInHand = null;
             slot.InsertItem(item);
         }
+        oldIndex = -1;
         
     }
 

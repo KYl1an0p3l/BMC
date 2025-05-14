@@ -32,6 +32,7 @@ public partial class Inventory : Resource
 	}
     public void removeItemAtIndex(int index){
         Slots[index] = new InventorySlot();
+        OnUpdated?.Invoke(); // émet l'événement
     }
     public void insertSlot(int index, InventorySlot inventorySlot){
         int oldIndex = -1;
@@ -45,5 +46,6 @@ public partial class Inventory : Resource
             removeItemAtIndex(oldIndex);
         }
         Slots[index] = inventorySlot;
+        OnUpdated?.Invoke(); // émet l'événement
     }
 }

@@ -105,7 +105,8 @@ shape = SubResource("RectangleShape2D_plho4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ZoneAtk"]
 position = Vector2(-10, -64)
 sprite_frames = SubResource("SpriteFrames_kueoj")
-frame_progress = 0.860984
+frame = 4
+frame_progress = 0.938032
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true

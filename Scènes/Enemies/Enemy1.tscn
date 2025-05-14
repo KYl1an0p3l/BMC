@@ -1,10 +1,29 @@
-[gd_scene load_steps=12 format=3 uid="uid://hbkda834us1g"]
+[gd_scene load_steps=19 format=3 uid="uid://hbkda834us1g"]
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
 [ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
+[ext_resource type="AudioStream" uid="uid://bc6tbg6on6xkk" path="res://Texture/sound1.mp3" id="3_aiow1"]
+[ext_resource type="AudioStream" uid="uid://cr6nkuq63j8dj" path="res://Texture/sound2.mp3" id="4_y0o3x"]
+[ext_resource type="AudioStream" uid="uid://2wovh8l5vc83" path="res://Texture/sound3.mp3" id="5_mwefl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80chd"]
 size = Vector2(46.6667, 32.4167)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0xxas"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 0, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uiome"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 74, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7yspf"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 0, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ksw7"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 74, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aiow1"]
 atlas = ExtResource("2_0xxas")
@@ -32,6 +51,28 @@ region = Rect2(0, 74, 56, 37)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uiome"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0xxas")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uiome")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 3.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7yspf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ksw7")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 3.5
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_aiow1")
@@ -85,8 +126,19 @@ collision_mask = 5
 position = Vector2(3, -4)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_uiome")
-animation = &"left"
-frame_progress = 0.892523
+animation = &"idle_right"
+
+[node name="Sound1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_aiow1")
+volume_db = 5.0
+
+[node name="Sound2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_y0o3x")
+volume_db = 3.0
+
+[node name="Sound3" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_mwefl")
+volume_db = 10.0
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 16

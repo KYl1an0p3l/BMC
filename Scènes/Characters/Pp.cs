@@ -22,20 +22,30 @@ public partial class Pp : CharacterBody2D
     
     [Export] private float pogo_jump_power = -670f;
     [Export] private float pogo_jump_duration = 0.25f; 
-    [Export] private float jump_power = -970f; // force 
+    [Export] private float jump_power = -770f; // force 
     private float jump_elapsed = 0f;// chronomètre
     private bool isJumping = false;
     [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton
     private bool pogoJumped = false;
- 
+    private int jumpCount = 0;
+    [Export] private int maxJumps = 2;
+
+    [Export] private float dashSpeed = 800f; 
+    [Export] private float dashDuration = 0.2f;
+    [Export] private float dashCooldown = 0.5f;
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+    private Vector2 dashDirection = Vector2.Zero;
 
     private Vector2 velocity;
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    private int maxHealth = 3;
+    [Export] private int maxHealth = 3;
     private int currentHealth;
     private HBoxContainer heartsContainer;
+    private HealthBar healthBar;
 
     private bool isHitBoxTriggered = false;
 
@@ -98,8 +108,9 @@ public partial class Pp : CharacterBody2D
         inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
 
         currentHealth = maxHealth;
-        heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
-        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        healthBar = GetNode<HealthBar>("../CanvasLayer/HealthBar");
+        healthBar.SetMaxHearts(maxHealth);
+        healthBar.UpdateHearts(currentHealth);
 
         reloadTimer = new Timer();
         AddChild(reloadTimer);
@@ -126,6 +137,38 @@ public partial class Pp : CharacterBody2D
             HandleGravity(delta);
             return;
         }
+        if (dashCooldownTimer > 0)
+            dashCooldownTimer -= (float)delta;
+
+        if (isDashing)
+        {
+            dashTimer -= (float)delta;
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+                Velocity = Vector2.Zero;
+            }
+            else
+            {
+                Velocity = dashDirection * dashSpeed;
+                MoveAndSlide();
+                return; // Empêche les autres actions pendant le dash
+            }
+        }
+        else if (Input.IsKeyPressed(Key.F) && dashCooldownTimer <= 0)//touche f 
+        {
+            isDashing = true;
+            dashTimer = dashDuration;
+            dashCooldownTimer = dashCooldown;
+
+            if (Input.IsActionPressed("q"))
+                dashDirection = Vector2.Left;
+            else if (Input.IsActionPressed("d"))
+                dashDirection = Vector2.Right;
+            else
+                dashDirection = LookingLeft ? Vector2.Left : Vector2.Right;
+        }
+
         velocity = new Vector2();
 
         if (!isAttacking)
@@ -143,9 +186,10 @@ public partial class Pp : CharacterBody2D
     }
 
     private void Sauter(){
-        if (IsOnFloor() && Input.IsActionJustPressed("jump")) {
+        if (Input.IsActionJustPressed("jump")&& jumpCount < maxJumps) {
             isJumping = true;
             jump_elapsed = 0f;
+            jumpCount++;
         }
     }
     private void HandleMovement(double delta)
@@ -245,6 +289,7 @@ public partial class Pp : CharacterBody2D
         else
         {
             velocity.Y = 0;
+            jumpCount = 0;
         }
 
 
@@ -501,7 +546,7 @@ public partial class Pp : CharacterBody2D
 
         currentHealth -= amount;
         currentHealth = Mathf.Max(0, currentHealth);
-        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        healthBar.UpdateHearts(currentHealth);
 
         GD.Print($"Vie restante du joueur : {currentHealth}");
 

@@ -16,7 +16,7 @@ public partial class InventoryGui : Control
         index = 0;
         inventory = GD.Load<Inventory>("res://Inventory/playerInventory.tres");
         itemStackLoad = GD.Load<PackedScene>("res://Scènes/UIDs/itemStackGui.tscn");
-        var slotNodes = GetNode<GridContainer>("NinePatchRect/GridContainer").GetChildren();
+        var slotNodes = GetNode<NinePatchRect>("NinePatchRect").GetChildren();
         foreach (Node node in slotNodes){//On recast les noeuds puisqu'on ne peut pas le faire automatiquement
             if (node is Slot slot){
                 slot.index = index;

@@ -9,79 +9,79 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80chd"]
 size = Vector2(46.6667, 32.4167)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0xxas"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 0, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uiome"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 74, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_7yspf"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(0, 0, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8ksw7"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(0, 74, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_aiow1"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 0, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lbi8g"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 37, 56, 37)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_y0o3x"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(56, 74, 56, 37)
+region = Rect2(56, 1, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mwefl"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 0, 56, 37)
+region = Rect2(56, 77, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_anb5e"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 37, 56, 37)
+region = Rect2(0, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ksw7"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 77, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76j51"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dqwc8"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 39, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3n8q"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 77, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmuou"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 74, 56, 37)
+region = Rect2(0, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uiome"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 39, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7yspf"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 77, 56, 37)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uiome"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0xxas")
+"texture": SubResource("AtlasTexture_y0o3x")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_uiome")
+"texture": SubResource("AtlasTexture_mwefl")
 }],
 "loop": true,
 "name": &"idle_left",
-"speed": 3.5
+"speed": 2.5
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_7yspf")
+"texture": SubResource("AtlasTexture_anb5e")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_8ksw7")
 }],
 "loop": true,
 "name": &"idle_right",
-"speed": 3.5
+"speed": 2.5
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aiow1")
+"texture": SubResource("AtlasTexture_76j51")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lbi8g")
+"texture": SubResource("AtlasTexture_dqwc8")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_y0o3x")
+"texture": SubResource("AtlasTexture_o3n8q")
 }],
 "loop": true,
 "name": &"left",
@@ -89,17 +89,17 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mwefl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_anb5e")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_bmuou")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uiome")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7yspf")
 }],
 "loop": true,
 "name": &"right",
-"speed": 3.0
+"speed": 3.5
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q02qh"]
@@ -127,6 +127,7 @@ position = Vector2(3, -4)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_uiome")
 animation = &"idle_right"
+frame_progress = 0.590206
 
 [node name="Sound1" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_aiow1")

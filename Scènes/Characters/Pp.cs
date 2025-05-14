@@ -223,19 +223,18 @@ public partial class Pp : CharacterBody2D
         if (velocity.Length() > 0)
         {
             velocity = velocity.Normalized() * SPEED;
-            animatedSprite.Play("gauche");
+            if (LookingLeft)
+                animatedSprite.Play("gauche");
+            else
+                animatedSprite.Play("droite");
         }
         else
         {
             animatedSprite.Stop();
         }
 
-        animatedSprite.Animation = "gauche";
-
         if (!isAttacking)
-            animatedSprite.FlipH = velocity.X > 0;
-
-
+ 
         Position += velocity * (float)delta;
         Position = new Vector2(
             Mathf.Clamp(Position.X, 0, screenSize.X),

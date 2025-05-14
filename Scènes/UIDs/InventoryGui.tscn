@@ -1,84 +1,164 @@
 [gd_scene load_steps=4 format=3 uid="uid://bcml4a71nde7h"]
 
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_hachx"]
 [ext_resource type="Script" uid="uid://dbnf78nua6lb" path="res://Scènes/UIDs/InventoryGui.cs" id="1_qun74"]
 [ext_resource type="PackedScene" uid="uid://dvblt8xfbbu4x" path="res://Scènes/UIDs/Slot.tscn" id="2_pjx2w"]
+[ext_resource type="Texture2D" uid="uid://bxg7cuf64aoh2" path="res://Texture/inventaire.png" id="2_qun74"]
 
 [node name="InventoryGui" type="Control"]
-custom_minimum_size = Vector2(720, 460)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -432.0
-offset_bottom = -188.0
+offset_right = -650.0
+offset_bottom = -477.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qun74")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
-custom_minimum_size = Vector2(720, 460)
-layout_mode = 0
-offset_right = 720.0
-offset_bottom = 460.0
-texture = ExtResource("1_hachx")
-
-[node name="GridContainer" type="GridContainer" parent="NinePatchRect"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -333.0
-offset_top = -199.0
-offset_right = 333.0
-offset_bottom = 199.0
+offset_left = -251.0
+offset_top = -85.5
+offset_right = 251.0
+offset_bottom = 85.5
 grow_horizontal = 2
 grow_vertical = 2
-columns = 5
+texture = ExtResource("2_qun74")
 
-[node name="Slot" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot1" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 83.2168
+offset_top = 11.8881
+offset_right = 133.217
+offset_bottom = 56.8881
 
-[node name="Slot2" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot2" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 26.5734
+offset_top = 62.9371
+offset_right = 76.5734
+offset_bottom = 107.937
 
-[node name="Slot3" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot3" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 139.161
+offset_top = 62.9371
+offset_right = 189.161
+offset_bottom = 107.937
 
-[node name="Slot4" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot4" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 83.2168
+offset_top = 113.986
+offset_right = 133.217
+offset_bottom = 158.986
 
-[node name="Slot5" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot5" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 216.084
+offset_top = 11.8881
+offset_right = 266.084
+offset_bottom = 56.8881
 
-[node name="Slot6" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot6" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 272.028
+offset_top = 11.8881
+offset_right = 322.028
+offset_bottom = 56.8881
 
-[node name="Slot7" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot7" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 327.972
+offset_top = 11.8881
+offset_right = 377.972
+offset_bottom = 56.8881
 
-[node name="Slot8" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot8" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 383.916
+offset_top = 11.8881
+offset_right = 433.916
+offset_bottom = 56.8881
 
-[node name="Slot9" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot9" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 439.86
+offset_top = 11.8881
+offset_right = 489.86
+offset_bottom = 56.8881
 
-[node name="Slot10" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot10" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 216.084
+offset_top = 62.9371
+offset_right = 266.084
+offset_bottom = 107.937
 
-[node name="Slot11" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot11" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 272.028
+offset_top = 62.9371
+offset_right = 322.028
+offset_bottom = 107.937
 
-[node name="Slot12" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot12" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 327.972
+offset_top = 62.9371
+offset_right = 377.972
+offset_bottom = 107.937
 
-[node name="Slot13" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot13" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 383.916
+offset_top = 62.9371
+offset_right = 433.916
+offset_bottom = 107.937
 
-[node name="Slot14" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot14" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 439.86
+offset_top = 62.9371
+offset_right = 489.86
+offset_bottom = 107.937
 
-[node name="Slot15" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
-layout_mode = 2
+[node name="Slot15" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 216.084
+offset_top = 113.986
+offset_right = 266.084
+offset_bottom = 158.986
+
+[node name="Slot16" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 272.028
+offset_top = 113.986
+offset_right = 322.028
+offset_bottom = 158.986
+
+[node name="Slot17" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 327.972
+offset_top = 113.986
+offset_right = 377.972
+offset_bottom = 158.986
+
+[node name="Slot18" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 383.916
+offset_top = 113.986
+offset_right = 433.916
+offset_bottom = 158.986
+
+[node name="Slot19" parent="NinePatchRect" instance=ExtResource("2_pjx2w")]
+layout_mode = 0
+offset_left = 439.86
+offset_top = 113.986
+offset_right = 489.86
+offset_bottom = 158.986

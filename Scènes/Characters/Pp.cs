@@ -33,7 +33,7 @@ public partial class Pp : CharacterBody2D
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    private int maxHealth = 3;
+    private int maxHealth = 30;
     private int currentHealth;
     private HBoxContainer heartsContainer;
 
@@ -48,7 +48,7 @@ public partial class Pp : CharacterBody2D
     [Export] private float knockback_duration = 0.25f;
 
     private DeadScreen deadScreen;
-    private bool hasGun, isDead = false;
+    private bool isDead = false;
     private int bulletsFired = 0;
     private int maxBullets = 6;
     private bool isReloading = false;
@@ -61,12 +61,17 @@ public partial class Pp : CharacterBody2D
     private float parry_knockback_elapsed = 0f;
     [Export] private Inventory inventory;
     private InventoryGui inventory_ui;
+
+    InventoryItems ScythObj, RifleObj;
     public override void _Ready()
     {
         screenSize = GetViewportRect().Size;
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
+
+        ScythObj = GD.Load<InventoryItems>("res://Inventory/Faux.tres");
+        RifleObj = GD.Load<InventoryItems>("res://Inventory/Gun.tres");
 
         zoneAtkArea = GetNode<Area2D>("ZoneAtk");
         zoneRifleAtkArea = GetNode<Area2D>("RifleAtk");
@@ -344,8 +349,8 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleAttack()
     {
-        if (isKnockback|| isParryKnockback) return;
-        if (Input.IsActionJustPressed("atk") && !isAttacking)
+        if (isKnockback|| isParryKnockback || string.IsNullOrWhiteSpace(ScythObj?.ActionName)) return;
+        else if (Input.IsActionJustPressed(ScythObj.ActionName) && !isAttacking)
         {
             isAttacking = true;
             UpdateAttackDirection();
@@ -399,9 +404,9 @@ public partial class Pp : CharacterBody2D
 
     private void Rifle(){
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
-        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback)
+        if (isReloading || isKnockback || isAttacking || string.IsNullOrWhiteSpace(RifleObj?.ActionName))//On est sensé pouvoir agir quand on est poussé par le fait de parer justement pour gratifier le joueur d'avoir réussis, pas le punir Loïc haha
             return;
-        if(Input.IsActionJustPressed("atk_sec")){
+        else if(Input.IsActionJustPressed(RifleObj.ActionName)){
             bulletsFired++;
             UpdateAttackDirection();
             GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
@@ -467,7 +472,6 @@ public partial class Pp : CharacterBody2D
 
     private void rifle_get(Node body){
         if(body == this){
-            hasGun = true;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
         }
@@ -476,7 +480,7 @@ public partial class Pp : CharacterBody2D
 
     private void dropAll(){
         if(Input.IsActionJustPressed("drop")){
-            hasGun = false;
+            RifleObj.ActionName = null;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
         }

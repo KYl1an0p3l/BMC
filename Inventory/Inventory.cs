@@ -46,6 +46,15 @@ public partial class Inventory : Resource
             removeItemAtIndex(oldIndex);
         }
         Slots[index] = inventorySlot;
+        if(index == 18){
+            Slots[index].Item.ActionName = "atk";
+        }
+        else if(index == 17){
+            Slots[index].Item.ActionName = "atk_sec";
+        }
+        else{
+            Slots[index].Item.ActionName = "";
+        }
         OnUpdated?.Invoke(); // émet l'événement
     }
 }

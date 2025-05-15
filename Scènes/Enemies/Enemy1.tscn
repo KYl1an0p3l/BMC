@@ -127,7 +127,7 @@ position = Vector2(3, -4)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_uiome")
 animation = &"idle_right"
-frame_progress = 0.590206
+frame_progress = 0.229129
 
 [node name="Sound1" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_aiow1")

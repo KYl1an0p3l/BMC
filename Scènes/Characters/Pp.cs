@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq.Expressions;
 
 public partial class Pp : CharacterBody2D
 {
@@ -13,12 +14,14 @@ public partial class Pp : CharacterBody2D
     private Area2D zoneAtkArea, zone_get_rifle, zoneRifleAtkArea;
     
     private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
-    private AnimatedSprite2D zoneAtkSprite,zoneRifleSprite;
+    private AnimatedSprite2D zoneRifleSprite;
     private enum AttackDirection { Left, Right, Up, Down }
     private AttackDirection currentAttackDirection = AttackDirection.Right;
     private AttackDirection lastHorizontalDirection = AttackDirection.Right;
     private bool isDownwardAttack = false;
     private bool isAttacking = false;
+
+    private bool isShooting = false;    
     
     [Export] private float pogo_jump_power = -670f;
     [Export] private float pogo_jump_duration = 0.25f; 
@@ -82,7 +85,6 @@ public partial class Pp : CharacterBody2D
         zoneRifleAtkArea = GetNode<Area2D>("RifleAtk");
 
         zone_atk = zoneAtkArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        zoneAtkSprite = zoneAtkArea.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         zone_atk_rifle = (CollisionShape2D)GetNode("RifleAtk/RifleCollision");
         zoneRifleSprite = zoneRifleAtkArea.GetNode<AnimatedSprite2D>("RifleAnimation");
 
@@ -91,7 +93,6 @@ public partial class Pp : CharacterBody2D
 
         zoneAtkArea.Monitoring = true;
         zoneAtkArea.Monitorable = true;
-        zoneAtkSprite.Visible = false;
 
         zoneRifleAtkArea.Monitoring = true;
         zoneRifleAtkArea.Monitorable = true;
@@ -171,7 +172,7 @@ public partial class Pp : CharacterBody2D
 
         velocity = new Vector2();
 
-        if (!isAttacking)
+        if (!isAttacking || !isShooting)
             UpdateAttackDirection();
         if(!inventory_ui.Visible){
             Sauter();
@@ -223,17 +224,42 @@ public partial class Pp : CharacterBody2D
         if (velocity.Length() > 0)
         {
             velocity = velocity.Normalized() * SPEED;
+            if(!isAttacking){ 
+                if (LookingLeft)
+                    animatedSprite.Play("gauche");
+                else
+                    animatedSprite.Play("droite");
+            }
+            else if (isAttacking){
             if (LookingLeft)
-                animatedSprite.Play("gauche");
+                animatedSprite.Play("atk_left");
             else
-                animatedSprite.Play("droite");
+                animatedSprite.Play("atk_right");
+            }
+            else if (isShooting){
+            if (LookingLeft)
+                animatedSprite.Play("rifle_left");
+            else
+                animatedSprite.Play("rifle_right");
+            }
+        }
+        else if (isAttacking){
+            if (LookingLeft)
+                animatedSprite.Play("atk_left");
+            else
+                animatedSprite.Play("atk_right");
+        }
+        else if (isShooting){
+            if (LookingLeft)
+                animatedSprite.Play("rifle_left");
+            else
+                animatedSprite.Play("rifle_right");
         }
         else
         {
             animatedSprite.Stop();
         }
-
-        if (!isAttacking)
+        
  
         Position += velocity * (float)delta;
         Position = new Vector2(
@@ -308,17 +334,13 @@ public partial class Pp : CharacterBody2D
         isDownwardAttack=false;
         Vector2 atkOffset;
         GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
-        float spriteRotation = 0f;
-        bool flipH = false;
         if (Input.IsActionPressed("z"))
         {
             currentAttackDirection = AttackDirection.Up;
-            spriteRotation = -Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("s") && !IsOnFloor())
         {
             currentAttackDirection = AttackDirection.Down;
-            spriteRotation = Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("q"))
         {
@@ -351,15 +373,13 @@ public partial class Pp : CharacterBody2D
                 break;
 
             case AttackDirection.Left:
-                atkOffset = new Vector2(-70, 60);
-                flipH = true;
+                atkOffset = new Vector2(-40, 60);
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(-1200, -20);
                 break;
 
             case AttackDirection.Right:
             default:
                 atkOffset = new Vector2(85, 60);
-                flipH = false;
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(0, -20);
                 break;
         }
@@ -382,20 +402,14 @@ public partial class Pp : CharacterBody2D
             }
         }
         zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
-        zoneAtkSprite.Rotation = spriteRotation;
-        zoneAtkSprite.FlipH = flipH;
-        zoneAtkSprite.FlipV = false;
     }
     private void HandleAttack()
     {
         if (isKnockback|| isParryKnockback) return;
-        if (Input.IsActionJustPressed("atk") && !isAttacking)
+        if (Input.IsActionJustPressed("atk") && !isAttacking && !isShooting)
         {
             isAttacking = true;
             UpdateAttackDirection();
-            animatedSprite.FlipH = (currentAttackDirection == AttackDirection.Left);
-            zoneAtkSprite.Visible = true;
-            zoneAtkSprite.Play("default");
 
             // Capture les ennemis présents au moment de l'attaque
             var initialTargets = new Godot.Collections.Array<Node>();
@@ -434,18 +448,18 @@ public partial class Pp : CharacterBody2D
             disableTimer.Timeout += () =>
             {
                 isAttacking = false;
-                zoneAtkSprite.Stop();
-                zoneAtkSprite.Frame = 0;
-                zoneAtkSprite.Visible = false;
+                animatedSprite.Stop();
+                animatedSprite.Frame = 0;
             };
         }
     }
 
     private void Rifle(){
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
-        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback)
+        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback || isShooting)
             return;
         if(Input.IsActionJustPressed("atk_sec")){
+            isShooting = true;
             bulletsFired++;
             UpdateAttackDirection();
             GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
@@ -477,7 +491,7 @@ public partial class Pp : CharacterBody2D
             var disableTimer = GetTree().CreateTimer(0.3f);
             disableTimer.Timeout += () =>
             {
-                isAttacking = false;
+                isShooting = false;
                 zoneRifleSprite.Visible = false;
             };
         }

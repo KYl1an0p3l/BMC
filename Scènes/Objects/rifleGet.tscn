@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cu78i6swy4f5x" path="res://Scènes/Objects/RifleGet.cs" id="1_q6f4a"]
 [ext_resource type="Resource" uid="uid://d3ocdpomrbf8b" path="res://Inventory/Gun.tres" id="2_2vex5"]
 [ext_resource type="Resource" uid="uid://2a77alagkar1" path="res://Inventory/playerInventory.tres" id="3_p5xjv"]
-[ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="4_2vex5"]
+[ext_resource type="Texture2D" uid="uid://brha16aboqdda" path="res://Texture/revolver.aseprite" id="4_2vex5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ttufa"]
 size = Vector2(52.5, 48.5)

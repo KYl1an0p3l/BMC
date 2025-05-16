@@ -19,7 +19,7 @@ public partial class PauseMenu : Control
 
     public override void _Process(double delta)
     {
-        if (Input.IsActionJustPressed("ui_cancel"))
+        if (Input.IsActionJustPressed("echap"))
         {
             var canvasLayer = GetParent(); // PauseMenu est enfant de CanvasLayer
             var deadScreenNode = canvasLayer.GetNodeOrNull<DeadScreen>("DeadScreen");

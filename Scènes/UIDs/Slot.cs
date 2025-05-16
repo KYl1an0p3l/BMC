@@ -13,7 +13,7 @@ public partial class Slot : Button
     {
         backgroundSprite = GetNode<Sprite2D>("background");
         container = GetNode<CenterContainer>("CenterContainer");
-        inventory = GD.Load<Inventory>("res://Inventory/playerInventory.tres");
+        inventory = GameState.Instance.PlayerInventory;
     }
 
     public void InsertItem(ItemStackGui isg){

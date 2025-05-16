@@ -74,6 +74,7 @@ public partial class Pp : CharacterBody2D
     private float parry_knockback_elapsed = 0f;
     [Export] private Inventory inventory;
     private InventoryGui inventory_ui;
+    InventoryItems ScythObj, RifleObj;
     public override void _Ready()
     {
         screenSize = GetViewportRect().Size;
@@ -90,6 +91,9 @@ public partial class Pp : CharacterBody2D
 
         invincibilityTimer = GetNode<Timer>("InvincibilityTimer");
         invincibilityTimer.Timeout += OnInvincibilityTimeout;
+
+        ScythObj = GD.Load<InventoryItems>("res://Inventory/Faux.tres");
+        RifleObj = GD.Load<InventoryItems>("res://Inventory/Gun.tres");
 
         zoneAtkArea.Monitoring = true;
         zoneAtkArea.Monitorable = true;
@@ -231,10 +235,18 @@ public partial class Pp : CharacterBody2D
                     animatedSprite.Play("droite");
             }
             else if (isAttacking){
-            if (LookingLeft)
-                animatedSprite.Play("atk_left");
-            else
-                animatedSprite.Play("atk_right");
+                if(isDownwardAttack){
+                    if (LookingLeft)
+                        animatedSprite.Play("down_atk_left");
+                    else
+                        animatedSprite.Play("down_atk_right");
+                }
+                else{
+                    if (LookingLeft)
+                        animatedSprite.Play("atk_left");
+                    else
+                        animatedSprite.Play("atk_right");
+                }
             }
             else if (isShooting){
             if (LookingLeft)
@@ -244,10 +256,18 @@ public partial class Pp : CharacterBody2D
             }
         }
         else if (isAttacking){
-            if (LookingLeft)
-                animatedSprite.Play("atk_left");
-            else
-                animatedSprite.Play("atk_right");
+            if(isDownwardAttack){
+                if (LookingLeft)
+                    animatedSprite.Play("down_atk_left");
+                else
+                    animatedSprite.Play("down_atk_right");
+            }
+            else{
+                if (LookingLeft)
+                    animatedSprite.Play("atk_left");
+                else
+                    animatedSprite.Play("atk_right");
+            }  
         }
         else if (isShooting){
             if (LookingLeft)
@@ -405,8 +425,8 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleAttack()
     {
-        if (isKnockback|| isParryKnockback) return;
-        if (Input.IsActionJustPressed("atk") && !isAttacking && !isShooting)
+        if (isKnockback|| isParryKnockback || string.IsNullOrWhiteSpace(ScythObj?.ActionName)) return;
+        else if (Input.IsActionJustPressed(ScythObj.ActionName) && !isAttacking && !isShooting)
         {
             isAttacking = true;
             UpdateAttackDirection();
@@ -456,9 +476,9 @@ public partial class Pp : CharacterBody2D
 
     private void Rifle(){
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
-        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback || isShooting)
+        if (isReloading || isKnockback || isAttacking || isShooting || string.IsNullOrWhiteSpace(RifleObj?.ActionName))
             return;
-        if(Input.IsActionJustPressed("atk_sec")){
+        else if(Input.IsActionJustPressed(RifleObj.ActionName)){
             isShooting = true;
             bulletsFired++;
             UpdateAttackDirection();
@@ -525,7 +545,6 @@ public partial class Pp : CharacterBody2D
 
     private void rifle_get(Node body){
         if(body == this){
-            hasGun = true;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
         }
@@ -534,7 +553,7 @@ public partial class Pp : CharacterBody2D
 
     private void dropAll(){
         if(Input.IsActionJustPressed("drop")){
-            hasGun = false;
+            RifleObj.ActionName = null;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
         }

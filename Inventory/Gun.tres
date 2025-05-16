@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="InventoryItems" load_steps=3 format=3 uid="uid://d3ocdpomrbf8b"]
 
-[ext_resource type="Texture2D" uid="uid://bas7un6j267e8" path="res://Texture/faux_04.png" id="1_lurns"]
+[ext_resource type="Texture2D" uid="uid://brha16aboqdda" path="res://Texture/revolver.aseprite" id="1_lurns"]
 [ext_resource type="Script" uid="uid://xwigw52i4m66" path="res://Inventory/InventoryItems.cs" id="2_l5pte"]
 
 [resource]
 script = ExtResource("2_l5pte")
 Name = "Gun"
 Texture = ExtResource("1_lurns")
+ActionName = ""
 metadata/_custom_type_script = "uid://xwigw52i4m66"

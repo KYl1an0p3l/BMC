@@ -556,6 +556,7 @@ public partial class Pp : CharacterBody2D
             RifleObj.ActionName = null;
             GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
             GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
+            
         }
     }
 

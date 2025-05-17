@@ -1,18 +1,31 @@
 using Godot;
 using System;
+using System.Transactions;
 
 public partial class PauseMenu : Control
 {
     private Button _resumeButton;
+    private Button _settingsButton;
     private Button _quitButton;
+    private Button _settingsReturnButton;
+    private Panel settingsUi, screenPanel;
 
     public override void _Ready()
     {
         _resumeButton = GetNode<Button>("screenPanel/screenVBox/ResumeButton");
+        _settingsButton = GetNode<Button>("screenPanel/screenVBox/SettingsButton");
         _quitButton = GetNode<Button>("screenPanel/screenVBox/QuitButton");
+        _settingsReturnButton = GetNode<Button>("settingsUi/returnButton");
+        settingsUi = GetNode<Panel>("settingsUi");
+        screenPanel = GetNode<Panel>("screenPanel");
+
+        screenPanel.Visible = true;
+        settingsUi.Visible = false;
 
         _resumeButton.Pressed += OnResumePressed;
+        _settingsButton.Pressed += OnSettingsPressed;
         _quitButton.Pressed += OnQuitPressed;
+        _settingsReturnButton.Pressed += OnSettingsReturnPressed;
 
         Hide(); // Cache le menu au début
     }
@@ -26,10 +39,14 @@ public partial class PauseMenu : Control
 
             if (deadScreenNode != null && !deadScreenNode.IsDeathScreenVisible())
             {
-                if (Visible)
+                if (Visible && !settingsUi.Visible)
                 {
                     GetTree().Paused = false;
                     Hide();
+                }
+                else if (Visible && settingsUi.Visible)
+                {
+                    OnSettingsReturnPressed();
                 }
                 else
                 {
@@ -47,8 +64,20 @@ public partial class PauseMenu : Control
         Hide();
     }
 
+    private void OnSettingsPressed()
+    {
+        screenPanel.Visible = false;
+        settingsUi.Visible = true;
+    }
+
     private void OnQuitPressed()
     {
         GetTree().Quit();
+    }
+
+    private void OnSettingsReturnPressed()
+    {
+        screenPanel.Visible = true;
+        settingsUi.Visible = false;
     }
 }

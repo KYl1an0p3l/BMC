@@ -98,7 +98,7 @@ public partial class Pp : CharacterBody2D
         CollisionLayer = 1 << 1; // couche 2 : joueur
         CollisionMask = 1 << 0;  // couche 1 : sol
 
-        deadScreen = GetNode<DeadScreen>("../DeadScreen");
+        deadScreen = GetNode<DeadScreen>("../CanvasLayer/DeadScreen");
         
         inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
 

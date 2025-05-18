@@ -1,0 +1,332 @@
+[gd_scene load_steps=3 format=3 uid="uid://ow7b6ibvik5w"]
+
+[ext_resource type="Script" uid="uid://bu6ln6q011o0y" path="res://Scènes/UIDs/SettingsUi.cs" id="1_idil4"]
+
+[sub_resource type="Theme" id="Theme_idil4"]
+default_font_size = 15
+
+[node name="settingsUi" type="Panel"]
+self_modulate = Color(0, 0, 0, 1)
+top_level = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_idil4")
+
+[node name="returnButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 20.0
+offset_right = 147.0
+offset_bottom = 57.0
+text = "Retour"
+
+[node name="lookUpButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 65.0
+offset_right = 365.0
+offset_bottom = 135.0
+text = "Regarder vers le haut"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="lookUpButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "UpArrow"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="lookDownButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 140.0
+offset_right = 365.0
+offset_bottom = 210.0
+text = "Regarder vers le bas"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="lookDownButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "DownArrow"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="goLeftButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 215.0
+offset_right = 365.0
+offset_bottom = 285.0
+text = "Aller à gauche"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="goLeftButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "LeftArrow"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="goRightButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 290.0
+offset_right = 365.0
+offset_bottom = 360.0
+text = "Aller à droite"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="goRightButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "RightArrow"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="jumpButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 365.0
+offset_right = 365.0
+offset_bottom = 435.0
+text = "Sauter"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="jumpButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "Z"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="atkButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 440.0
+offset_right = 365.0
+offset_bottom = 510.0
+text = "Attaque"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="atkButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "X"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="atkSecButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 515.0
+offset_right = 365.0
+offset_bottom = 585.0
+text = "Attaque secondaire"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="atkSecButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "C"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="atkTerButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 65.0
+offset_right = 655.0
+offset_bottom = 135.0
+text = "Attaque tertiaire"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="atkTerButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "V"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="atkQuaButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 140.0
+offset_right = 655.0
+offset_bottom = 210.0
+text = "Attaque quaternaire"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="atkQuaButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "B"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="invButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 215.0
+offset_right = 655.0
+offset_bottom = 285.0
+text = "Inventaire"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="invButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "E"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="absButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 290.0
+offset_right = 655.0
+offset_bottom = 360.0
+text = "Absorption"
+alignment = 0
+
+[node name="inputLabel" type="RichTextLabel" parent="absButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -32.5
+offset_bottom = 37.5
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_idil4")
+bbcode_enabled = true
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1

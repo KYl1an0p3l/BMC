@@ -52,7 +52,14 @@ public partial class Inventory : Resource
         else if(index == 17){
             Slots[index].Item.ActionName = "atk_sec";
         }
-        else{
+        else if(index == 16){
+            Slots[index].Item.ActionName = "atk_ter";
+        }
+        else if(index == 15){
+            Slots[index].Item.ActionName = "atk_qua";
+        }
+        else
+        {
             Slots[index].Item.ActionName = "";
         }
         OnUpdated?.Invoke(); // émet l'événement

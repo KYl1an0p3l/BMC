@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dh3b6mrl6pl2u"]
+[gd_scene load_steps=4 format=3 uid="uid://dh3b6mrl6pl2u"]
 
 [ext_resource type="Script" uid="uid://1ghpt8g1mqc3" path="res://Scènes/UIDs/PauseMenu.cs" id="1_thlu7"]
+[ext_resource type="PackedScene" uid="uid://ow7b6ibvik5w" path="res://Scènes/UIDs/settingsUi.tscn" id="2_25j8p"]
 
 [sub_resource type="Theme" id="Theme_l7g78"]
 default_font_size = 78
@@ -46,6 +47,18 @@ text = "[wave amp=1 freq=2 connected=0][center]PAUSE[/center][/wave]"
 layout_mode = 2
 text = "Resume"
 
+[node name="SettingsButton" type="Button" parent="screenPanel/screenVBox"]
+layout_mode = 2
+text = "Settings"
+
 [node name="QuitButton" type="Button" parent="screenPanel/screenVBox"]
 layout_mode = 2
 text = "Quit"
+
+[node name="settingsUi" parent="." instance=ExtResource("2_25j8p")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1

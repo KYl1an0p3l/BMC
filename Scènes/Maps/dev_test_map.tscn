@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cw260pjs1rxq4" path="res://Scènes/UIDs/hotbar.tscn" id="8_i721l"]
 [ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_kddde"]
 [ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
-[ext_resource type="PackedScene" uid="uid://djioew0sccdoh" path="res://Scènes/Enemies/Boss.tscn" id="10_kddde"]
+[ext_resource type="PackedScene" uid="uid://dhrm6i3ps1tu6" path="res://Scènes/Enemies/enemy_2.tscn" id="11_i721l"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -57,5 +57,5 @@ offset_bottom = 17.0
 grow_vertical = 0
 scale = Vector2(0.85, 0.85)
 
-[node name="Boss" parent="." instance=ExtResource("10_kddde")]
-position = Vector2(827, 442)
+[node name="Enemy2" parent="." instance=ExtResource("11_i721l")]
+position = Vector2(795, 350)

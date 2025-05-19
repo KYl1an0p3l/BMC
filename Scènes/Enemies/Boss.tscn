@@ -78,4 +78,4 @@ shape = SubResource("RectangleShape2D_udewm")
 scale = Vector2(0.8, 0.8)
 sprite_frames = SubResource("SpriteFrames_vai0k")
 animation = &"left"
-frame_progress = 0.81917
+frame_progress = 0.92389

@@ -14,6 +14,7 @@ public partial class Enemy2 : CharacterBody2D
     private int direction = 1;
     private Vector2 velocity;
     private RayCast2D _rayCast;
+    private AnimatedSprite2D animatedSprite2D;
     private Timer _timer;
     private Pp _player;
     private Pp _overlappingPlayer = null;
@@ -23,6 +24,7 @@ public partial class Enemy2 : CharacterBody2D
         _rayCast = GetNode<RayCast2D>("RayCast2D");
         _timer = GetNode<Timer>("Timer");
         _player = GetNode<Pp>("../../PP");
+
         _timer.Timeout += OnTimerTimeout;
 
         var damageArea = GetNode<Area2D>("DamageArea");
@@ -31,7 +33,7 @@ public partial class Enemy2 : CharacterBody2D
 
         _leftLimit = GetNode<Node2D>(LeftLimitPath);
         _rightLimit = GetNode<Node2D>(RightLimitPath);
-
+        animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         Velocity = Vector2.Zero;
     }
 
@@ -59,6 +61,12 @@ public partial class Enemy2 : CharacterBody2D
             direction = -1;
             GlobalPosition = new Vector2(rightX, GlobalPosition.Y);
         }
+
+        if (direction == -1)
+            animatedSprite2D.Play("left");
+        else if (direction == 1)
+            animatedSprite2D.Play("right");
+
     }
 
     private void Aim()

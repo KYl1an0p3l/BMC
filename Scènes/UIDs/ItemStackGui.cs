@@ -11,6 +11,8 @@ public partial class ItemStackGui : Panel
     {
         itemSprite = GetNode<Sprite2D>("item");
         amountLabel = GetNode<Label>("Label");
+        itemSprite.ZIndex = 1;
+
     }
 
     public void UpdateItems(InventorySlot slot){
@@ -23,6 +25,7 @@ public partial class ItemStackGui : Panel
             //backgroundSprite.Frame = 1; si plus tard on veut une texture alternative
             itemSprite.Visible = true;
             itemSprite.Texture = slot.Item.Texture;
+            
             amountLabel.Visible = false;
             if(slot.amount > 1){
                 amountLabel.Text = slot.amount.ToString();

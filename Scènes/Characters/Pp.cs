@@ -342,7 +342,7 @@ public partial class Pp : CharacterBody2D
         }
         else if (!IsOnFloor())
         {
-            velocity.Y += (gravity / 2);
+            velocity.Y += (gravity / 1.55f);
         }
         else
         {
@@ -448,7 +448,7 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2)
+                if (body is Enemy1 || body is Enemy2 || body is Boss)
                     initialTargets.Add(body);
             }
 
@@ -472,6 +472,22 @@ public partial class Pp : CharacterBody2D
                 {
                     GD.Print("Enemy2 touché !");
                     enemy2.TakeDamage(2);
+                    if (isDownwardAttack)
+                    {
+                        jump_elapsed = 0f;
+                        pogoJumped = true;
+                    }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    
+                    }
+                }
+                else if (body is Boss boss)
+                {
+                    GD.Print("Enemy2 touché !");
+                    boss.TakeDamage(2);
                     if (isDownwardAttack)
                     {
                         jump_elapsed = 0f;

@@ -14,7 +14,7 @@
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
 
-[node name="PP" parent="." instance=ExtResource("1_5o6mk")]
+[node name="PP" parent="." groups=["player"] instance=ExtResource("1_5o6mk")]
 position = Vector2(159, 256)
 
 [node name="DevGround" parent="." instance=ExtResource("2_qqe0n")]
@@ -58,4 +58,4 @@ grow_vertical = 0
 scale = Vector2(0.85, 0.85)
 
 [node name="Boss" parent="." instance=ExtResource("10_kddde")]
-position = Vector2(858, 492)
+position = Vector2(827, 442)

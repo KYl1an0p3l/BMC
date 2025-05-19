@@ -60,6 +60,11 @@ public partial class Pp : CharacterBody2D
     private float knockback_elapsed = 0f;
     [Export] private float knockback_duration = 0.25f;
 
+    [Export] private float KB_hit_force = 550f;
+    private bool is_KB_hit = false;
+    [Export] private float KB_hit_duration = 0.1f;
+    private float KB_hit_elapsed = 0f;
+
     private DeadScreen deadScreen;
     private bool hasGun, isDead = false;
     private int bulletsFired = 0;
@@ -199,94 +204,102 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleMovement(double delta)
     {
+        bool isUnderForcedMovement = false;
+
         if (isParryKnockback)
         {
             parry_knockback_elapsed += (float)delta;
             if (parry_knockback_elapsed < parry_knockback_duration)
             {
                 velocity.X = Mathf.Lerp(velocity.X, parryKnockbackForce, 1.0f);
+                isUnderForcedMovement = true;
             }
             else
             {
                 isParryKnockback = false;
             }
         }
-        if (isKnockback || isParryKnockback) return;
-        velocity.X = 0;
-        if (Input.IsActionPressed("d"))
+
+        if (is_KB_hit)
         {
-            velocity.X++;
-            LookingLeft = false;
+            KB_hit_elapsed += (float)delta;
+            if (KB_hit_elapsed < KB_hit_duration)
+            {
+                velocity.X = Mathf.Lerp(velocity.X, KB_hit_force, 1.0f);
+                isUnderForcedMovement = true;
+            }
+            else
+            {
+                is_KB_hit = false;
+            }
         }
 
-        if (Input.IsActionPressed("q"))
+        // Si en knockback (ou parry), ne traiter que l'animation mais PAS les inputs
+        if (!isUnderForcedMovement && !isKnockback)
         {
-            velocity.X--;
-            LookingLeft = true;
+            velocity.X = 0;
+
+            if (Input.IsActionPressed("d"))
+            {
+                velocity.X++;
+                LookingLeft = false;
+            }
+
+            if (Input.IsActionPressed("q"))
+            {
+                velocity.X--;
+                LookingLeft = true;
+            }
+
+            if (velocity.Length() > 0)
+            {
+                velocity = velocity.Normalized() * SPEED;
+            }
         }
 
+        // ANIMATION (toujours traitée)
         if (velocity.Length() > 0)
         {
-            velocity = velocity.Normalized() * SPEED;
-            if(!isAttacking){ 
-                if (LookingLeft)
-                    animatedSprite.Play("gauche");
+            if (!isAttacking)
+            {
+                animatedSprite.Play(LookingLeft ? "gauche" : "droite");
+            }
+            else if (isAttacking)
+            {
+                if (isDownwardAttack)
+                    animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
                 else
-                    animatedSprite.Play("droite");
+                    animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
             }
-            else if (isAttacking){
-                if(isDownwardAttack){
-                    if (LookingLeft)
-                        animatedSprite.Play("down_atk_left");
-                    else
-                        animatedSprite.Play("down_atk_right");
-                }
-                else{
-                    if (LookingLeft)
-                        animatedSprite.Play("atk_left");
-                    else
-                        animatedSprite.Play("atk_right");
-                }
-            }
-            else if (isShooting){
-            if (LookingLeft)
-                animatedSprite.Play("rifle_left");
-            else
-                animatedSprite.Play("rifle_right");
+            else if (isShooting)
+            {
+                animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
             }
         }
-        else if (isAttacking){
-            if(isDownwardAttack){
-                if (LookingLeft)
-                    animatedSprite.Play("down_atk_left");
-                else
-                    animatedSprite.Play("down_atk_right");
-            }
-            else{
-                if (LookingLeft)
-                    animatedSprite.Play("atk_left");
-                else
-                    animatedSprite.Play("atk_right");
-            }  
-        }
-        else if (isShooting){
-            if (LookingLeft)
-                animatedSprite.Play("rifle_left");
+        else if (isAttacking)
+        {
+            if (isDownwardAttack)
+                animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
             else
-                animatedSprite.Play("rifle_right");
+                animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
+        }
+        else if (isShooting)
+        {
+            animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
         }
         else
         {
             animatedSprite.Stop();
         }
-        
- 
+
+        // Application du mouvement
         Position += velocity * (float)delta;
         Position = new Vector2(
             Mathf.Clamp(Position.X, 0, screenSize.X),
             Mathf.Clamp(Position.Y, 0, screenSize.Y)
         );
     }
+
 
     private void HandleGravity(double delta)
     {
@@ -449,6 +462,11 @@ public partial class Pp : CharacterBody2D
                         jump_elapsed = 0f;
                         pogoJumped = true;
                     }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    }
                 }
                 else if (body is Enemy2 enemy2)
                 {
@@ -458,6 +476,12 @@ public partial class Pp : CharacterBody2D
                     {
                         jump_elapsed = 0f;
                         pogoJumped = true;
+                    }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    
                     }
                 }
             }

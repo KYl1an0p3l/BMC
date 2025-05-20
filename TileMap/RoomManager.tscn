@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://luqh65dw0efb"]
+
+[ext_resource type="Script" uid="uid://csvrw8tcbhpeg" path="res://TileMap/RoomManager.cs" id="1_p2vc3"]
+
+[node name="RoomManager" type="Node2D"]
+script = ExtResource("1_p2vc3")

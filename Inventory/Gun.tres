@@ -7,4 +7,5 @@
 script = ExtResource("2_l5pte")
 Name = "Gun"
 Texture = ExtResource("1_lurns")
+ActionName = ""
 metadata/_custom_type_script = "uid://xwigw52i4m66"

@@ -527,7 +527,7 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2)
+                if (body is Enemy1 || body is Enemy2 || body is Boss)
                     initialTargets.Add(body);
             }
 
@@ -541,6 +541,11 @@ public partial class Pp : CharacterBody2D
                 {
                     GD.Print("Enemy2 touché !");
                     enemy2.TakeDamage(1);
+                }
+                else if (body is Boss boss)
+                {
+                    GD.Print("Enemy2 touché !");
+                    boss.TakeDamage(1);
                 }
             }
             if (bulletsFired >= maxBullets)

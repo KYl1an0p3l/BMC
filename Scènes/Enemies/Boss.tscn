@@ -46,7 +46,7 @@ MaxFallSpeed = 200.0
 ammo = ExtResource("2_cidk2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8)
+position = Vector2(-2.5, -8)
 shape = SubResource("RectangleShape2D_vai0k")
 
 [node name="RayLeft" type="RayCast2D" parent="."]
@@ -60,11 +60,11 @@ target_position = Vector2(32, 48)
 collision_mask = 5
 
 [node name="AttackLeft" type="RayCast2D" parent="."]
-target_position = Vector2(-500, 0)
+target_position = Vector2(-600, 0)
 collision_mask = 2
 
 [node name="AttackRight" type="RayCast2D" parent="."]
-target_position = Vector2(500, 0)
+target_position = Vector2(600, 0)
 collision_mask = 2
 
 [node name="DamageArea" type="Area2D" parent="."]
@@ -75,7 +75,7 @@ collision_mask = 2
 shape = SubResource("RectangleShape2D_udewm")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.8, 0.8)
+position = Vector2(5, -10)
 sprite_frames = SubResource("SpriteFrames_vai0k")
 animation = &"left"
-frame_progress = 0.92389
+frame_progress = 0.54467

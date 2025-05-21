@@ -130,3 +130,7 @@ abs={
 2d_physics/layer_2="Joueur"
 2d_physics/layer_3="Ennemi"
 2d_physics/layer_4="ZoneAtk"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

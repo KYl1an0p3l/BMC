@@ -1,9 +1,12 @@
 using Godot;
 using System;
+using System.Runtime.InteropServices;
 
 [Tool]
 [GlobalClass]
-public partial class TileData : Resource {
+
+public partial class TileData : Resource
+{
     [Export] public PackedScene Scene;
     [Export] public bool OpenTop;
     [Export] public bool OpenRight;

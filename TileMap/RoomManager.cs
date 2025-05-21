@@ -14,8 +14,13 @@ public partial class RoomManager : Node2D
     {
         _proc = GetNode<RoomGenerator>("RoomGenerator");
         // Charge la salle de départ (coord (0,0) dans WorldMap)
-        LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
+        CallDeferred("StartLoading");
         
+    }
+    private void StartLoading()
+    {
+        GD.Print("StartLoading called");
+        LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
     }
 
     public void OnPlayerExited(Vector2I exitDir)
@@ -59,10 +64,6 @@ public partial class RoomManager : Node2D
 
         var shapeNode = new CollisionShape2D();
         var rect = new RectangleShape2D();
-        // → Calcule ici la taille et la position de ton rect selon dir et tileSize
-        //    par exemple pour un bord vertical :
-        // rect.Size = new Vector2(16, tileSize.Y * roomHeight);
-        // shapeNode.Position = new Vector2(dir.X * tileSize.X * roomWidth/2, 0);
         if (name == "ExitRight" || name == "ExitLeft")
         {
             rect.Size = new Vector2(16, tileSize.Y * 10);

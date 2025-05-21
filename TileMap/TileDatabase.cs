@@ -3,15 +3,18 @@ using Godot;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
-public static class TileDatabase {
+public static class TileDatabase
+{
     public static TileData[] AllTiles { get; private set; }
-
-    public static void LoadAll() {
+    public static void LoadAll()
+    {
         var tileFolderPath = "res://TileMap/Tiles";
 
         var dir = DirAccess.Open(tileFolderPath);
-        if (dir == null) {
+        if (dir == null)
+        {
             GD.PrintErr($"Le dossier {tileFolderPath} est introuvable !");
             AllTiles = new TileData[0];
             return;
@@ -21,9 +24,11 @@ public static class TileDatabase {
 
         dir.ListDirBegin();
         string fileName;
-        while ((fileName = dir.GetNext()) != "") {
+        while ((fileName = dir.GetNext()) != "")
+        {
             if (dir.CurrentIsDir()) continue;
-            if (fileName.EndsWith(".tres")) {
+            if (fileName.EndsWith(".tres"))
+            {
                 var fullPath = $"{tileFolderPath}/{fileName}";
                 tilePaths.Add(fullPath);
             }
@@ -37,11 +42,18 @@ public static class TileDatabase {
     }
 
     // Filtre rapide par ouvertures :
-    public static TileData[] Filter(bool top, bool right, bool bottom, bool left) {
+    public static TileData[] Filter(bool top, bool right, bool bottom, bool left)
+    {
         return AllTiles.Where(td =>
-            td.OpenTop    == top    &&
-            td.OpenRight  == right  &&
+            td.OpenTop == top &&
+            td.OpenRight == right &&
             td.OpenBottom == bottom &&
+            td.OpenLeft == left
+        ).ToArray();
+    }
+    public static TileData[] Filter_Exit(bool top, bool right, bool bottom, bool left) {
+        return AllTiles.Where(td =>
+            td.OpenRight  == right  &&
             td.OpenLeft   == left
         ).ToArray();
     }

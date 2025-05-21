@@ -3,6 +3,7 @@ using Godot;
 using System;
 
 [Tool]
+[GlobalClass]
 public partial class WorldMap : Node
 {
 	/// La carte globale : 
@@ -11,8 +12,7 @@ public partial class WorldMap : Node
 	/// - tout autre string : nom de scène à charger (sans extension)
 	public static WorldMap Instance { get; private set; }
 
-	[Export] public Godot.Collections.Array<string> FlatMap;
-	[Export] public int MapWidth = 5;
+	[Export] public Godot.Collections.Array<Godot.Collections.Array<string>> FlatMap;
 
 	private string[,] _map;
 	private Vector2I _current;
@@ -24,25 +24,60 @@ public partial class WorldMap : Node
 	}
 	public override void _Ready()
 	{
+		if (FlatMap == null || FlatMap.Count == 0)
+		{
+			GD.Print("FlatMap n'est pas initialisé ou est vide !");
+			return;
+		}
 		Build2DMap();
 		// trouver automatiquement le "X" dans _map
 		for (int y = 0; y < _map.GetLength(1); y++)
+		{
 			for (int x = 0; x < _map.GetLength(0); x++)
+			{
 				if (_map[x, y] == "X")
+				{
 					_current = new Vector2I(x, y);
+					return;
+				}
+			}
+		}
+		GD.PrintErr("Aucune case 'X' trouvée dans la map !");
 	}
 
 	private void Build2DMap()
-	{
-		int w = MapWidth;
-		int h = FlatMap.Count / w;
-		_map = new string[w, h];
-		for (int i = 0; i < FlatMap.Count; i++)
-			_map[i % w, i / w] = FlatMap[i];
-	}
+    {
+        // nombre de lignes
+        int h = FlatMap.Count;
+        // nombre de colonnes (on suppose toutes lignes de même taille)
+        int w = FlatMap[0].Count;
+
+        _map = new string[w, h];
+
+        for (int y = 0; y < h; y++)
+        {
+            var row = FlatMap[y];
+            if (row == null || row.Count != w)
+            {
+                GD.PrintErr($"Ligne {y} de FlatMap est nulle ou de longueur différente !");
+                continue;
+            }
+
+            for (int x = 0; x < w; x++)
+            {
+                _map[x, y] = row[x];
+            }
+        }
+    }
 	public string Move(Vector2I dir)
 	{
-		if (_savedId == null)
+		if (_map == null)
+        {
+            GD.PrintErr("WorldMap : _map n'est pas encore construite !");
+            return null;
+        }
+
+		else if (_savedId == null)
 		{
 			_current = new Vector2I(0, 0);
 			_savedId = _map[_current.X, _current.Y];

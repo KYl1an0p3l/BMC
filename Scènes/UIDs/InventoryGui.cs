@@ -98,10 +98,10 @@ public partial class InventoryGui : Control
         insertItemInSlot(targetSlot);
         locked = false;
     }
-    public override void _Input(InputEvent @event)
+    public override async void _Input(InputEvent @event)
     {
         if(Input.IsActionJustPressed("rightClick") && !locked && itemInHand != null){
-            putItemBack();
+            await putItemBack();
         }
         UpdateItemInHand();
     }

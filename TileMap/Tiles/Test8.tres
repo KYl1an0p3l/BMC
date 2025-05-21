@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TileData" load_steps=3 format=3 uid="uid://twm73oq0dlvg"]
+
+[ext_resource type="PackedScene" uid="uid://c5a8002orflr5" path="res://TileMap/Tiles/Test_Tile_8.tscn" id="1_fng7h"]
+[ext_resource type="Script" uid="uid://d3kv5egy5h8qq" path="res://TileMap/TileData.cs" id="2_8idgg"]
+
+[resource]
+script = ExtResource("2_8idgg")
+Scene = ExtResource("1_fng7h")
+OpenTop = true
+OpenRight = true
+OpenBottom = false
+OpenLeft = true
+metadata/_custom_type_script = "uid://d3kv5egy5h8qq"

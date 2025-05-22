@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://k552l51latho"
-path="res://.godot/imported/slot.aseprite-da2941c7669be6c3f689fc04c588ef73.ctex"
+uid="uid://cg431tpk3dcu2"
+path="res://.godot/imported/player_walk.png-65bb8b5094f94c40d01872d0c195b78f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Texture/slot.aseprite"
-dest_files=["res://.godot/imported/slot.aseprite-da2941c7669be6c3f689fc04c588ef73.ctex"]
+source_file="res://Texture/player_walk.png"
+dest_files=["res://.godot/imported/player_walk.png-65bb8b5094f94c40d01872d0c195b78f.ctex"]
 
 [params]
 

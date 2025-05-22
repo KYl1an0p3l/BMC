@@ -66,6 +66,7 @@ public partial class Pp : CharacterBody2D
     public override void _Ready()
     {
         screenSize = GetViewportRect().Size;
+        AddToGroup("player");
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
@@ -92,18 +93,21 @@ public partial class Pp : CharacterBody2D
         zoneRifleAtkArea.Monitorable = true;
         zoneRifleSprite.Visible = true;
 
-        zone_get_rifle = GetNode<Area2D>("../rifleGet");
-        zone_get_rifle.BodyEntered += rifle_get;
+        if (GetParent().Name == "DevTestMap")
+        {
+            zone_get_rifle = GetNode<Area2D>("../rifleGet");
+        }
+        
 
         CollisionLayer = 1 << 1; // couche 2 : joueur
         CollisionMask = 1 << 0;  // couche 1 : sol
 
-        deadScreen = GetNode<DeadScreen>("../CanvasLayer/DeadScreen");
-        
-        inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
+        deadScreen = GetNode<DeadScreen>("CanvasLayer/DeadScreen"); 
+
+        inventory_ui = GetNode<InventoryGui>("CanvasLayer/InventoryGui");
 
         currentHealth = maxHealth;
-        heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
+        heartsContainer = GetNode<HealthBar>("CanvasLayer/HealthBar");
         ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
 
         reloadTimer = new Timer();
@@ -111,11 +115,13 @@ public partial class Pp : CharacterBody2D
         reloadTimer.OneShot = true;
         reloadTimer.WaitTime = 2.0f; // 2 secondes pour recharger
         reloadTimer.Timeout += OnReloadFinished;
-        
+
         parryArea = GetNode<Area2D>("Parry");
         parryShape = parryArea.GetNode<CollisionShape2D>("CollisionShape2D");
         parryArea.Monitoring = true;
         parryArea.Monitorable = true;
+
+        this.Name = "PP";
         
     }   
 
@@ -140,7 +146,6 @@ public partial class Pp : CharacterBody2D
             HandleAttack();
             Rifle(); 
             HandleParry();
-            dropAll();
         }
         HandleMovement(delta);
         HandleGravity(delta);
@@ -467,22 +472,6 @@ public partial class Pp : CharacterBody2D
                     return;
                 }
             }
-        }
-    }
-
-    private void rifle_get(Node body){
-        if(body == this){
-            GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
-            GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
-        }
-    }
-    
-
-    private void dropAll(){
-        if(Input.IsActionJustPressed("drop")){
-            RifleObj.ActionName = null;
-            GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
-            GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
         }
     }
 

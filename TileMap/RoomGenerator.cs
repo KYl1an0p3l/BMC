@@ -5,44 +5,43 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class RoomGenerator : Node2D {
-    [Export] public int Width = 10;
-    [Export] public int Height = 10;
+    [Export] public int Width = 6;
+    [Export] public int Height = 5;
 
     private TileData[,] grid;
     private Random _rnd = new Random();
+    public Vector2 EntryWorldPos { get; private set; }
 
-    public override void _Ready() {
+    public override void _Ready()
+    {
         TileDatabase.LoadAll();
     }
 
-    public Node2D Generate() {
-        // 1) cleanup
-        foreach (var c in GetChildren()) c.QueueFree();
+    public Node2D Generate()
+    {
+        var room = new Node2D();
         grid = new TileData[Width, Height];
 
-        // 2) choisissez vos positions d'entrée/sortie
         Vector2I start  = new Vector2I(0, _rnd.Next(Height));
         Vector2I finish = new Vector2I(Width - 1, _rnd.Next(Height));
 
-        // 3) creuse un chemin principal (DFS simple)
+        EntryWorldPos = (new Vector2(start.X, start.Y) + new Vector2(0.5f, 0.5f)) * TILE_SIZE;
+
         HashSet<Vector2I> path = CarveMainPath(start, finish);
-
-        // 4) Place les tuiles du chemin principal
         PlacePathTiles(path, start, finish);
-
-        // 5) remplissage progressif : BFS sur le chemin pour étendre au reste
         FloodFillFromPath(path);
 
-        // 6) instanciation visuelle
-        foreach (var pos in Iterate2D(Width, Height)) {
+        foreach (var pos in Iterate2D(Width, Height))
+        {
             var data = grid[pos.X, pos.Y];
             var inst = data.Scene.Instantiate<Node2D>();
             inst.Position = new Vector2(pos.X, pos.Y) * TILE_SIZE;
-            AddChild(inst);
+            room.AddChild(inst);
         }
 
-        return this;
+        return room;
     }
+
 
     // DFS récursif pour tracer un chemin simple de start à finish
     private HashSet<Vector2I> CarveMainPath(Vector2I start, Vector2I finish) {
@@ -88,17 +87,29 @@ public partial class RoomGenerator : Node2D {
             // sélectionner parmi les tiles qui ouvrent EXACTEMENT sur ces directions
             var candidates = TileDatabase.AllTiles
                 .Where(td =>
-                    // 1) connexion vers le chemin (ou parent dans le flood)
+                    // 1) connexions requises pour suivre le chemin
                     (!up    || td.OpenTop)    &&
                     (!down  || td.OpenBottom) &&
                     (!left  || td.OpenLeft)   &&
                     (!right || td.OpenRight)
-                    // 2) pas de trou sur l’extérieur,
-                //    sauf si start/finish autorisent la sortie
-                && (td.OpenLeft   ? (hasLeft   || isStart)  : true)
-                && (td.OpenRight  ? (hasRight  || isFinish) : true)
-                && (!td.OpenTop    || hasTop)
-                && (!td.OpenBottom || hasBottom)
+
+                    // 2) aucune ouverture vers l’extérieur, sauf exception entrée/sortie
+                    && (td.OpenLeft   ? (hasLeft   || isStart)  : true)
+                    && (td.OpenRight  ? (hasRight  || isFinish) : true)
+                    && (!td.OpenTop    || hasTop)
+                    && (!td.OpenBottom || hasBottom)
+
+                    // 3) entrée : DOIT avoir OpenLeft ET au moins une autre ouverture (haut/bas/droite)
+                    && (!isStart || (
+                        td.OpenLeft &&
+                        (td.OpenTop || td.OpenBottom || td.OpenRight)
+                    ))
+
+                    // 4) sortie : DOIT avoir OpenRight ET au moins une autre ouverture (haut/bas/gauche)
+                    && (!isFinish || (
+                        td.OpenRight &&
+                        (td.OpenTop || td.OpenBottom || td.OpenLeft)
+                    ))
                 )
                 .ToArray();
             if (candidates.Length == 0)
@@ -134,17 +145,39 @@ public partial class RoomGenerator : Node2D {
                     // on ne se préoccupe pas des autres côtés (les laisse libres)
                     var candidates = TileDatabase.AllTiles
                         .Where(td =>
-                            // 1) connexion vers le chemin (ou parent dans le flood)
+                            // 1) connexion vers le parent/chemin
                             (!up || td.OpenTop) &&
                             (!down || td.OpenBottom) &&
                             (!left || td.OpenLeft) &&
                             (!right || td.OpenRight)
 
-                        // 2) aucun trou vers l’extérieur
-                        && (!td.OpenLeft || hasLeftN)
-                        && (!td.OpenRight || hasRightN)
-                        && (!td.OpenTop || hasTopN)
-                        && (!td.OpenBottom || hasBottomN)
+                            // 2) aucun trou vers l’extérieur
+                            && (!td.OpenLeft || hasLeftN)
+                            && (!td.OpenRight || hasRightN)
+                            && (!td.OpenTop || hasTopN)
+                            && (!td.OpenBottom || hasBottomN)
+
+                            // 3) ne pas bloquer les ouvertures déjà existantes de ses voisins
+                            && (
+                                // voisin haut
+                                !IsInBounds(nxt.X, nxt.Y - 1) || grid[nxt.X, nxt.Y - 1] == null || 
+                                !grid[nxt.X, nxt.Y - 1].OpenBottom || td.OpenTop
+                            )
+                            && (
+                                // voisin bas
+                                !IsInBounds(nxt.X, nxt.Y + 1) || grid[nxt.X, nxt.Y + 1] == null || 
+                                !grid[nxt.X, nxt.Y + 1].OpenTop || td.OpenBottom
+                            )
+                            && (
+                                // voisin gauche
+                                !IsInBounds(nxt.X - 1, nxt.Y) || grid[nxt.X - 1, nxt.Y] == null || 
+                                !grid[nxt.X - 1, nxt.Y].OpenRight || td.OpenLeft
+                            )
+                            && (
+                                // voisin droit
+                                !IsInBounds(nxt.X + 1, nxt.Y) || grid[nxt.X + 1, nxt.Y] == null || 
+                                !grid[nxt.X + 1, nxt.Y].OpenLeft || td.OpenRight
+                            )
                         )
                         .ToArray();
                     if (candidates.Length == 0)
@@ -164,5 +197,9 @@ public partial class RoomGenerator : Node2D {
     private IEnumerable<Vector2I> Iterate2D(int w,int h) {
         for(int x=0;x<w;x++)for(int y=0;y<h;y++)yield return new Vector2I(x,y);
     }
+
+    private bool IsInBounds(int x, int y) =>
+        x >= 0 && y >= 0 && x < Width && y < Height;
+
     private const int TILE_SIZE = 200;
 }

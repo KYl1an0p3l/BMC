@@ -9,18 +9,24 @@ public partial class RoomManager : Node2D
 
     private RoomGenerator _proc;   // votre générateur semi‐procédural
     private Node2D _currentRoom;
+    private CharacterBody2D _player;
 
     public override void _Ready()
     {
         _proc = GetNode<RoomGenerator>("RoomGenerator");
-        // Charge la salle de départ (coord (0,0) dans WorldMap)
-        CallDeferred("StartLoading");
         
+        // Charge la salle de départ (coord (0,0) dans WorldMap)
+
+        CallDeferred("StartLoading");
+
     }
     private void StartLoading()
     {
+
         GD.Print("StartLoading called");
         LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
+        _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+        
     }
 
     public void OnPlayerExited(Vector2I exitDir)
@@ -40,42 +46,77 @@ public partial class RoomManager : Node2D
         if (roomId == "P")
         {
             _currentRoom = _proc.Generate();
+            AddChild(_currentRoom);
+            if (_player.GetParent() != _currentRoom)
+            {
+                GD.Print("Ajout du joueur à la salle procédurale");
+                _player.GetParent()?.RemoveChild(_player);
+                var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
+                _player = playerScene.Instantiate<CharacterBody2D>();
+                _currentRoom.CallDeferred("add_child",_player);
+                _player.GlobalPosition = _proc.EntryWorldPos;
+                GD.Print($"Position du joueur : {_player.GlobalPosition}");
+
+            }
+            
         }
         else
         {
             // Salle custom : charger la scène correspondante
             var scene = GD.Load<PackedScene>($"res://TileMap/Rooms/{roomId}.tscn");
             _currentRoom = scene.Instantiate<Node2D>();
+            AddChild(_currentRoom);
+            if (roomId == "dev")
+            {
+                _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+            }
+            else if (_player.GetParent() != _currentRoom)
+            {
+                GD.Print("Ajout du joueur à la salle procédurale");
+                _player.GetParent()?.RemoveChild(_player);
+                var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
+                _player = playerScene.Instantiate<CharacterBody2D>();
+                _currentRoom.CallDeferred("add_child",_player);
+                _player.GlobalPosition = _proc.EntryWorldPos;
+                GD.Print($"Position du joueur : {_player.GlobalPosition}");
+
+            }
+
         }
 
-        AddChild(_currentRoom);
-
         // Crée dynamiquement les 4 sorties
-        CreateExitArea("ExitTop", new Vector2(0, 0));
+        CreateExitArea("ExitTop", new Vector2(0, -1));
         CreateExitArea("ExitRight", new Vector2(1, 0));
         CreateExitArea("ExitBottom", new Vector2(0, 1));
-        CreateExitArea("ExitLeft", new Vector2(0, 0));
+        CreateExitArea("ExitLeft", new Vector2(-1, 0));
     }
 
     private void CreateExitArea(string name, Vector2 dir)
     {
         var area = new ExitArea {Name = name, ExitDir = new Vector2I((int)dir.X, (int)dir.Y) };
-        _currentRoom.AddChild(area);
+        area.SetPlayer(_player);
+        _currentRoom.CallDeferred("add_child", area);
+
+        if (name == "ExitTop") { dir.Y = 0; }
+        else if (name == "ExitLeft") { dir.X = 0; }
 
         var shapeNode = new CollisionShape2D();
         var rect = new RectangleShape2D();
         if (name == "ExitRight" || name == "ExitLeft")
         {
-            rect.Size = new Vector2(16, tileSize.Y * 10);
-            shapeNode.Position = new Vector2(dir.X * tileSize.X * 10, 0);
+            rect.Size = new Vector2(16, ((tileSize.Y * _proc.Height)*2));
+            shapeNode.Position = new Vector2(dir.X * tileSize.X * _proc.Width - (8 + (-16*dir.X)), 0);
         }
         else if (name == "ExitTop" || name == "ExitBottom")
         {
-             rect.Size = new Vector2(tileSize.X * 10, 16);
-            shapeNode.Position = new Vector2(0, dir.Y * tileSize.Y * 10);
+             rect.Size = new Vector2(((tileSize.X * _proc.Width)*2), 16);
+            shapeNode.Position = new Vector2(0, dir.Y * tileSize.Y * _proc.Height - (8 + (-16*dir.Y)));
         }
 
+        if(name == "ExitTop"){ dir.Y = -1; }
+        else if (name == "ExitLeft"){ dir.X = -1; }
+
         shapeNode.Shape = rect;
-        area.AddChild(shapeNode);
+        area.CallDeferred("add_child", shapeNode);
     }
 }

@@ -8,3 +8,4 @@
 [node name="RoomManager" parent="." instance=ExtResource("2_nc1n8")]
 
 [node name="WorldMap" parent="." instance=ExtResource("1_klkiu")]
+FlatMap = Array[Array]([["dev", "P", "P"]])

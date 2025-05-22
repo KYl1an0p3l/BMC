@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://djioew0sccdoh"]
+[gd_scene load_steps=11 format=3 uid="uid://djioew0sccdoh"]
 
 [ext_resource type="Script" uid="uid://bleerx3ti1b8s" path="res://Scènes/Enemies/Boss.cs" id="1_vai0k"]
 [ext_resource type="Texture2D" uid="uid://vb777yxn7pi6" path="res://Texture/boss.png" id="1_vanue"]
@@ -36,6 +36,12 @@ animations = [{
 "name": &"right",
 "speed": 5.0
 }]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cidk2"]
+bg_color = Color(0.20871, 0.20871, 0.20871, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2g8js"]
+bg_color = Color(1, 0, 0, 1)
 
 [node name="Boss" type="CharacterBody2D"]
 scale = Vector2(0.8, 0.8)
@@ -78,4 +84,14 @@ shape = SubResource("RectangleShape2D_udewm")
 position = Vector2(5, -10)
 sprite_frames = SubResource("SpriteFrames_vai0k")
 animation = &"left"
-frame_progress = 0.0184296
+frame_progress = 0.764494
+
+[node name="BossBar" type="ProgressBar" parent="."]
+offset_left = -90.0
+offset_top = 106.0
+offset_right = 90.0
+offset_bottom = 136.0
+theme_override_styles/background = SubResource("StyleBoxFlat_cidk2")
+theme_override_styles/fill = SubResource("StyleBoxFlat_2g8js")
+max_value = 30.0
+show_percentage = false

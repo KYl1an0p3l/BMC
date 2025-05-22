@@ -82,6 +82,9 @@ public partial class Pp : CharacterBody2D
     InventoryItems ScythObj, RifleObj;
     public override void _Ready()
     {
+        var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
+        reloadSprite.Stop();                // Arrête l'animation
+        reloadSprite.Visible = false;       // Cache le sprite
         screenSize = GetViewportRect().Size;
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
@@ -551,6 +554,11 @@ public partial class Pp : CharacterBody2D
             if (bulletsFired >= maxBullets)
             {
                 isReloading = true;
+
+                var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite"); // reload
+                reloadSprite.Visible = true;
+                reloadSprite.Play("reload");
+
                 reloadTimer.Start();
             }
             var disableTimer = GetTree().CreateTimer(0.3f);
@@ -652,5 +660,8 @@ public partial class Pp : CharacterBody2D
     {
         bulletsFired = 0;
         isReloading = false;
+        var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
+        reloadSprite.Stop();                // Arrête l'animation
+        reloadSprite.Visible = false;       // Cache le sprite
     }
 }

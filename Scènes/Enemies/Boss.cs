@@ -9,6 +9,7 @@ public partial class Boss : CharacterBody2D
     [Export] public float MaxFallSpeed = 400f;
     [Export] public PackedScene ammo;
 
+    private int maxHealth;
     private Vector2 _velocity = Vector2.Zero;
     private Vector2 direction = Vector2.Left;
     private AnimatedSprite2D Sprite;
@@ -16,6 +17,7 @@ public partial class Boss : CharacterBody2D
     private RayCast2D rayRight;
     private RayCast2D attackLeft;
     private RayCast2D attackRight;
+    private ProgressBar bossBar;
 
     private Pp overlappingPlayer = null;
     private bool isMoving = true;
@@ -29,11 +31,17 @@ public partial class Boss : CharacterBody2D
 
     public override void _Ready()
     {
+        maxHealth = Health;
+
         Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         rayLeft = GetNode<RayCast2D>("RayLeft");
         rayRight = GetNode<RayCast2D>("RayRight");
         attackLeft = GetNode<RayCast2D>("AttackLeft");
         attackRight = GetNode<RayCast2D>("AttackRight");
+        bossBar = GetNode<ProgressBar>("BossBar");
+
+        bossBar.MaxValue = maxHealth;
+        bossBar.Value = Health;
 
         var damageArea = GetNode<Area2D>("DamageArea");
         damageArea.BodyEntered += OnBodyEntered;
@@ -68,7 +76,6 @@ public partial class Boss : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        // Gravité avec ralentissement au sommet du saut
         if (isJumping && _velocity.Y < jumpSlowdownThreshold)
         {
             _velocity.Y += (Gravity * 0.3f) * (float)delta;
@@ -83,7 +90,7 @@ public partial class Boss : CharacterBody2D
 
         if (IsOnFloor())
             isJumping = false;
-        
+
         rayLeft.Enabled = !isJumping;
         rayRight.Enabled = !isJumping;
 
@@ -102,7 +109,6 @@ public partial class Boss : CharacterBody2D
                 Sprite.Play("right");
         }
 
-        
         if (isMoving)
         {
             if (direction == Vector2.Left && !rayLeft.IsColliding())
@@ -110,7 +116,6 @@ public partial class Boss : CharacterBody2D
             else if (direction == Vector2.Right && !rayRight.IsColliding())
                 direction = Vector2.Left;
         }
-
 
         if (canShoot)
         {
@@ -161,7 +166,7 @@ public partial class Boss : CharacterBody2D
     private void StartJumpTimer()
     {
         var random = new Random();
-        float waitTime = (float)(random.NextDouble() * 15.0 + 5.0); // entre 5 et 20 secondes
+        float waitTime = (float)(random.NextDouble() * 15.0 + 5.0);
         jumpTimer.WaitTime = waitTime;
         jumpTimer.Start();
     }
@@ -194,6 +199,8 @@ public partial class Boss : CharacterBody2D
     {
         Health -= amount;
         GD.Print($"Vie restante de l'ennemi : {Health}");
+        bossBar.Value = Health;
+
         if (Health <= 0)
             QueueFree();
     }

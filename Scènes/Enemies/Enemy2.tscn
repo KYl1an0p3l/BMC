@@ -89,7 +89,7 @@ ammo = ExtResource("2_6lnd1")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_l35c4")
 animation = &"left"
-frame_progress = 0.832688
+frame_progress = 0.135505
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 collision_mask = 3

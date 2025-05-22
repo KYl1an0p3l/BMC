@@ -5,11 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
-[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
 [ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
 [ext_resource type="PackedScene" uid="uid://cw260pjs1rxq4" path="res://Scènes/UIDs/hotbar.tscn" id="8_i721l"]
 [ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_kddde"]
 [ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
+[ext_resource type="PackedScene" uid="uid://djioew0sccdoh" path="res://Scènes/Enemies/Boss.tscn" id="10_kddde"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -57,5 +57,5 @@ offset_bottom = 17.0
 grow_vertical = 0
 scale = Vector2(0.85, 0.85)
 
-[node name="Enemy1" parent="." instance=ExtResource("5_th3oj")]
-position = Vector2(844, 542)
+[node name="Boss" parent="." instance=ExtResource("10_kddde")]
+position = Vector2(866, 482)

@@ -33,6 +33,13 @@ public partial class Pp : CharacterBody2D
     private int jumpCount = 0;
     [Export] private int maxJumps = 2;
 
+    private int healsalle = 3; 
+    private float hKeyHoldTime = 0f;
+    private float healInterval = 1f;   //heal
+    private float healTimer = 0f;
+    private bool isHealingActive = false;
+    private bool bloquer_actions=false;
+
     [Export] private float dashSpeed = 800f; 
     [Export] private float dashDuration = 0.2f;
     [Export] private float dashCooldown = 0.5f;
@@ -80,11 +87,17 @@ public partial class Pp : CharacterBody2D
     [Export] private Inventory inventory;
     private InventoryGui inventory_ui;
     InventoryItems ScythObj, RifleObj;
+    
     public override void _Ready()
     {
+
+        RichTextLabel richText = GetNode<RichTextLabel>("UI/heal");
+        richText.ParseBbcode("[color=orange][font_size=24]HEALS LEFT :[/font_size][/color] [color=white][font_size=24]" + healsalle.ToString() + "[/font_size][/color]");
+
         var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
         reloadSprite.Stop();                // Arrête l'animation
         reloadSprite.Visible = false;       // Cache le sprite
+
         screenSize = GetViewportRect().Size;
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
@@ -117,8 +130,9 @@ public partial class Pp : CharacterBody2D
         CollisionMask = 1 << 0;  // couche 1 : sol
 
         deadScreen = GetNode<DeadScreen>("../CanvasLayer/DeadScreen");
-        
+
         inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
+
 
         currentHealth = maxHealth;
         healthBar = GetNode<HealthBar>("../CanvasLayer/HealthBar");
@@ -130,12 +144,12 @@ public partial class Pp : CharacterBody2D
         reloadTimer.OneShot = true;
         reloadTimer.WaitTime = 2.0f; // 2 secondes pour recharger
         reloadTimer.Timeout += OnReloadFinished;
-        
+
         parryArea = GetNode<Area2D>("Parry");
         parryShape = parryArea.GetNode<CollisionShape2D>("CollisionShape2D");
         parryArea.Monitoring = true;
         parryArea.Monitorable = true;
-        
+
     }   
 
 
@@ -153,7 +167,7 @@ public partial class Pp : CharacterBody2D
         if (dashCooldownTimer > 0)
             dashCooldownTimer -= (float)delta;
 
-        if (isDashing)
+        if (isDashing && !bloquer_actions)
         {
             dashTimer -= (float)delta;
             if (dashTimer <= 0)
@@ -168,7 +182,7 @@ public partial class Pp : CharacterBody2D
                 return; // Empêche les autres actions pendant le dash
             }
         }
-        else if (Input.IsKeyPressed(Key.F) && dashCooldownTimer <= 0)//touche f 
+        else if (Input.IsActionJustPressed("F") && dashCooldownTimer <= 0 && !bloquer_actions)//touche f 
         {
             isDashing = true;
             dashTimer = dashDuration;
@@ -180,6 +194,43 @@ public partial class Pp : CharacterBody2D
                 dashDirection = Vector2.Right;
             else
                 dashDirection = LookingLeft ? Vector2.Left : Vector2.Right;
+        }
+        if (Input.IsActionPressed("H") && IsOnFloor() && healsalle >= 1 && currentHealth <= maxHealth - 1){
+
+            hKeyHoldTime += (float)delta;
+            bloquer_actions=true;
+            if (hKeyHoldTime >= 1.0f)
+            {
+                isHealingActive = true;
+                healTimer += (float)delta;
+                if (healTimer >= healInterval){
+
+
+                    currentHealth = Mathf.Min(currentHealth + 1, maxHealth);
+                    healsalle -= 1;
+                    GetNode<RichTextLabel>("UI/heal").ParseBbcode("[color=orange][font_size=24]HEALS LEFT : [/font_size][/color] [color=white][font_size=24]" + healsalle.ToString() + "[/font_size][/color]");
+                    GD.Print("vie_salle: ", healsalle);
+                    healthBar.UpdateHearts(currentHealth);
+                    healTimer = 0f;
+
+                    if (healsalle < 1 || currentHealth >= maxHealth)
+                    {
+                        isHealingActive = false;
+                        bloquer_actions=false;
+                    }
+                }
+            }
+        }
+        else {
+
+
+            hKeyHoldTime = 0f;
+            healTimer = 0f;
+            isHealingActive = false;
+            bloquer_actions=false;
+
+
+
         }
 
         velocity = new Vector2();

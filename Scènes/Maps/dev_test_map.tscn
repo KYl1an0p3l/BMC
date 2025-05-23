@@ -16,6 +16,7 @@ script = ExtResource("1_th3oj")
 
 [node name="PP" parent="." groups=["player"] instance=ExtResource("1_5o6mk")]
 position = Vector2(159, 256)
+maxHealth = 5
 
 [node name="DevGround" parent="." instance=ExtResource("2_qqe0n")]
 position = Vector2(123, 175)

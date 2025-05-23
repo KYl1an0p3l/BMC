@@ -12,9 +12,6 @@ public partial class HealthBar : HBoxContainer
     public Texture2D HeartFullTexture { get; set; }
 
     [Export]
-    public Texture2D HeartHalfTexture { get; set; }
-
-    [Export]
     public Texture2D HeartEmptyTexture { get; set; }
 
     public void UpdateHearts(int currentHealth)
@@ -27,21 +24,15 @@ public partial class HealthBar : HBoxContainer
             return;
         }
 
-        int fullHearts = currentHealth / 2;
-        bool hasHalfHeart = currentHealth % 2 == 1;
-        int totalHearts = (maxHearts + 1) / 2; // chaque cœur = 2 PV
+        int totalHearts = maxHearts; // 1 cœur = 1 PV
+        int fullHearts = currentHealth;
 
         for (int i = 0; i < totalHearts; i++)
         {
             Node heartInstance = HeartScene.Instantiate();
             if (heartInstance is Panel panel && panel.GetNodeOrNull<Sprite2D>("Sprite2D") is Sprite2D sprite)
             {
-                if (i < fullHearts)
-                    sprite.Texture = HeartFullTexture;
-                else if (i == fullHearts && hasHalfHeart)
-                    sprite.Texture = HeartHalfTexture;
-                else
-                    sprite.Texture = HeartEmptyTexture;
+                sprite.Texture = (i < fullHearts) ? HeartFullTexture : HeartEmptyTexture;
             }
             AddChild(heartInstance);
         }

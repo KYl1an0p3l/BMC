@@ -10,7 +10,8 @@ public partial class RoomGenerator : Node2D {
 
     private TileData[,] grid;
     private Random _rnd = new Random();
-    public Vector2 EntryWorldPos { get; private set; }
+    public Vector2 VEntryWorldPos { get; private set; }
+    public Vector2 VEndWorldPos { get; private set; }
 
     public override void _Ready()
     {
@@ -25,7 +26,8 @@ public partial class RoomGenerator : Node2D {
         Vector2I start  = new Vector2I(0, _rnd.Next(Height));
         Vector2I finish = new Vector2I(Width - 1, _rnd.Next(Height));
 
-        EntryWorldPos = (new Vector2(start.X, start.Y) + new Vector2(0.5f, 0.5f)) * TILE_SIZE;
+        VEntryWorldPos = (new Vector2(start.X, start.Y) + new Vector2(0.5f, 0.5f)) * TILE_SIZE;
+        VEndWorldPos = (new Vector2(finish.X, finish.Y) + new Vector2(0.5f, 0.5f)) * TILE_SIZE;
 
         HashSet<Vector2I> path = CarveMainPath(start, finish);
         PlacePathTiles(path, start, finish);

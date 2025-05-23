@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://rl66xgvjto6r"]
+[gd_scene load_steps=13 format=3 uid="uid://rl66xgvjto6r"]
 
 [ext_resource type="PackedScene" uid="uid://dm7x7l6f8rjjw" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
@@ -9,7 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://cw260pjs1rxq4" path="res://Scènes/UIDs/hotbar.tscn" id="8_i721l"]
 [ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_kddde"]
 [ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
+[ext_resource type="PackedScene" uid="uid://dyhmmc6fv7wpw" path="res://Scènes/UIDs/DialogueBox.tscn" id="10_i721l"]
 [ext_resource type="PackedScene" uid="uid://djioew0sccdoh" path="res://Scènes/Enemies/Boss.tscn" id="10_kddde"]
+[ext_resource type="PackedScene" uid="uid://dur4gk3assrnd" path="res://Scènes/Characters/pnj.tscn" id="12_5rd1r"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
@@ -25,6 +27,8 @@ position = Vector2(123, 175)
 position = Vector2(4, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="DialogueBox" parent="CanvasLayer" instance=ExtResource("10_i721l")]
 
 [node name="DeadScreen" parent="CanvasLayer" instance=ExtResource("6_0r5kt")]
 
@@ -60,3 +64,6 @@ scale = Vector2(0.85, 0.85)
 
 [node name="Boss" parent="." instance=ExtResource("10_kddde")]
 position = Vector2(866, 482)
+
+[node name="PNJ" parent="." instance=ExtResource("12_5rd1r")]
+position = Vector2(999, 525)

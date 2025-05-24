@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://hbkda834us1g"]
+[gd_scene load_steps=20 format=3 uid="uid://hbkda834us1g"]
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
 [ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
+[ext_resource type="Resource" uid="uid://c010tpdy07x58" path="res://Scènes/Enemies/Enemy1.tres" id="2_mwefl"]
 [ext_resource type="AudioStream" uid="uid://bc6tbg6on6xkk" path="res://Texture/sound1.mp3" id="3_aiow1"]
 [ext_resource type="AudioStream" uid="uid://cr6nkuq63j8dj" path="res://Texture/sound2.mp3" id="4_y0o3x"]
 [ext_resource type="AudioStream" uid="uid://2wovh8l5vc83" path="res://Texture/sound3.mp3" id="5_mwefl"]
@@ -108,6 +109,7 @@ points = PackedVector2Array(44, -7, 56, 35, -52, 35, -51, 11, -12, -33, 28, -28)
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("1_80chd")
+ennemy = ExtResource("2_mwefl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(3, -4)

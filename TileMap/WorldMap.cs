@@ -42,7 +42,7 @@ public partial class WorldMap : Node
 				}
 			}
 		}
-		GD.PrintErr("Aucune case 'X' trouvée dans la map !");
+		GD.Print("Aucune case 'X' trouvée dans la map !");
 	}
 
 	private void Build2DMap()

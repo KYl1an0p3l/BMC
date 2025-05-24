@@ -3,8 +3,7 @@ using System;
 
 public partial class Enemy2 : CharacterBody2D
 {
-    [Export] public float MoveSpeed = 100f;
-    [Export] public int Health = 4;
+    [Export] private Ennemies ennemy;
     [Export] public NodePath PlayerPath;
     [Export] public PackedScene ammo;
     [Export] public NodePath LeftLimitPath;
@@ -42,7 +41,7 @@ public partial class Enemy2 : CharacterBody2D
         Aim();
         CheckPlayerCollision();
 
-        velocity.X = MoveSpeed * direction;
+        velocity.X = ennemy.Speed * direction;
         Velocity = velocity;
         MoveAndSlide();
 
@@ -112,9 +111,9 @@ public partial class Enemy2 : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        Health -= amount;
-        GD.Print($"Enemy2 touché ! Vie restante : {Health}");
-        if (Health <= 0)
+        ennemy.Health -= amount;
+        GD.Print($"Enemy2 touché ! Vie restante : {ennemy.Health}");
+        if (ennemy.Health <= 0)
         {
             QueueFree();
         }

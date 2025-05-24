@@ -1,6 +1,6 @@
 [gd_scene load_steps=67 format=3 uid="uid://dm7x7l6f8rjjw"]
 
-[ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
+[ext_resource type="Script" uid="uid://ddel2hkbdg4jg" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://c5mdfhebj6pqr" path="res://Texture/player_scythe_attack.png" id="2_gccba"]
 [ext_resource type="Texture2D" uid="uid://cewq7s1gbpa67" path="res://Texture/down_atk.png" id="3_d2t0o"]
 [ext_resource type="Texture2D" uid="uid://cg431tpk3dcu2" path="res://Texture/player_walk.png" id="4_d2t0o"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="10_l4gky"]
 [ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="11_tl5ko"]
 [ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="12_8a2x4"]
-[ext_resource type="PackedScene" uid="uid://cw260pjs1rxq4" path="res://Scènes/UIDs/hotbar.tscn" id="13_ssi71"]
+[ext_resource type="PackedScene" uid="uid://dwb18l37rro65" path="res://Scènes/UIDs/hotbaR.tscn" id="13_ssi71"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v8d1e"]
 size = Vector2(55, 110)

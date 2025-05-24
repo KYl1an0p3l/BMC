@@ -3,15 +3,10 @@ using System;
 
 public partial class Boss : CharacterBody2D
 {
-    [Export] public int Health = 6;
-    [Export] public float Speed = 200f;
-    [Export] public float Gravity = 800f;
-    [Export] public float MaxFallSpeed = 400f;
+    [Export] private Ennemies boss;
     [Export] public PackedScene ammo;
 
     private int maxHealth;
-    private Vector2 _velocity = Vector2.Zero;
-    private Vector2 direction = Vector2.Left;
     private AnimatedSprite2D Sprite;
     private RayCast2D rayLeft;
     private RayCast2D rayRight;
@@ -20,7 +15,6 @@ public partial class Boss : CharacterBody2D
     private ProgressBar bossBar;
 
     private Pp overlappingPlayer = null;
-    private bool isMoving = true;
     private Timer shootCooldownTimer;
     private bool canShoot = true;
 
@@ -31,7 +25,7 @@ public partial class Boss : CharacterBody2D
 
     public override void _Ready()
     {
-        maxHealth = Health;
+        maxHealth = boss.Health;
 
         Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         rayLeft = GetNode<RayCast2D>("RayLeft");
@@ -41,7 +35,7 @@ public partial class Boss : CharacterBody2D
         bossBar = GetNode<ProgressBar>("BossBar");
 
         bossBar.MaxValue = maxHealth;
-        bossBar.Value = Health;
+        bossBar.Value = boss.Health;
 
         var damageArea = GetNode<Area2D>("DamageArea");
         damageArea.BodyEntered += OnBodyEntered;
@@ -76,17 +70,17 @@ public partial class Boss : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (isJumping && _velocity.Y < jumpSlowdownThreshold)
+        if (isJumping && boss._velocity.Y < jumpSlowdownThreshold)
         {
-            _velocity.Y += (Gravity * 0.3f) * (float)delta;
+            boss._velocity.Y += (boss.Gravity * 0.3f) * (float)delta;
         }
         else
         {
-            _velocity.Y += Gravity * (float)delta;
+            boss._velocity.Y += boss.Gravity * (float)delta;
         }
 
-        if (_velocity.Y > MaxFallSpeed)
-            _velocity.Y = MaxFallSpeed;
+        if (boss._velocity.Y > boss.MaxFallSpeed)
+            boss._velocity.Y = boss.MaxFallSpeed;
 
         if (IsOnFloor())
             isJumping = false;
@@ -94,11 +88,11 @@ public partial class Boss : CharacterBody2D
         rayLeft.Enabled = !isJumping;
         rayRight.Enabled = !isJumping;
 
-        _velocity.X = isMoving ? direction.X * Speed : 0f;
-        Velocity = _velocity;
+        boss._velocity.X = boss.isMoving ? boss.direction.X * boss.Speed : 0f;
+        Velocity = boss._velocity;
         MoveAndSlide();
         Position = new Vector2(Mathf.Round(Position.X), Mathf.Round(Position.Y));
-        _velocity = Velocity;
+        boss._velocity = Velocity;
 
         var player = GetTree().GetFirstNodeInGroup("player") as Pp;
         if (player != null)
@@ -109,12 +103,12 @@ public partial class Boss : CharacterBody2D
                 Sprite.Play("right");
         }
 
-        if (isMoving)
+        if (boss.isMoving)
         {
-            if (direction == Vector2.Left && !rayLeft.IsColliding())
-                direction = Vector2.Right;
-            else if (direction == Vector2.Right && !rayRight.IsColliding())
-                direction = Vector2.Left;
+            if (boss.direction == Vector2.Left && !rayLeft.IsColliding())
+                boss.direction = Vector2.Right;
+            else if (boss.direction == Vector2.Right && !rayRight.IsColliding())
+                boss.direction = Vector2.Left;
         }
 
         if (canShoot)
@@ -158,7 +152,7 @@ public partial class Boss : CharacterBody2D
     {
         if (IsOnFloor())
         {
-            _velocity.Y = jumpSpeed;
+            boss._velocity.Y = jumpSpeed;
             isJumping = true;
         }
     }
@@ -197,11 +191,11 @@ public partial class Boss : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        Health -= amount;
-        GD.Print($"Vie restante de l'ennemi : {Health}");
-        bossBar.Value = Health;
+        boss.Health -= amount;
+        GD.Print($"Vie restante de l'ennemi : {boss.Health}");
+        bossBar.Value = boss.Health;
 
-        if (Health <= 0)
+        if (boss.Health <= 0)
             QueueFree();
     }
 }

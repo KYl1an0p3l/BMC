@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://djioew0sccdoh"]
+[gd_scene load_steps=12 format=3 uid="uid://djioew0sccdoh"]
 
 [ext_resource type="Script" uid="uid://bleerx3ti1b8s" path="res://Scènes/Enemies/Boss.cs" id="1_vai0k"]
 [ext_resource type="Texture2D" uid="uid://vb777yxn7pi6" path="res://Texture/boss.png" id="1_vanue"]
+[ext_resource type="Resource" uid="uid://b2mvu7oscbgii" path="res://Scènes/Enemies/boss1.tres" id="2_2g8js"]
 [ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_cidk2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vai0k"]
@@ -47,8 +48,7 @@ bg_color = Color(1, 0, 0, 1)
 scale = Vector2(0.8, 0.8)
 collision_layer = 4
 script = ExtResource("1_vai0k")
-Health = 30
-MaxFallSpeed = 200.0
+boss = ExtResource("2_2g8js")
 ammo = ExtResource("2_cidk2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

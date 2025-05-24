@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Ennemies" load_steps=2 format=3 uid="uid://c010tpdy07x58"]
+
+[ext_resource type="Script" uid="uid://41jdau841x4a" path="res://Scènes/Enemies/Ennemies.cs" id="1_jxljt"]
+
+[resource]
+script = ExtResource("1_jxljt")
+Health = 6
+Speed = 200.0
+Gravity = 800.0
+MaxFallSpeed = 400.0
+_velocity = Vector2(0, 0)
+direction = Vector2(-1, 0)
+isMoving = true
+metadata/_custom_type_script = "uid://41jdau841x4a"

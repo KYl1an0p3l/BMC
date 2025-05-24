@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_wxeqi"]
 
 [node name="TestTile3" type="Node2D"]
+visibility_layer = 4
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(200, 200)

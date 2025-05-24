@@ -20,9 +20,13 @@ public partial class Enemy2 : CharacterBody2D
 
     public override void _Ready()
     {
+        var players = GetTree().GetNodesInGroup("player");
+        if (players.Count > 0 && players[0] is Pp player)
+        {
+            _player = player;
+        }
         _rayCast = GetNode<RayCast2D>("RayCast2D");
         _timer = GetNode<Timer>("Timer");
-        _player = GetNode<Pp>("../../PP");
 
         _timer.Timeout += OnTimerTimeout;
 

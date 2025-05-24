@@ -1,14 +1,18 @@
 // RoomManager.cs
 using Godot;
 using System;
+using System.Linq;
 
 public partial class RoomManager : Node2D
 {
+    [Export]
+    public Godot.Collections.Array<PackedScene> EnemiesCollection;
     [Export] private NodePath playerPath;
     [Export] private Vector2 tileSize = new Vector2(200, 200);
 
     private RoomGenerator _proc;   // votre générateur semi‐procédural
     private Node2D _currentRoom;
+    private Random _random;
     private CharacterBody2D _player;
     private Vector2I exitTaken;
 
@@ -47,8 +51,36 @@ public partial class RoomManager : Node2D
     {
         if (roomId == "P")
         {
+            _random = new Random();
             _currentRoom = _proc.Generate();
-            AddChild(_currentRoom);
+            var children = _currentRoom.GetChildren();
+            int countToPick = GD.RandRange(1, 3);
+            var shuffled = children.OrderBy(_ => _random.Next()).ToList();
+            var selectedChildren = shuffled.Take(countToPick);
+            foreach (var child in selectedChildren)
+            {
+                if (child is Node2D node)
+                {
+                    // On récupère la position du centre (position globale)
+                    Vector2 position = node.GlobalPosition;
+
+                    // On choisit un ennemi aléatoire dans la collection
+                    int enemyIndex = GD.RandRange(0, EnemiesCollection.Count - 1);
+                    var enemyScene = EnemiesCollection[enemyIndex];
+
+                    if (enemyScene != null)
+                    {
+                        Node2D enemyInstance = enemyScene.Instantiate() as Node2D;
+                        if (enemyInstance != null)
+                        {
+                            enemyInstance.GlobalPosition = position;
+                            CallDeferred("add_child", enemyInstance);
+                        }
+                    }
+                }
+            }
+
+                AddChild(_currentRoom);
             if (_player.GetParent() != _currentRoom)
             {
                 GD.Print("Ajout du joueur à la salle procédurale");

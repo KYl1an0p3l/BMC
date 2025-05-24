@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cub7bhk8kesdj"]
+
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_kr0hc"]
+points = PackedVector2Array(174, 18, 167, 18, 167, 27, 166, 30, 161, 33, 158, 37, 157, 40, 152, 46, 149, 46, 149, 52, 153, 55, 153, 57, 155, 58, 155, 64, 153, 66, 153, 109, 158, 111, 158, 133, 150, 138, 188, 138, 188, 128, 178, 115, 182, 109, 190, 108, 219, 87, 214, 80, 210, 83, 197, 54, 197, 50, 189, 43, 192, 43, 191, 39, 187, 35, 192, 32, 180, 28, 174, 21)
+
+[node name="Onverraplustard" type="Node2D"]
+
+[node name="onverraplustard" type="CollisionShape2D" parent="."]
+position = Vector2(-176, -77)
+shape = SubResource("ConvexPolygonShape2D_kr0hc")

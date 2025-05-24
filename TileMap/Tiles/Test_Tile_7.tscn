@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://d0qsmxm0vtj4u"]
+
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_r028t"]
+
+[node name="TestTile7" type="Node2D"]
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(200, 200)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel"]
+position = Vector2(-50, 100)
+rotation = -0.785398
+scale = Vector2(1.5625, 1.5625)
+texture = ExtResource("1_r028t")
+centered = false

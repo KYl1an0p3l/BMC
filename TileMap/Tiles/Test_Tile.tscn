@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://brbc3jwqs4gxs"]
+
+[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_k86pu"]
+
+[node name="TestTile" type="Node2D"]
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(200, 200)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel"]
+modulate = Color(1, 0, 1, 1)
+scale = Vector2(1.5625, 1.5625)
+skew = 0.00872665
+texture = ExtResource("1_k86pu")
+centered = false

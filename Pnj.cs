@@ -17,7 +17,7 @@ public partial class Pnj : Node2D
         GetNode<Area2D>("Area2D").BodyEntered += OnBodyEntered;
         GetNode<Area2D>("Area2D").BodyExited += OnBodyExited;
 
-        dialogueBox = GetNode<DialogueBox>("../CanvasLayer/DialogueBox"); // adapte le chemin
+        dialogueBox = GetNode<DialogueBox>("../PP/CanvasLayer/DialogueBox"); // adapte le chemin
     }
 
     public override void _Process(double delta)

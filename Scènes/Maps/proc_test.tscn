@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://37s7nm2164qe"]
+
+[ext_resource type="PackedScene" uid="uid://2en4b5yge18j" path="res://TileMap/WorldMap.tscn" id="1_klkiu"]
+[ext_resource type="PackedScene" uid="uid://luqh65dw0efb" path="res://TileMap/RoomManager.tscn" id="2_nc1n8"]
+
+[node name="ProcTest" type="CanvasLayer"]
+
+[node name="RoomManager" parent="." instance=ExtResource("2_nc1n8")]
+
+[node name="WorldMap" parent="." instance=ExtResource("1_klkiu")]
+FlatMap = Array[Array]([["dev", "P", "P"]])

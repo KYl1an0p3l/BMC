@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Transactions;
 
 public partial class PauseMenu : Control
 {
@@ -32,7 +31,7 @@ public partial class PauseMenu : Control
 
     public override void _Process(double delta)
     {
-        if (Input.IsActionJustPressed("ui_cancel"))
+        if (Input.IsActionJustPressed("echap"))
         {
             var canvasLayer = GetParent(); // PauseMenu est enfant de CanvasLayer
             var deadScreenNode = canvasLayer.GetNodeOrNull<DeadScreen>("DeadScreen");
@@ -52,11 +51,37 @@ public partial class PauseMenu : Control
                 {
                     GetTree().Paused = true;
                     Show();
+                    _resumeButton.GrabFocus(); // Focus automatique sur "Résumé"
                 }
             }
         }
     }
 
+    public override void _Input(InputEvent @event)
+    {
+        if (!Visible)
+            return;
+
+        if (@event is InputEventJoypadButton joypadButton && joypadButton.Pressed)
+        {
+            // Bouton A / Croix → activer le bouton sélectionné
+            if (joypadButton.ButtonIndex == JoyButton.A)
+            {
+                var focused = GetViewport().GuiGetFocusOwner();
+                if (focused is Button button)
+                    button.EmitSignal("pressed");
+            }
+
+            // Bouton B / Rond → retour ou quitter le menu
+            if (joypadButton.ButtonIndex == JoyButton.B)
+            {
+                if (settingsUi.Visible)
+                    OnSettingsReturnPressed();
+                else
+                    OnResumePressed();
+            }
+        }
+    }
 
     private void OnResumePressed()
     {
@@ -68,6 +93,10 @@ public partial class PauseMenu : Control
     {
         screenPanel.Visible = false;
         settingsUi.Visible = true;
+
+        // Focus automatique sur le premier bouton des settings
+        var firstSettingButton = settingsUi.GetNodeOrNull<Button>("lookUpButton");
+        firstSettingButton?.GrabFocus();
     }
 
     private void OnQuitPressed()
@@ -79,5 +108,6 @@ public partial class PauseMenu : Control
     {
         screenPanel.Visible = true;
         settingsUi.Visible = false;
+        _settingsButton.GrabFocus(); // Revenir sur le bouton "Paramètres"
     }
 }

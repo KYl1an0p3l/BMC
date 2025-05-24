@@ -15,7 +15,10 @@ public partial class Bullets : Area2D
 
     public override void _PhysicsProcess(double delta)
     {
+        
         Position += _direction * Speed * (float)delta;
+        Rotation = _direction.Angle()+45;
+
     }
     private void OnBodyEntered(Node body)
     {

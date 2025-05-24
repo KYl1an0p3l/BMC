@@ -1,0 +1,97 @@
+[gd_scene load_steps=11 format=3 uid="uid://djioew0sccdoh"]
+
+[ext_resource type="Script" uid="uid://bleerx3ti1b8s" path="res://Scènes/Enemies/Boss.cs" id="1_vai0k"]
+[ext_resource type="Texture2D" uid="uid://vb777yxn7pi6" path="res://Texture/boss.png" id="1_vanue"]
+[ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_cidk2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vai0k"]
+size = Vector2(180, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_udewm"]
+size = Vector2(160, 164)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vai0k"]
+atlas = ExtResource("1_vanue")
+region = Rect2(0, 0, 335, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_udewm"]
+atlas = ExtResource("1_vanue")
+region = Rect2(335, 0, 335, 309)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vai0k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vai0k")
+}],
+"loop": true,
+"name": &"left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_udewm")
+}],
+"loop": true,
+"name": &"right",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cidk2"]
+bg_color = Color(0.20871, 0.20871, 0.20871, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2g8js"]
+bg_color = Color(1, 0, 0, 1)
+
+[node name="Boss" type="CharacterBody2D"]
+scale = Vector2(0.8, 0.8)
+collision_layer = 4
+script = ExtResource("1_vai0k")
+Health = 30
+MaxFallSpeed = 200.0
+ammo = ExtResource("2_cidk2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2.5, -8)
+shape = SubResource("RectangleShape2D_vai0k")
+
+[node name="RayLeft" type="RayCast2D" parent="."]
+scale = Vector2(2, 2)
+target_position = Vector2(-32, 48)
+collision_mask = 5
+
+[node name="RayRight" type="RayCast2D" parent="."]
+scale = Vector2(2, 2)
+target_position = Vector2(32, 48)
+collision_mask = 5
+
+[node name="AttackLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-600, 0)
+collision_mask = 2
+
+[node name="AttackRight" type="RayCast2D" parent="."]
+target_position = Vector2(600, 0)
+collision_mask = 2
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("RectangleShape2D_udewm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(5, -10)
+sprite_frames = SubResource("SpriteFrames_vai0k")
+animation = &"left"
+frame_progress = 0.764494
+
+[node name="BossBar" type="ProgressBar" parent="."]
+offset_left = -90.0
+offset_top = 106.0
+offset_right = 90.0
+offset_bottom = 136.0
+theme_override_styles/background = SubResource("StyleBoxFlat_cidk2")
+theme_override_styles/fill = SubResource("StyleBoxFlat_2g8js")
+max_value = 30.0
+show_percentage = false

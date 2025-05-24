@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class hotbaR : Panel
+public partial class hotbar : Panel
 {
     Inventory inventory;
     private Godot.Collections.Array<hotbarSlot> slots = new();

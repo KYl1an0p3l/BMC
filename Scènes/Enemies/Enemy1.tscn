@@ -1,46 +1,87 @@
-[gd_scene load_steps=12 format=3 uid="uid://hbkda834us1g"]
+[gd_scene load_steps=19 format=3 uid="uid://hbkda834us1g"]
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
 [ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
+[ext_resource type="AudioStream" uid="uid://bc6tbg6on6xkk" path="res://Texture/sound1.mp3" id="3_aiow1"]
+[ext_resource type="AudioStream" uid="uid://cr6nkuq63j8dj" path="res://Texture/sound2.mp3" id="4_y0o3x"]
+[ext_resource type="AudioStream" uid="uid://2wovh8l5vc83" path="res://Texture/sound3.mp3" id="5_mwefl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_80chd"]
 size = Vector2(46.6667, 32.4167)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_aiow1"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 0, 56, 37)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lbi8g"]
-atlas = ExtResource("2_0xxas")
-region = Rect2(56, 37, 56, 37)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_y0o3x"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(56, 74, 56, 37)
+region = Rect2(56, 1, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mwefl"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 0, 56, 37)
+region = Rect2(56, 77, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_anb5e"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 37, 56, 37)
+region = Rect2(0, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ksw7"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 77, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76j51"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dqwc8"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 39, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3n8q"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(56, 77, 56, 37)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmuou"]
 atlas = ExtResource("2_0xxas")
-region = Rect2(0, 74, 56, 37)
+region = Rect2(0, 1, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uiome"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 39, 56, 37)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7yspf"]
+atlas = ExtResource("2_0xxas")
+region = Rect2(0, 77, 56, 37)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uiome"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_aiow1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lbi8g")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_y0o3x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mwefl")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 2.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_anb5e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ksw7")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 2.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_76j51")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dqwc8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o3n8q")
 }],
 "loop": true,
 "name": &"left",
@@ -48,21 +89,21 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mwefl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_anb5e")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_bmuou")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uiome")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7yspf")
 }],
 "loop": true,
 "name": &"right",
-"speed": 3.0
+"speed": 3.5
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q02qh"]
-size = Vector2(46.6667, 32.25)
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_y0o3x"]
+points = PackedVector2Array(44, -7, 56, 35, -52, 35, -51, 11, -12, -33, 28, -28)
 
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 4
@@ -85,14 +126,24 @@ collision_mask = 5
 position = Vector2(3, -4)
 scale = Vector2(2.1, 2.1)
 sprite_frames = SubResource("SpriteFrames_uiome")
-animation = &"left"
-frame_progress = 0.892523
+animation = &"idle_right"
+frame_progress = 0.229129
+
+[node name="Sound1" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_aiow1")
+volume_db = 5.0
+
+[node name="Sound2" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_y0o3x")
+volume_db = 3.0
+
+[node name="Sound3" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_mwefl")
+volume_db = 10.0
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 16
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
-position = Vector2(3, -4.3)
-scale = Vector2(2.4, 2.4)
-shape = SubResource("RectangleShape2D_q02qh")
+shape = SubResource("ConvexPolygonShape2D_y0o3x")

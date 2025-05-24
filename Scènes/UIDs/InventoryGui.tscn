@@ -39,6 +39,7 @@ grow_horizontal = 0
 grow_vertical = 2
 
 [node name="Slot" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 445.0
 offset_top = 30.0
@@ -46,6 +47,7 @@ offset_right = 575.0
 offset_bottom = 160.0
 
 [node name="Slot2" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 579.0
 offset_top = 30.0
@@ -53,6 +55,7 @@ offset_right = 709.0
 offset_bottom = 160.0
 
 [node name="Slot3" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 713.0
 offset_top = 30.0
@@ -60,6 +63,7 @@ offset_right = 843.0
 offset_bottom = 160.0
 
 [node name="Slot4" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 847.0
 offset_top = 30.0
@@ -67,6 +71,7 @@ offset_right = 977.0
 offset_bottom = 160.0
 
 [node name="Slot5" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 981.0
 offset_top = 30.0
@@ -74,6 +79,7 @@ offset_right = 1111.0
 offset_bottom = 160.0
 
 [node name="Slot6" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 445.0
 offset_top = 164.0
@@ -81,6 +87,7 @@ offset_right = 575.0
 offset_bottom = 294.0
 
 [node name="Slot7" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 579.0
 offset_top = 164.0
@@ -88,6 +95,7 @@ offset_right = 709.0
 offset_bottom = 294.0
 
 [node name="Slot8" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 713.0
 offset_top = 164.0
@@ -95,6 +103,7 @@ offset_right = 843.0
 offset_bottom = 294.0
 
 [node name="Slot9" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 847.0
 offset_top = 164.0
@@ -102,6 +111,7 @@ offset_right = 977.0
 offset_bottom = 294.0
 
 [node name="Slot10" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 981.0
 offset_top = 164.0
@@ -109,6 +119,7 @@ offset_right = 1111.0
 offset_bottom = 294.0
 
 [node name="Slot11" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 445.0
 offset_top = 298.0
@@ -116,6 +127,7 @@ offset_right = 575.0
 offset_bottom = 428.0
 
 [node name="Slot12" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 579.0
 offset_top = 298.0
@@ -123,6 +135,7 @@ offset_right = 709.0
 offset_bottom = 428.0
 
 [node name="Slot13" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 713.0
 offset_top = 298.0
@@ -130,6 +143,7 @@ offset_right = 843.0
 offset_bottom = 428.0
 
 [node name="Slot14" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 847.0
 offset_top = 298.0
@@ -137,6 +151,7 @@ offset_right = 977.0
 offset_bottom = 428.0
 
 [node name="Slot15" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 offset_left = 981.0
 offset_top = 298.0
@@ -144,6 +159,7 @@ offset_right = 1111.0
 offset_bottom = 428.0
 
 [node name="Slot16" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 0
 offset_left = 40.0
 offset_top = 164.0
@@ -151,6 +167,7 @@ offset_right = 170.0
 offset_bottom = 294.0
 
 [node name="Slot17" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 0
 offset_left = 165.0
 offset_top = 290.0
@@ -158,6 +175,7 @@ offset_right = 295.0
 offset_bottom = 420.0
 
 [node name="Slot18" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 0
 offset_left = 290.0
 offset_top = 164.0
@@ -165,6 +183,7 @@ offset_right = 420.0
 offset_bottom = 294.0
 
 [node name="Slot19" parent="NinePatchRect/GridContainer" instance=ExtResource("2_pjx2w")]
+custom_minimum_size = Vector2(0, 0)
 layout_mode = 0
 offset_left = 165.0
 offset_top = 40.0

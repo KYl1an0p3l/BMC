@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://qvpafdqkftg7"]
+[gd_scene load_steps=3 format=3 uid="uid://ow7b6ibvik5w"]
 
-[ext_resource type="Script" uid="uid://difygbjbg12g4" path="res://Scènes/UIDs/SettingsUi.cs" id="1_idil4"]
+[ext_resource type="Script" uid="uid://bu6ln6q011o0y" path="res://Scènes/UIDs/SettingsUi.cs" id="1_idil4"]
 
 [sub_resource type="Theme" id="Theme_idil4"]
 default_font_size = 15

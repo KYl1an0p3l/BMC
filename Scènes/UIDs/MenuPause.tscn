@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dh3b6mrl6pl2u"]
 
 [ext_resource type="Script" uid="uid://1ghpt8g1mqc3" path="res://Scènes/UIDs/PauseMenu.cs" id="1_thlu7"]
-[ext_resource type="PackedScene" uid="uid://qvpafdqkftg7" path="res://Scènes/UIDs/settingsUi.tscn" id="2_25j8p"]
+[ext_resource type="PackedScene" uid="uid://ow7b6ibvik5w" path="res://Scènes/UIDs/settingsUi.tscn" id="2_25j8p"]
 
 [sub_resource type="Theme" id="Theme_l7g78"]
 default_font_size = 78

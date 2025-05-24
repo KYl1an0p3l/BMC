@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://chawgr48x6ax1"]
+[gd_scene load_steps=4 format=3 uid="uid://8eedpoaoh0jq"]
 
 [ext_resource type="Script" uid="uid://djyrwv4kp6l0r" path="res://Scènes/UIDs/hotbarSlot.cs" id="1_mi1r4"]
 [ext_resource type="Texture2D" uid="uid://beqfud3upk7bk" path="res://Texture/case.png" id="2_mi1r4"]

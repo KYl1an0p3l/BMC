@@ -1,4 +1,4 @@
-[gd_scene load_steps=83 format=3 uid="uid://dm7x7l6f8rjjw"]
+[gd_scene load_steps=86 format=3 uid="uid://dm7x7l6f8rjjw"]
 
 [ext_resource type="Script" uid="uid://cyp7n2pqwx6k" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Texture2D" uid="uid://c5mdfhebj6pqr" path="res://Texture/player_scythe_attack.png" id="2_gccba"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dnrkrpg1t0sgo" path="res://Texture/player_gun.png" id="5_otdr5"]
 [ext_resource type="Texture2D" uid="uid://c3wybk6sxsoae" path="res://Texture/player_idle.png" id="6_l4gky"]
 [ext_resource type="Texture2D" uid="uid://be3a1ypnv1l5f" path="res://Texture/reload.png" id="7_gccba"]
+[ext_resource type="Texture2D" uid="uid://c8qajd0hmn4cd" path="res://Texture/player_jump.png" id="7_tl5ko"]
 [ext_resource type="PackedScene" uid="uid://dyhmmc6fv7wpw" path="res://Scènes/UIDs/DialogueBox.tscn" id="8_kueoj"]
 [ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="8_otdr5"]
 [ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="9_4if1y"]
@@ -214,6 +215,14 @@ region = Rect2(0, 128, 80, 128)
 [sub_resource type="AtlasTexture" id="AtlasTexture_jb67a"]
 atlas = ExtResource("6_l4gky")
 region = Rect2(80, 128, 80, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nssx0"]
+atlas = ExtResource("7_tl5ko")
+region = Rect2(80, 0, 80, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_na3ps"]
+atlas = ExtResource("7_tl5ko")
+region = Rect2(0, 0, 80, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qwgm0"]
 atlas = ExtResource("5_otdr5")
@@ -440,6 +449,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_nssx0")
+}],
+"loop": true,
+"name": &"jump_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_na3ps")
+}],
+"loop": true,
+"name": &"jump_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_qwgm0")
 }, {
 "duration": 1.0,
@@ -544,9 +569,7 @@ z_index = 1
 position = Vector2(0, 2)
 scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_ywf8h")
-animation = &"atk_right"
-frame = 4
-frame_progress = 0.65392
+animation = &"jump_left"
 offset = Vector2(0, -5)
 
 [node name="ZoneAtk" type="Area2D" parent="."]

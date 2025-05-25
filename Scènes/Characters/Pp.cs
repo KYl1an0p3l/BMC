@@ -337,6 +337,9 @@ public partial class Pp : CharacterBody2D
             {
                 animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
             }
+            else if (!IsOnFloor() && !isDashing) {
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
+            }
             else if (!isAttacking && !isDashing)
             {
                 animatedSprite.Play(LookingLeft ? "gauche" : "droite");
@@ -357,6 +360,9 @@ public partial class Pp : CharacterBody2D
         else if (isDashing)
         {
             animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
+        }
+        else if (!IsOnFloor() && !isDashing) {
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
         }
         else if (isAttacking)
         {

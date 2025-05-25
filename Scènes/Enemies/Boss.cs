@@ -93,8 +93,11 @@ public partial class Boss : CharacterBody2D
 
         rayLeft.Enabled = !isJumping;
         rayRight.Enabled = !isJumping;
-
-        _velocity.X = isMoving ? direction.X * Speed : 0f;
+        if (IsOnFloor() && !isJumping)
+        {
+            
+            _velocity.X = isMoving ? direction.X * Speed : 0f;
+        }
         Velocity = _velocity;
         MoveAndSlide();
         Position = new Vector2(Mathf.Round(Position.X), Mathf.Round(Position.Y));

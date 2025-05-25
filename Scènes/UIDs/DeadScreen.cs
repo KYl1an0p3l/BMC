@@ -30,6 +30,10 @@ public partial class DeadScreen : Control
     {
         return deathScreen.Visible;
     }
+    public void HideDeathScreen()
+    {
+        deathScreen.Visible = false;
+    }
 
     public override void _Input(InputEvent @event)
     {
@@ -54,8 +58,11 @@ public partial class DeadScreen : Control
         }
     }
 
-    private void LoadRestartScene()
-    {
-        GetTree().ReloadCurrentScene();
-    }
+        private async void LoadRestartScene()
+        {
+            GetTree().ReloadCurrentScene(); // Premier reload (celui qui bug)
+            await ToSignal(GetTree().CreateTimer(0.1f), "timeout"); // Petite pause
+            GetTree().ReloadCurrentScene(); // Deuxième reload (clean)
+        }
+
 }

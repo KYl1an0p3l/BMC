@@ -84,19 +84,24 @@ public partial class Pp : CharacterBody2D
     private float parryKnockbackForce = 800f;
     [Export] private float parry_knockback_duration = 0.5f;
     private float parry_knockback_elapsed = 0f;
-    [Export] private Inventory inventory;
+    
+    private Inventory inventory;
+
     private InventoryGui inventory_ui;
     InventoryItems ScythObj, RifleObj;
-    
+
     public override void _Ready()
     {
+        isDead = false;
+        
+        inventory = GameState.Instance.PlayerInventory;
 
         RichTextLabel richText = GetNode<RichTextLabel>("UI/heal");
         richText.ParseBbcode("[color=orange][font_size=24]HEALS LEFT :[/font_size][/color] [color=white][font_size=24]" + healsalle.ToString() + "[/font_size][/color]");
 
         var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
-        reloadSprite.Stop();                // Arrête l'animation
-        reloadSprite.Visible = false;       // Cache le sprite
+        reloadSprite.Stop();
+        reloadSprite.Visible = false;
 
         screenSize = GetViewportRect().Size;
         AddToGroup("player");
@@ -119,7 +124,6 @@ public partial class Pp : CharacterBody2D
 
         zoneAtkArea.Monitoring = true;
         zoneAtkArea.Monitorable = true;
-
         zoneRifleAtkArea.Monitoring = true;
         zoneRifleAtkArea.Monitorable = true;
         zoneRifleSprite.Visible = true;
@@ -128,13 +132,12 @@ public partial class Pp : CharacterBody2D
         {
             zone_get_rifle = GetNode<Area2D>("../rifleGet");
         }
+
         CollisionLayer = 1 << 1; // couche 2 : joueur
         CollisionMask = 1 << 0;  // couche 1 : sol
 
-        deadScreen = GetNode<DeadScreen>("CanvasLayer/DeadScreen"); 
-
+        deadScreen = GetNode<DeadScreen>("CanvasLayer/DeadScreen");
         inventory_ui = GetNode<InventoryGui>("CanvasLayer/InventoryGui");
-
 
         currentHealth = maxHealth;
         healthBar = GetNode<HealthBar>("CanvasLayer/HealthBar");
@@ -144,17 +147,31 @@ public partial class Pp : CharacterBody2D
         reloadTimer = new Timer();
         AddChild(reloadTimer);
         reloadTimer.OneShot = true;
-        reloadTimer.WaitTime = 2.0f; // 2 secondes pour recharger
+        reloadTimer.WaitTime = 2.0f;
         reloadTimer.Timeout += OnReloadFinished;
 
         parryArea = GetNode<Area2D>("Parry");
         parryShape = parryArea.GetNode<CollisionShape2D>("CollisionShape2D");
         parryArea.Monitoring = true;
         parryArea.Monitorable = true;
+
         this.Name = "PP";
-    }   
+
+        // Réattache le CanvasLayer si besoin
+        var canvasLayer = GetTree().Root.GetNodeOrNull<CanvasLayer>("CanvasLayer");
+        if (canvasLayer != null && canvasLayer.GetParent() != this)
+        {
+            GetTree().Root.RemoveChild(canvasLayer);
+            AddChild(canvasLayer);
+        }
+
+        deadScreen.HideDeathScreen();
 
 
+        // Mise à jour de l'inventaire si tout est prêt
+        inventory_ui?.UpdateInventory();
+    }
+    
     public override void _Process(double delta)
     {
         if (isDead){
@@ -171,6 +188,7 @@ public partial class Pp : CharacterBody2D
 
         if (isDashing && !bloquer_actions)
         {
+            
             dashTimer -= (float)delta;
             if (dashTimer <= 0)
             {
@@ -315,7 +333,11 @@ public partial class Pp : CharacterBody2D
         // ANIMATION (toujours traitée)
         if (velocity.Length() > 0)
         {
-            if (!isAttacking)
+            if (isDashing)
+            {
+                animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
+            }
+            else if (!isAttacking && !isDashing)
             {
                 animatedSprite.Play(LookingLeft ? "gauche" : "droite");
             }
@@ -330,6 +352,11 @@ public partial class Pp : CharacterBody2D
             {
                 animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
             }
+
+        }
+        else if (isDashing)
+        {
+            animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
         }
         else if (isAttacking)
         {
@@ -344,7 +371,7 @@ public partial class Pp : CharacterBody2D
         }
         else
         {
-            animatedSprite.Stop();
+            animatedSprite.Play(LookingLeft ? "idle_left" : "idle_right");
         }
 
         // Application du mouvement
@@ -674,15 +701,25 @@ public partial class Pp : CharacterBody2D
         // Knockback horizontal
         velocity.X = LookingLeft ? knockback_horizontal_force : -knockback_horizontal_force;
 
-        if (currentHealth <= 0){
+        if (currentHealth <= 0)
+        {
             isDead = true;
+
+            // Détache le CanvasLayer contenant DeadScreen avant de supprimer Pp
+            var canvasLayer = GetNode<CanvasLayer>("CanvasLayer"); // ou le nom exact du CanvasLayer
+            if (canvasLayer.GetParent() == this)
+            {
+                RemoveChild(canvasLayer);
+                GetTree().Root.AddChild(canvasLayer); // ou GetTree().CurrentScene si tu veux le rattacher à la scène active
+            }
+
             deadScreen.death_screen();
-            var deathTimer = GetTree().CreateTimer(1.0); 
+
+            var deathTimer = GetTree().CreateTimer(1.0);
             deathTimer.Timeout += () => {
                 CallDeferred("queue_free");
             };
         }
-
     }
 
     private void OnInvincibilityTimeout()

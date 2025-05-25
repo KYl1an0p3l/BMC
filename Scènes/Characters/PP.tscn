@@ -15,7 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://dwb18l37rro65" path="res://Scènes/UIDs/hotbaR.tscn" id="13_ssi71"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kueoj"]
-size = Vector2(49, 118)
+size = Vector2(49, 115)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2t5d6"]
 atlas = ExtResource("2_gccba")
@@ -417,15 +417,14 @@ script = ExtResource("1_71e7l")
 maxHealth = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2.5, 2)
+position = Vector2(-2.5, 3.5)
 shape = SubResource("RectangleShape2D_kueoj")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 1
 position = Vector2(0, 2)
 sprite_frames = SubResource("SpriteFrames_ywf8h")
-animation = &"atk_left"
-frame_progress = 0.469394
+animation = &"atk_right"
 offset = Vector2(0, -5)
 
 [node name="ZoneAtk" type="Area2D" parent="."]
@@ -480,26 +479,20 @@ offset_bottom = 250.0
 bbcode_enabled = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-visible = false
 
 [node name="DialogueBox" parent="CanvasLayer" instance=ExtResource("8_kueoj")]
-visible = false
 
 [node name="DeadScreen" parent="CanvasLayer" instance=ExtResource("9_4if1y")]
-visible = false
 
 [node name="MenuPause" parent="CanvasLayer" instance=ExtResource("10_l4gky")]
-visible = false
 offset_left = 2.0
 offset_top = 16.0
 offset_right = 2.0
 offset_bottom = 16.0
 
 [node name="HealthBar" parent="CanvasLayer" instance=ExtResource("11_tl5ko")]
-visible = false
 
 [node name="InventoryGui" parent="CanvasLayer" instance=ExtResource("12_8a2x4")]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -511,7 +504,6 @@ offset_right = 474.0
 offset_bottom = 230.0
 
 [node name="Hotbar" parent="CanvasLayer" instance=ExtResource("13_ssi71")]
-visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -521,10 +513,3 @@ offset_right = 215.0
 offset_bottom = 17.0
 grow_vertical = 0
 scale = Vector2(0.85, 0.85)
-
-[node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(60, 120)
-offset_left = -164.0
-offset_top = -59.0
-offset_right = -104.0
-offset_bottom = 61.0

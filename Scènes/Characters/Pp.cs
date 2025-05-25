@@ -197,7 +197,7 @@ public partial class Pp : CharacterBody2D
             else
                 dashDirection = LookingLeft ? Vector2.Left : Vector2.Right;
         }
-        if (Input.IsActionPressed("H") && IsOnFloor() && healsalle >= 1 && currentHealth <= maxHealth - 1){
+        if (Input.IsActionPressed("abs") && IsOnFloor() && healsalle >= 1 && currentHealth <= maxHealth - 1){
 
             hKeyHoldTime += (float)delta;
             bloquer_actions=true;

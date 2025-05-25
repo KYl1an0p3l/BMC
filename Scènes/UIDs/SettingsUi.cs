@@ -30,6 +30,7 @@ public partial class SettingsUi : Panel
         RegisterRemap("atkQuaButton", "atk_qua");
         RegisterRemap("invButton", "toggle_inventory_gui");
         RegisterRemap("absButton", "abs");
+        RegisterRemap("dashButton", "F");
 
         foreach (var entry in remapBindings)
         {
@@ -56,6 +57,8 @@ public partial class SettingsUi : Panel
             remapData.Label.Text = remapPlaceholder;
             currentRemap = remapData;
             waitingForInput = true;
+            button.FocusMode = Control.FocusModeEnum.None;
+            button.ReleaseFocus();
         }
     }
 
@@ -152,6 +155,10 @@ public partial class SettingsUi : Panel
 
     private void CancelRemap()
     {
+        foreach (var entry in remapBindings)
+        {
+            entry.Key.FocusMode = Control.FocusModeEnum.All;
+        }
         currentRemap = null;
         waitingForInput = false;
     }

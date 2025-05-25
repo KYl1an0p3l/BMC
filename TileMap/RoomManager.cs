@@ -80,17 +80,17 @@ public partial class RoomManager : Node2D
                 }
             }
 
-                AddChild(_currentRoom);
+                CallDeferred("add_child", _currentRoom);
             if (_player.GetParent() != _currentRoom)
             {
                 GD.Print("Ajout du joueur à la salle procédurale");
                 _player.GetParent()?.RemoveChild(_player);
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
                 _player = playerScene.Instantiate<CharacterBody2D>();
-                _currentRoom.CallDeferred("add_child",_player);
-                if(exitTaken == new Vector2I(1, 0))
+                _currentRoom.CallDeferred("add_child", _player);
+                if (exitTaken == new Vector2I(1, 0))
                     _player.GlobalPosition = _proc.VEntryWorldPos;
-                if(exitTaken == new Vector2(-1, 0))
+                if (exitTaken == new Vector2(-1, 0))
                     _player.GlobalPosition = _proc.VEndWorldPos;
                 GD.Print($"Position du joueur : {_player.GlobalPosition}");
 

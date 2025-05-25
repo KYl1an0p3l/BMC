@@ -1,0 +1,112 @@
+[gd_scene load_steps=13 format=3 uid="uid://dpgd2k4xsgirg"]
+
+[ext_resource type="Script" uid="uid://c8hw2ucufb4d2" path="res://Scènes/Enemies/BossTest.cs" id="1_jn7ss"]
+[ext_resource type="Texture2D" uid="uid://vb777yxn7pi6" path="res://Texture/boss.png" id="1_yiibx"]
+[ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_fvhnc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jn7ss"]
+atlas = ExtResource("1_yiibx")
+region = Rect2(0, 0, 335, 309)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvhnc"]
+atlas = ExtResource("1_yiibx")
+region = Rect2(335, 0, 335, 309)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6am00"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jn7ss")
+}],
+"loop": true,
+"name": &"left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fvhnc")
+}],
+"loop": true,
+"name": &"right",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvikb"]
+bg_color = Color(0.20871, 0.20871, 0.20871, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g0qfk"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uewxw"]
+radius = 100.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yiibx"]
+radius = 500.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jn7ss"]
+size = Vector2(250, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fvhnc"]
+size = Vector2(300, 150)
+
+[node name="Boss" type="CharacterBody2D"]
+position = Vector2(1, 0)
+scale = Vector2(0.8, 0.8)
+collision_layer = 4
+script = ExtResource("1_jn7ss")
+ammo = ExtResource("2_fvhnc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_6am00")
+animation = &"right"
+
+[node name="BossBar" type="ProgressBar" parent="."]
+offset_left = -90.0
+offset_top = 106.0
+offset_right = 90.0
+offset_bottom = 136.0
+theme_override_styles/background = SubResource("StyleBoxFlat_tvikb")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g0qfk")
+max_value = 30.0
+show_percentage = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uewxw")
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("CircleShape2D_uewxw")
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+shape = SubResource("CircleShape2D_yiibx")
+
+[node name="RaycastWall" type="RayCast2D" parent="."]
+target_position = Vector2(120, 0)
+
+[node name="RaycastGround" type="RayCast2D" parent="."]
+target_position = Vector2(100, 110)
+
+[node name="MeleeRange" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeRange"]
+position = Vector2(0, 20)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_jn7ss")
+
+[node name="Attaque" type="Area2D" parent="."]
+scale = Vector2(1, 1)
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attaque"]
+position = Vector2(1.25, 20)
+shape = SubResource("RectangleShape2D_fvhnc")
+
+[node name="AimRay" type="RayCast2D" parent="."]

@@ -468,7 +468,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plho4"]
-size = Vector2(60, 90)
+size = Vector2(40, 90)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gccba"]
 size = Vector2(1088, 9)
@@ -485,7 +485,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_otdr5"]
-size = Vector2(60, 90)
+size = Vector2(40, 90)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_41mm0"]
 atlas = ExtResource("7_gccba")
@@ -544,8 +544,9 @@ z_index = 1
 position = Vector2(0, 2)
 scale = Vector2(0.9, 0.9)
 sprite_frames = SubResource("SpriteFrames_ywf8h")
-animation = &"idle_left"
-frame_progress = 0.97639
+animation = &"atk_right"
+frame = 4
+frame_progress = 0.65392
 offset = Vector2(0, -5)
 
 [node name="ZoneAtk" type="Area2D" parent="."]
@@ -554,7 +555,7 @@ collision_layer = 8
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ZoneAtk"]
-position = Vector2(-25, -64)
+position = Vector2(-35, -64)
 shape = SubResource("RectangleShape2D_plho4")
 
 [node name="InvincibilityTimer" type="Timer" parent="."]
@@ -580,7 +581,7 @@ collision_layer = 8
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Parry"]
-position = Vector2(-25, -64)
+position = Vector2(-35, -64)
 shape = SubResource("RectangleShape2D_otdr5")
 
 [node name="ReloadSprite" type="AnimatedSprite2D" parent="."]

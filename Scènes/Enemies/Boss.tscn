@@ -44,7 +44,6 @@ bg_color = Color(0.20871, 0.20871, 0.20871, 1)
 bg_color = Color(1, 0, 0, 1)
 
 [node name="Boss" type="CharacterBody2D"]
-scale = Vector2(0.8, 0.8)
 collision_layer = 4
 script = ExtResource("1_vai0k")
 Health = 30

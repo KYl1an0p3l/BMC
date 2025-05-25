@@ -67,7 +67,7 @@ public partial class Pp : CharacterBody2D
     private float knockback_elapsed = 0f;
     [Export] private float knockback_duration = 0.25f;
 
-    [Export] private float KB_hit_force = 550f;
+    [Export] private float KB_hit_force = 250f;
     private bool is_KB_hit = false;
     [Export] private float KB_hit_duration = 0.1f;
     private float KB_hit_elapsed = 0f;
@@ -269,7 +269,7 @@ public partial class Pp : CharacterBody2D
     }
 
     private void Sauter(){
-        if (Input.IsActionJustPressed("jump")&& jumpCount < maxJumps) {
+        if (Input.IsActionJustPressed("jump")&& jumpCount < maxJumps && !bloquer_actions) {
             isJumping = true;
             jump_elapsed = 0f;
             jumpCount++;
@@ -308,7 +308,7 @@ public partial class Pp : CharacterBody2D
         }
 
         // Si en knockback (ou parry), ne traiter que l'animation mais PAS les inputs
-        if (!isUnderForcedMovement && !isKnockback)
+        if (!isUnderForcedMovement && !isKnockback && !bloquer_actions)
         {
             velocity.X = 0;
 
@@ -488,7 +488,7 @@ public partial class Pp : CharacterBody2D
                 break;
 
             case AttackDirection.Left:
-                atkOffset = new Vector2(-40, 60);
+                atkOffset = new Vector2(-20, 60);
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(-1200, -20);
                 break;
 
@@ -512,7 +512,7 @@ public partial class Pp : CharacterBody2D
                 case AttackDirection.Left:
                 case AttackDirection.Right:
                 default:
-                    shape.Size = new Vector2(60, 90);
+                    shape.Size = new Vector2(40, 90);
                     break;
             }
         }
@@ -520,7 +520,7 @@ public partial class Pp : CharacterBody2D
     }
     private void HandleAttack()
     {
-        if (isKnockback|| isParryKnockback || string.IsNullOrWhiteSpace(ScythObj?.ActionName)) return;
+        if (bloquer_actions || isKnockback|| isParryKnockback || string.IsNullOrWhiteSpace(ScythObj?.ActionName)) return;
         else if (Input.IsActionJustPressed(ScythObj.ActionName) && !isAttacking && !isShooting)
         {
             isAttacking = true;
@@ -530,7 +530,7 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2 || body is Boss)
+                if (body is Enemy1 || body is Enemy2 || body is BossTest)
                     initialTargets.Add(body);
             }
 
@@ -566,7 +566,7 @@ public partial class Pp : CharacterBody2D
                     
                     }
                 }
-                else if (body is Boss boss)
+                else if (body is BossTest boss)
                 {
                     GD.Print("Enemy2 touché !");
                     boss.TakeDamage(2);
@@ -598,7 +598,7 @@ public partial class Pp : CharacterBody2D
 
     private void Rifle(){
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
-        if (isReloading || isKnockback || isAttacking || isShooting || string.IsNullOrWhiteSpace(RifleObj?.ActionName))
+        if (bloquer_actions || isReloading || isKnockback || isAttacking || isShooting || string.IsNullOrWhiteSpace(RifleObj?.ActionName))
             return;
         else if(Input.IsActionJustPressed(RifleObj.ActionName)){
             isShooting = true;
@@ -609,7 +609,7 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2 || body is Boss)
+                if (body is Enemy1 || body is Enemy2 || body is BossTest)
                     initialTargets.Add(body);
             }
 
@@ -624,7 +624,7 @@ public partial class Pp : CharacterBody2D
                     GD.Print("Enemy2 touché !");
                     enemy2.TakeDamage(1);
                 }
-                else if (body is Boss boss)
+                else if (body is BossTest boss)
                 {
                     GD.Print("Enemy2 touché !");
                     boss.TakeDamage(1);

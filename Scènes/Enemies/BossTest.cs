@@ -33,6 +33,9 @@ public partial class BossTest : CharacterBody2D
     private RayCast2D aimRay;
     private Random random = new Random();
     private bool isShootingSequenceRunning = false;
+    private bool isPlayerInUpShotZone = false;
+    private Pp playerInUpShotZone = null;
+    private bool upShotCoroutineRunning = false;
 
     public override void _Ready()
     {
@@ -54,6 +57,10 @@ public partial class BossTest : CharacterBody2D
         var attackArea = GetNode<Area2D>("Attaque");
         attackArea.BodyEntered += OnAttackZoneEntered;
         attackArea.BodyExited += OnAttackZoneExited;
+
+        var Up_Shot = GetNode<Area2D>("Up_Shot");
+        Up_Shot.BodyEntered += OnUpShotZoneEntered;
+        Up_Shot.BodyExited += OnUpShotZoneExited;
 
         var detectionShape = GetNode<CollisionShape2D>("PlayerDetection/CollisionShape2D").Shape as CircleShape2D;
         if (detectionShape != null)
@@ -120,7 +127,7 @@ public partial class BossTest : CharacterBody2D
                 }
             }
         }
-        
+
         Aim();
         if (!isDashing)
         {
@@ -142,7 +149,7 @@ public partial class BossTest : CharacterBody2D
             MoveAndSlide();
         }
     }
-    
+
     private async Task ShootTwiceThenDash()
     {
         isShootingSequenceRunning = true;
@@ -150,11 +157,11 @@ public partial class BossTest : CharacterBody2D
         Vector2 direction = (player.GlobalPosition - GlobalPosition).Normalized();
 
         Shoot(direction);
-        await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
-        
+        await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
+
 
         Shoot(direction);
-        await ToSignal(GetTree().CreateTimer(0.5f), "timeout");
+        await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
 
         StartDashSequence();
 
@@ -165,7 +172,21 @@ public partial class BossTest : CharacterBody2D
     private void FollowPlayer()
     {
         if (player != null && GodotObject.IsInstanceValid(player))
-            velocity.X = player.GlobalPosition.X < GlobalPosition.X ? -Speed : Speed;
+        {
+            bool goingLeft = player.GlobalPosition.X < GlobalPosition.X;
+            velocity.X = goingLeft ? -Speed : Speed;
+
+            UpdateRaycasts(goingLeft);
+        }
+    }
+    private void UpdateRaycasts(bool left)
+    {
+        // Inverser les TargetPosition des raycasts selon la direction
+        Vector2 wallTarget = new Vector2(left ? -120 : 120, 0); // 20 pixels vers la gauche ou droite
+        Vector2 groundTarget = new Vector2(left ? 100 : 100, 110); // même X, mais vers le bas
+
+        raycastWall.TargetPosition = wallTarget;
+        raycastGround.TargetPosition = groundTarget;
     }
 
     private async void StartDashSequence()
@@ -284,5 +305,46 @@ public partial class BossTest : CharacterBody2D
 
         GetTree().CurrentScene.AddChild(bullet);
     }
+    private void OnUpShotZoneEntered(Node body)
+    {
+        if (body is Pp p)
+        {
+            playerInUpShotZone = p;
+            isPlayerInUpShotZone = true;
+            if (!upShotCoroutineRunning)
+                _ = HandleUpShotZone();
+        }
+    }
+
+    private void OnUpShotZoneExited(Node body)
+    {
+        if (body == playerInUpShotZone)
+        {
+            isPlayerInUpShotZone = false;
+            playerInUpShotZone = null;
+        }
+    }
+    private async Task HandleUpShotZone()
+    {
+        upShotCoroutineRunning = true;
+
+        float timer = 0f;
+        while (isPlayerInUpShotZone && IsInstanceValid(playerInUpShotZone))
+        {
+            await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
+            timer += 0.1f;
+
+            if (timer >= 1.0f)
+            {
+                GD.Print("Le boss tire après 2 secondes dans Up_Shot !");
+                Vector2 direction = (playerInUpShotZone.GlobalPosition - GlobalPosition).Normalized();
+                Shoot(direction);
+                break;
+            }
+        }
+
+        upShotCoroutineRunning = false;
+    }
+
 
 }

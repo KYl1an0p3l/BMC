@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dpgd2k4xsgirg"]
+[gd_scene load_steps=14 format=3 uid="uid://dpgd2k4xsgirg"]
 
 [ext_resource type="Script" uid="uid://c8hw2ucufb4d2" path="res://Scènes/Enemies/BossTest.cs" id="1_jn7ss"]
 [ext_resource type="Texture2D" uid="uid://vb777yxn7pi6" path="res://Texture/boss.png" id="1_yiibx"]
@@ -48,6 +48,9 @@ size = Vector2(250, 150)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fvhnc"]
 size = Vector2(300, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6am00"]
+size = Vector2(180, 400)
 
 [node name="Boss" type="CharacterBody2D"]
 position = Vector2(1, 0)
@@ -110,3 +113,10 @@ position = Vector2(1.25, 20)
 shape = SubResource("RectangleShape2D_fvhnc")
 
 [node name="AimRay" type="RayCast2D" parent="."]
+
+[node name="Up_Shot" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Up_Shot"]
+position = Vector2(0, -188.75)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_6am00")

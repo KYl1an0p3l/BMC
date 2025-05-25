@@ -46,36 +46,36 @@ public partial class WorldMap : Node
 	}
 
 	private void Build2DMap()
-    {
-        // nombre de lignes
-        int h = FlatMap.Count;
-        // nombre de colonnes (on suppose toutes lignes de même taille)
-        int w = FlatMap[0].Count;
+	{
+		// nombre de lignes
+		int h = FlatMap.Count;
+		// nombre de colonnes (on suppose toutes lignes de même taille)
+		int w = FlatMap[0].Count;
 
-        _map = new string[w, h];
+		_map = new string[w, h];
 
-        for (int y = 0; y < h; y++)
-        {
-            var row = FlatMap[y];
-            if (row == null || row.Count != w)
-            {
-                GD.PrintErr($"Ligne {y} de FlatMap est nulle ou de longueur différente !");
-                continue;
-            }
+		for (int y = 0; y < h; y++)
+		{
+			var row = FlatMap[y];
+			if (row == null || row.Count != w)
+			{
+				GD.PrintErr($"Ligne {y} de FlatMap est nulle ou de longueur différente !");
+				continue;
+			}
 
-            for (int x = 0; x < w; x++)
-            {
-                _map[x, y] = row[x];
-            }
-        }
-    }
+			for (int x = 0; x < w; x++)
+			{
+				_map[x, y] = row[x];
+			}
+		}
+	}
 	public string Move(Vector2I dir)
 	{
 		if (_map == null)
-        {
-            GD.PrintErr("WorldMap : _map n'est pas encore construite !");
-            return null;
-        }
+		{
+			GD.PrintErr("WorldMap : _map n'est pas encore construite !");
+			return null;
+		}
 
 		else if (_savedId == null)
 		{

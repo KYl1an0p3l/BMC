@@ -27,6 +27,7 @@ offset_top = -1.0
 offset_right = 499.0
 offset_bottom = 199.0
 grow_horizontal = 2
+autowrap_mode = 3
 
 [node name="TextureButton" type="TextureButton" parent="."]
 offset_right = 40.0

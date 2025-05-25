@@ -1,8 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://uelyebff80gm"]
+[gd_scene load_steps=4 format=3 uid="uid://uelyebff80gm"]
 
 [ext_resource type="Texture2D" uid="uid://ibg48enfelgu" path="res://Texture/mur1.png" id="1_44jjw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rl8ar"]
+size = Vector2(32, 198)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_44jjw"]
 size = Vector2(32, 32)
 
 [node name="TestTile6" type="Node2D"]
@@ -50,7 +53,7 @@ texture = ExtResource("1_44jjw")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Panel/StaticBody2D"]
 position = Vector2(-16, 144)
-shape = SubResource("RectangleShape2D_rl8ar")
+shape = SubResource("RectangleShape2D_44jjw")
 
 [node name="Sprite2D7" type="Sprite2D" parent="Panel/StaticBody2D"]
 position = Vector2(-16, 144)

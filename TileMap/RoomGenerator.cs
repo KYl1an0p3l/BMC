@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public partial class RoomGenerator : Node2D {
-    [Export] public int Width = 6;
+    [Export] public int Width = 7;
     [Export] public int Height = 5;
 
     private TileData[,] grid;

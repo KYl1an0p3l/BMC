@@ -30,7 +30,7 @@ public partial class RoomManager : Node2D
 
         GD.Print("StartLoading called");
         LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
-        _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+        _player = _currentRoom.GetNode<CharacterBody2D>("PP");
         
     }
 
@@ -103,9 +103,9 @@ public partial class RoomManager : Node2D
             var scene = GD.Load<PackedScene>($"res://TileMap/Rooms/{roomId}.tscn");
             _currentRoom = scene.Instantiate<Node2D>();
             CallDeferred("add_child", _currentRoom);
-            if (roomId == "dev")
+            if (roomId == "intro")
             {
-                _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+                _player = _currentRoom.GetNode<CharacterBody2D>("PP");
             }
             else if (_player.GetParent() != _currentRoom)
             {
@@ -113,10 +113,10 @@ public partial class RoomManager : Node2D
                 _player.GetParent()?.RemoveChild(_player);
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
                 _player = playerScene.Instantiate<CharacterBody2D>();
-                _currentRoom.CallDeferred("add_child",_player);
-                if(exitTaken == new Vector2I(1, 0))
+                _currentRoom.CallDeferred("add_child", _player);
+                if (exitTaken == new Vector2I(1, 0))
                     _player.GlobalPosition = _proc.VEntryWorldPos;
-                if(exitTaken == new Vector2(-1, 0))
+                if (exitTaken == new Vector2(-1, 0))
                     _player.GlobalPosition = _proc.VEndWorldPos;
                 GD.Print($"Position du joueur : {_player.GlobalPosition}");
 

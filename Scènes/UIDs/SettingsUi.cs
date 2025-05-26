@@ -15,6 +15,7 @@ public partial class SettingsUi : Panel
 
     private Dictionary<Button, RemapData> remapBindings = new();
     private bool useGamepadLabels = false;
+    private Button lastRemapButton = null;
 
     private Dictionary<int, string> xboxButtonNames = new()
     {
@@ -42,23 +43,15 @@ public partial class SettingsUi : Panel
     {
         var events = InputMap.ActionGetEvents(action);
         var labels = new List<string>();
-
         foreach (var ev in events)
         {
             if (ev is InputEventJoypadButton joy)
-            {
                 labels.Add(GetJoypadButtonName((int)joy.ButtonIndex));
-            }
             else if (ev is InputEventJoypadMotion motion)
-            {
                 labels.Add(GetStickDirectionLabel(motion));
-            }
             else
-            {
                 labels.Add(ev.AsText());
-            }
         }
-
         return string.Join(" / ", labels);
     }
 
@@ -70,7 +63,6 @@ public partial class SettingsUi : Panel
     private string GetStickDirectionLabel(InputEventJoypadMotion motion)
     {
         int axis = (int)motion.Axis;
-
         return (axis, motion.AxisValue) switch
         {
             (0, < 0) => "Stick gauche gauche",
@@ -97,10 +89,10 @@ public partial class SettingsUi : Panel
         RegisterRemap("jumpButton", "jump");
         RegisterRemap("atkButton", "atk");
         RegisterRemap("atkSecButton", "atk_sec");
-        RegisterRemap("atkTerButton", "atk_ter"); // LB
-        RegisterRemap("atkQuaButton", "atk_qua"); // RB
-        RegisterRemap("invButton", "toggle_inventory_gui"); // Back
-        RegisterRemap("absButton", "H"); // Stick haut
+        RegisterRemap("atkTerButton", "atk_ter");
+        RegisterRemap("atkQuaButton", "atk_qua");
+        RegisterRemap("invButton", "toggle_inventory_gui");
+        RegisterRemap("absButton", "H");
         RegisterRemap("dashButton", "F");
 
         foreach (var entry in remapBindings)
@@ -127,6 +119,12 @@ public partial class SettingsUi : Panel
             remapData.Label.Text = remapPlaceholder;
             currentRemap = remapData;
             waitingForInput = true;
+            lastRemapButton = button;
+
+            foreach (var entry in remapBindings)
+                entry.Key.FocusMode = Control.FocusModeEnum.None;
+
+            button.ReleaseFocus();
         }
     }
 
@@ -158,7 +156,6 @@ public partial class SettingsUi : Panel
                 CancelRemap();
                 return;
             }
-
             ApplyRemap(currentRemap.ActionName, keyEvent, keyEvent.AsText());
         }
         else if (@event is InputEventJoypadButton joypadEvent && joypadEvent.Pressed)
@@ -169,7 +166,6 @@ public partial class SettingsUi : Panel
                 CancelRemap();
                 return;
             }
-
             ApplyRemap(currentRemap.ActionName, joypadEvent, GetJoypadButtonName((int)joypadEvent.ButtonIndex));
         }
         else if (@event is InputEventJoypadMotion motionEvent)
@@ -183,7 +179,6 @@ public partial class SettingsUi : Panel
                     CancelRemap();
                     return;
                 }
-
                 ApplyRemap(currentRemap.ActionName, motionEvent, GetStickDirectionLabel(motionEvent));
             }
         }
@@ -208,14 +203,56 @@ public partial class SettingsUi : Panel
     private void ApplyRemap(string actionName, InputEvent inputEvent, string labelText)
     {
         InputMap.ActionEraseEvents(actionName);
-        InputMap.ActionAddEvent(actionName, inputEvent);
+
+        if (inputEvent is InputEventJoypadButton joypad)
+        {
+            var newEvent = new InputEventJoypadButton
+            {
+                ButtonIndex = joypad.ButtonIndex,
+                Device = joypad.Device
+            };
+            InputMap.ActionAddEvent(actionName, newEvent);
+        }
+        else if (inputEvent is InputEventJoypadMotion motion)
+        {
+            var newEvent = new InputEventJoypadMotion
+            {
+                Axis = motion.Axis,
+                AxisValue = motion.AxisValue,
+                Device = motion.Device
+            };
+            InputMap.ActionAddEvent(actionName, newEvent);
+        }
+        else
+        {
+            InputMap.ActionAddEvent(actionName, inputEvent);
+        }
+
         currentRemap.Label.Text = labelText;
         CancelRemap();
     }
 
-    private void CancelRemap()
+    private async void CancelRemap()
     {
+        var lastButton = remapBindings.FirstOrDefault(x => x.Value == currentRemap).Key;
+
         currentRemap = null;
         waitingForInput = false;
+
+        // Réactiver le FocusMode pour tous les boutons
+        foreach (var entry in remapBindings)
+        {
+            entry.Key.FocusMode = Control.FocusModeEnum.All;
+        }
+
+        // Attendre un petit délai pour éviter que la touche A relance un remap
+        await ToSignal(GetTree().CreateTimer(0.2f), "timeout");
+
+        // Redonner le focus au dernier bouton modifié
+        if (lastButton != null)
+        {
+            lastButton.GrabFocus();
+        }
     }
+
 }

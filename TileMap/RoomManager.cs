@@ -61,20 +61,22 @@ public partial class RoomManager : Node2D
             {
                 if (child is Node2D node)
                 {
-                    // On récupère la position du centre (position globale)
-                    Vector2 position = node.GlobalPosition;
-
-                    // On choisit un ennemi aléatoire dans la collection
-                    int enemyIndex = GD.RandRange(0, EnemiesCollection.Count - 1);
-                    var enemyScene = EnemiesCollection[enemyIndex];
-
-                    if (enemyScene != null)
+                    var marker = node.GetNodeOrNull<Node2D>("Center");
+                    if (marker != null)
                     {
-                        Node2D enemyInstance = enemyScene.Instantiate() as Node2D;
-                        if (enemyInstance != null)
+                        Vector2 position = marker.GlobalPosition;
+
+                        // Instanciation d’un ennemi à cette position
+                        int enemyIndex = GD.RandRange(0, EnemiesCollection.Count - 1);
+                        var enemyScene = EnemiesCollection[enemyIndex];
+                        if (enemyScene != null)
                         {
-                            enemyInstance.GlobalPosition = position;
-                            CallDeferred("add_child", enemyInstance);
+                            Node2D enemyInstance = enemyScene.Instantiate() as Node2D;
+                            if (enemyInstance != null)
+                            {
+                                enemyInstance.GlobalPosition = position;
+                                CallDeferred("add_child", enemyInstance);
+                            }
                         }
                     }
                 }

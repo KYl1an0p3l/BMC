@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://dh5d8rkoacqil"]
+[gd_scene load_steps=3 format=3 uid="uid://gqaol0dyphar"]
 
 [ext_resource type="Texture2D" uid="uid://ibg48enfelgu" path="res://Texture/mur1.png" id="2_r0rmm"]
 
@@ -77,3 +77,6 @@ texture = ExtResource("2_r0rmm")
 position = Vector2(16, 180)
 scale = Vector2(1, 1.25)
 texture = ExtResource("2_r0rmm")
+
+[node name="Center" type="Marker2D" parent="."]
+position = Vector2(99, 81)

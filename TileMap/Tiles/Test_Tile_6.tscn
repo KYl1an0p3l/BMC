@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://uelyebff80gm"]
+[gd_scene load_steps=4 format=3 uid="uid://bpiyaiu3mjvai"]
 
 [ext_resource type="Texture2D" uid="uid://ibg48enfelgu" path="res://Texture/mur1.png" id="1_44jjw"]
 
@@ -58,3 +58,6 @@ shape = SubResource("RectangleShape2D_44jjw")
 [node name="Sprite2D7" type="Sprite2D" parent="Panel/StaticBody2D"]
 position = Vector2(-16, 144)
 texture = ExtResource("1_44jjw")
+
+[node name="Center" type="Marker2D" parent="."]
+position = Vector2(98, 64)

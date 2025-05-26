@@ -137,10 +137,12 @@ public partial class Enemy2 : CharacterBody2D
 
         if (bullet is Bullets bulletScript)
         {
-            Vector2 direction = (_player.GlobalPosition - GlobalPosition).Normalized();
-            bulletScript.SetDirection(direction);
+            if (_player != null)
+            {
+                Vector2 direction = (_player.GlobalPosition - GlobalPosition).Normalized();
+                bulletScript.SetDirection(direction);
+            }
         }
-
         GetTree().CurrentScene.AddChild(bullet);
     }
 }

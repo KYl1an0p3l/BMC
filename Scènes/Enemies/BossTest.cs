@@ -263,7 +263,7 @@ public partial class BossTest : CharacterBody2D
 
         while (playerInAttackZone && IsInstanceValid(playerInAttack))
         {
-            await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
+            await ToSignal(GetTree().CreateTimer(0.6f), "timeout");
 
             if (!playerInAttackZone || !IsInstanceValid(playerInAttack))
                 break;

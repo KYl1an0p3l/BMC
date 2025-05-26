@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
 [ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
-[ext_resource type="PackedScene" uid="uid://dpgd2k4xsgirg" path="res://Scènes/Enemies/Boss_test.tscn" id="6_0r5kt"]
+[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="7_n2upc"]
 [ext_resource type="PackedScene" uid="uid://dur4gk3assrnd" path="res://Scènes/Characters/pnj.tscn" id="12_5rd1r"]
 
 [node name="DevTestMap" type="Node2D"]
@@ -23,5 +23,5 @@ position = Vector2(4, 0)
 [node name="PNJ" parent="." instance=ExtResource("12_5rd1r")]
 position = Vector2(999, 525)
 
-[node name="Boss" parent="." instance=ExtResource("6_0r5kt")]
-position = Vector2(905, 478)
+[node name="Enemy1" parent="." instance=ExtResource("7_n2upc")]
+position = Vector2(691, 473)

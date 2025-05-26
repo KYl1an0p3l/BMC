@@ -19,6 +19,7 @@ public partial class Pp : CharacterBody2D
     private AttackDirection currentAttackDirection = AttackDirection.Right;
     private AttackDirection lastHorizontalDirection = AttackDirection.Right;
     private bool isDownwardAttack = false;
+    private bool isUpwardAttack = false;
     private bool isAttacking = false;
 
     private bool isShooting = false;    
@@ -333,21 +334,28 @@ public partial class Pp : CharacterBody2D
         // ANIMATION (toujours traitée)
         if (velocity.Length() > 0)
         {
+            if (bloquer_actions && !isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "charge_heal_left" : "charge_heal_right");
+            }
+            else if (isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "heal_left" : "heal_right");
+            }
             if (isDashing)
             {
                 animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
             }
-            else if (!IsOnFloor() && !isDashing) {
-                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
-            }
-            else if (!isAttacking && !isDashing)
+            else if (!IsOnFloor() && !isDashing && !isDownwardAttack && !isUpwardAttack)
             {
-                animatedSprite.Play(LookingLeft ? "gauche" : "droite");
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
             }
             else if (isAttacking)
             {
                 if (isDownwardAttack)
                     animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
+                else if (isUpwardAttack)
+                    animatedSprite.Play(LookingLeft ? "up_atk_left" : "up_atk_right");
                 else
                     animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
             }
@@ -355,30 +363,48 @@ public partial class Pp : CharacterBody2D
             {
                 animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
             }
-
-        }
-        else if (isDashing)
-        {
-            animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
-        }
-        else if (!IsOnFloor() && !isDashing) {
-                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
-        }
-        else if (isAttacking)
-        {
-            if (isDownwardAttack)
-                animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
             else
-                animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
+            {
+                animatedSprite.Play(LookingLeft ? "gauche" : "droite");
+            }
         }
-        else if (isShooting)
+        else if (velocity.Length() == 0)
         {
-            animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
+            if (bloquer_actions && !isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "charge_heal_left" : "charge_heal_right");
+            }
+            else if (isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "heal_left" : "heal_right");
+            }
+            else if (isDashing)
+            {
+                animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
+            }
+            else if (!IsOnFloor() && !isDashing && !isDownwardAttack && !isUpwardAttack)
+            {
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
+            }
+            else if (isAttacking)
+            {
+                if (isDownwardAttack)
+                    animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
+                else if (isUpwardAttack)
+                    animatedSprite.Play(LookingLeft ? "up_atk_left" : "up_atk_right");
+                else
+                    animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
+            }
+            else if (isShooting)
+            {
+                animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
+            }
+            else
+            {
+                animatedSprite.Play(LookingLeft ? "idle_left" : "idle_right");
+            }
         }
-        else
-        {
-            animatedSprite.Play(LookingLeft ? "idle_left" : "idle_right");
-        }
+
 
         // Application du mouvement
         Position += velocity * (float)delta;
@@ -453,6 +479,7 @@ public partial class Pp : CharacterBody2D
     private void UpdateAttackDirection()
     {
         isDownwardAttack=false;
+        isUpwardAttack = false;
         Vector2 atkOffset;
         GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
         if (Input.IsActionPressed("z"))
@@ -482,6 +509,7 @@ public partial class Pp : CharacterBody2D
         {
             case AttackDirection.Up:
                 atkOffset = new Vector2(5, -30);
+                isUpwardAttack = true;
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(10, -30);
                 GetNode<Area2D>("RifleAtk").RotationDegrees = -90;
                 break;

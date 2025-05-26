@@ -4,4 +4,4 @@
 
 [node name="WorldMap" type="Node"]
 script = ExtResource("1_odjuh")
-FlatMap = Array[Array]([["P", "P", "P"]])
+FlatMap = []

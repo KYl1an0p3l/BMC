@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://sdwoc2molucq"]
+[gd_scene load_steps=16 format=3 uid="uid://sdwoc2molucq"]
 
 [ext_resource type="Script" uid="uid://d3i6idtp0lhv5" path="res://Scènes/Enemies/Enemy2.cs" id="1_l35c4"]
 [ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_6lnd1"]
+[ext_resource type="Resource" uid="uid://bttp3h43kbj3k" path="res://Scènes/Enemies/Ennemy2.tres" id="2_icith"]
 [ext_resource type="Texture2D" uid="uid://cdlqnflhc0s3i" path="res://Texture/corbeau.png" id="3_6lnd1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6lnd1"]
@@ -84,6 +85,7 @@ position = Vector2(1, 0)
 collision_layer = 4
 collision_mask = 16
 script = ExtResource("1_l35c4")
+ennemy = ExtResource("2_icith")
 ammo = ExtResource("2_6lnd1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -107,3 +109,9 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
 shape = SubResource("RectangleShape2D_6lnd1")
+
+[node name="RayLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-26, 0)
+
+[node name="RayRight" type="RayCast2D" parent="."]
+target_position = Vector2(27, 0)

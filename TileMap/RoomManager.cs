@@ -1,14 +1,18 @@
 // RoomManager.cs
 using Godot;
 using System;
+using System.Linq;
 
 public partial class RoomManager : Node2D
 {
+    [Export]
+    public Godot.Collections.Array<PackedScene> EnemiesCollection;
     [Export] private NodePath playerPath;
     [Export] private Vector2 tileSize = new Vector2(200, 200);
 
     private RoomGenerator _proc;   // votre générateur semi‐procédural
     private Node2D _currentRoom;
+    private Random _random;
     private CharacterBody2D _player;
     private Vector2I exitTaken;
 
@@ -26,7 +30,7 @@ public partial class RoomManager : Node2D
 
         GD.Print("StartLoading called");
         LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
-        _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+        _player = _currentRoom.GetNode<CharacterBody2D>("PP");
         
     }
 
@@ -47,18 +51,49 @@ public partial class RoomManager : Node2D
     {
         if (roomId == "P")
         {
+            _random = new Random();
             _currentRoom = _proc.Generate();
-            AddChild(_currentRoom);
+            var children = _currentRoom.GetChildren();
+            int countToPick = GD.RandRange(1, 3);
+            var shuffled = children.OrderBy(_ => _random.Next()).ToList();
+            var selectedChildren = shuffled.Take(countToPick);
+            foreach (var child in selectedChildren)
+            {
+                if (child is Node2D node)
+                {
+                    var marker = node.GetNodeOrNull<Node2D>("Center");
+                    if (marker != null)
+                    {
+                        Vector2 position = marker.GlobalPosition;
+
+                        // Instanciation d’un ennemi à cette position
+                        int enemyIndex = GD.RandRange(0, EnemiesCollection.Count - 1);
+                        var enemyScene = EnemiesCollection[enemyIndex];
+                        if (enemyScene != null)
+                        {
+                            Node2D enemyInstance = enemyScene.Instantiate() as Node2D;
+                            if (enemyInstance != null)
+                            {
+                                enemyInstance.GlobalPosition = position;
+                                CallDeferred("add_child", enemyInstance);
+                            }
+                        }
+                    }
+                }
+            }
+
+                CallDeferred("add_child", _currentRoom);
             if (_player.GetParent() != _currentRoom)
             {
                 GD.Print("Ajout du joueur à la salle procédurale");
                 _player.GetParent()?.RemoveChild(_player);
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
                 _player = playerScene.Instantiate<CharacterBody2D>();
-                _currentRoom.CallDeferred("add_child",_player);
-                if(exitTaken == new Vector2I(1, 0))
+                _player.AddToGroup("player");
+                _currentRoom.CallDeferred("add_child", _player);
+                if (exitTaken == new Vector2I(1, 0))
                     _player.GlobalPosition = _proc.VEntryWorldPos;
-                if(exitTaken == new Vector2(-1, 0))
+                if (exitTaken == new Vector2(-1, 0))
                     _player.GlobalPosition = _proc.VEndWorldPos;
                 GD.Print($"Position du joueur : {_player.GlobalPosition}");
 
@@ -71,9 +106,9 @@ public partial class RoomManager : Node2D
             var scene = GD.Load<PackedScene>($"res://TileMap/Rooms/{roomId}.tscn");
             _currentRoom = scene.Instantiate<Node2D>();
             CallDeferred("add_child", _currentRoom);
-            if (roomId == "dev")
+            if (roomId == "intro")
             {
-                _player = _currentRoom.GetNode<CharacterBody2D>("DevTestMap/PP");
+                _player = _currentRoom.GetNode<CharacterBody2D>("PP");
             }
             else if (_player.GetParent() != _currentRoom)
             {
@@ -81,10 +116,10 @@ public partial class RoomManager : Node2D
                 _player.GetParent()?.RemoveChild(_player);
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
                 _player = playerScene.Instantiate<CharacterBody2D>();
-                _currentRoom.CallDeferred("add_child",_player);
-                if(exitTaken == new Vector2I(1, 0))
+                _currentRoom.CallDeferred("add_child", _player);
+                if (exitTaken == new Vector2I(1, 0))
                     _player.GlobalPosition = _proc.VEntryWorldPos;
-                if(exitTaken == new Vector2(-1, 0))
+                if (exitTaken == new Vector2(-1, 0))
                     _player.GlobalPosition = _proc.VEndWorldPos;
                 GD.Print($"Position du joueur : {_player.GlobalPosition}");
 

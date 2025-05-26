@@ -1,17 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://brbc3jwqs4gxs"]
+[gd_scene load_steps=3 format=3 uid="uid://3ik408t35hbr"]
 
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_k86pu"]
+[ext_resource type="Texture2D" uid="uid://dwtc5y74i8nku" path="res://Texture/plateforme1.png" id="2_obcr8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ooych"]
+size = Vector2(46, 22)
 
 [node name="TestTile" type="Node2D"]
+visibility_layer = 4
 
 [node name="Panel" type="Panel" parent="."]
+self_modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(200, 200)
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Sprite2D" type="Sprite2D" parent="Panel"]
-modulate = Color(1, 0, 1, 1)
-scale = Vector2(1.5625, 1.5625)
-skew = 0.00872665
-texture = ExtResource("1_k86pu")
-centered = false
+[node name="StaticBody2D" type="StaticBody2D" parent="Panel"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/StaticBody2D"]
+position = Vector2(101, 96)
+shape = SubResource("RectangleShape2D_ooych")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/StaticBody2D"]
+position = Vector2(101, 96)
+scale = Vector2(0.75, 0.875)
+texture = ExtResource("2_obcr8")
+
+[node name="Center" type="Marker2D" parent="."]
+position = Vector2(85, 48)

@@ -1,11 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://37s7nm2164qe"]
+[gd_scene load_steps=5 format=3 uid="uid://cu4oa8vb5p4o1"]
 
 [ext_resource type="PackedScene" uid="uid://2en4b5yge18j" path="res://TileMap/WorldMap.tscn" id="1_klkiu"]
+[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="2_jv3k1"]
 [ext_resource type="PackedScene" uid="uid://luqh65dw0efb" path="res://TileMap/RoomManager.tscn" id="2_nc1n8"]
+[ext_resource type="PackedScene" uid="uid://dhrm6i3ps1tu6" path="res://Scènes/Enemies/enemy_2.tscn" id="3_w6rll"]
 
 [node name="ProcTest" type="CanvasLayer"]
 
 [node name="RoomManager" parent="." instance=ExtResource("2_nc1n8")]
+EnemiesCollection = Array[PackedScene]([ExtResource("2_jv3k1"), ExtResource("3_w6rll")])
 
 [node name="WorldMap" parent="." instance=ExtResource("1_klkiu")]
-FlatMap = Array[Array]([["dev", "P", "P"]])
+FlatMap = [["intro", "P", "P", "P"]]

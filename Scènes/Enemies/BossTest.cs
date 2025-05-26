@@ -20,7 +20,10 @@ public partial class BossTest : CharacterBody2D
     private Pp overlappingPlayer = null;
     private float dashCooldownTimer = 0f;
     private bool isDashing = false;
+    private bool isChargingDash = false;
     private float dashTimer = 0f;
+    private float dashElapsed = 0f;
+    private float dashMinTime = 0.2f;
     private Vector2 dashDirection = Vector2.Zero;
     private ProgressBar bossBar;
     private RayCast2D raycastWall;
@@ -47,7 +50,6 @@ public partial class BossTest : CharacterBody2D
         bossBar = GetNode<ProgressBar>("BossBar");
         bossBar.MaxValue = maxHealth;
         bossBar.Value = Health;
-
         aimRay = GetNode<RayCast2D>("AimRay");
 
         var damageArea = GetNode<Area2D>("DamageArea");
@@ -84,7 +86,11 @@ public partial class BossTest : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (player == null || !GodotObject.IsInstanceValid(player)) return;
+        if (player == null || !GodotObject.IsInstanceValid(player))
+        {
+            player = GetTree().GetFirstNodeInGroup("player") as Pp;
+            if (player == null) return;
+        }
 
         float distance = GlobalPosition.DistanceTo(player.GlobalPosition);
 
@@ -104,6 +110,8 @@ public partial class BossTest : CharacterBody2D
         if (isDashing)
         {
             dashTimer -= (float)delta;
+            dashElapsed += (float)delta;
+
             if (dashTimer <= 0)
             {
                 isDashing = false;
@@ -113,7 +121,8 @@ public partial class BossTest : CharacterBody2D
             {
                 raycastWall.ForceRaycastUpdate();
                 raycastGround.ForceRaycastUpdate();
-                if (raycastWall.IsColliding() || !raycastGround.IsColliding())
+
+                if (dashElapsed >= dashMinTime && (raycastWall.IsColliding() || !raycastGround.IsColliding()))
                 {
                     isDashing = false;
                     velocity = Vector2.Zero;
@@ -129,7 +138,8 @@ public partial class BossTest : CharacterBody2D
         }
 
         Aim();
-        if (!isDashing)
+
+        if (!isDashing && !isChargingDash)
         {
             if (distance < meleeRangeWidth)
             {
@@ -153,21 +163,14 @@ public partial class BossTest : CharacterBody2D
     private async Task ShootTwiceThenDash()
     {
         isShootingSequenceRunning = true;
-
         Vector2 direction = (player.GlobalPosition - GlobalPosition).Normalized();
-
         Shoot(direction);
         await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
-
-
         Shoot(direction);
         await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
-
         StartDashSequence();
-
         isShootingSequenceRunning = false;
     }
-
 
     private void FollowPlayer()
     {
@@ -175,16 +178,14 @@ public partial class BossTest : CharacterBody2D
         {
             bool goingLeft = player.GlobalPosition.X < GlobalPosition.X;
             velocity.X = goingLeft ? -Speed : Speed;
-
             UpdateRaycasts(goingLeft);
         }
     }
+
     private void UpdateRaycasts(bool left)
     {
-        // Inverser les TargetPosition des raycasts selon la direction
-        Vector2 wallTarget = new Vector2(left ? -120 : 120, 0); // 20 pixels vers la gauche ou droite
-        Vector2 groundTarget = new Vector2(left ? 100 : 100, 110); // même X, mais vers le bas
-
+        Vector2 wallTarget = new Vector2(left ? -120 : 120, 0);
+        Vector2 groundTarget = new Vector2(left ? 100 : 100, 110);
         raycastWall.TargetPosition = wallTarget;
         raycastGround.TargetPosition = groundTarget;
     }
@@ -193,6 +194,7 @@ public partial class BossTest : CharacterBody2D
     {
         if (player == null || !GodotObject.IsInstanceValid(player)) return;
 
+        isChargingDash = true;
         dashCooldownTimer = DashCooldown;
         velocity = Vector2.Zero;
         Velocity = velocity;
@@ -205,6 +207,8 @@ public partial class BossTest : CharacterBody2D
         dashDirection = (player.GlobalPosition - GlobalPosition).Normalized();
         isDashing = true;
         dashTimer = DashDuration;
+        dashElapsed = 0f;
+        isChargingDash = false;
     }
 
     private void MeleeAttack()
@@ -260,20 +264,15 @@ public partial class BossTest : CharacterBody2D
     private async Task HandleAttackZoneDamage()
     {
         attackCoroutineRunning = true;
-
         while (playerInAttackZone && IsInstanceValid(playerInAttack))
         {
             await ToSignal(GetTree().CreateTimer(0.6f), "timeout");
-
-            if (!playerInAttackZone || !IsInstanceValid(playerInAttack))
-                break;
+            if (!playerInAttackZone || !IsInstanceValid(playerInAttack)) break;
 
             while (playerInAttack != null && IsInstanceValid(playerInAttack) && playerInAttack.IsInvincible())
             {
                 await ToSignal(GetTree().CreateTimer(0.1f), "timeout");
-
-                if (!playerInAttackZone || !IsInstanceValid(playerInAttack))
-                    break;
+                if (!playerInAttackZone || !IsInstanceValid(playerInAttack)) break;
             }
 
             if (playerInAttackZone && IsInstanceValid(playerInAttack) && !playerInAttack.IsInvincible())

@@ -4,14 +4,13 @@
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
 [ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
-[ext_resource type="PackedScene" uid="uid://dpgd2k4xsgirg" path="res://Scènes/Enemies/Boss_test.tscn" id="6_0r5kt"]
+[ext_resource type="PackedScene" uid="uid://bg0geiocit546" path="res://Scènes/Enemies/Boss_test.tscn" id="5_th3oj"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
 
 [node name="PP" parent="." groups=["player"] instance=ExtResource("1_5o6mk")]
 position = Vector2(159, 256)
-maxHealth = 5
 
 [node name="DevGround" parent="." instance=ExtResource("2_qqe0n")]
 position = Vector2(123, 175)
@@ -19,5 +18,5 @@ position = Vector2(123, 175)
 [node name="rifleGet" parent="." instance=ExtResource("5_n2upc")]
 position = Vector2(4, 0)
 
-[node name="Boss" parent="." instance=ExtResource("6_0r5kt")]
-position = Vector2(764, 394)
+[node name="Boss" parent="." instance=ExtResource("5_th3oj")]
+position = Vector2(978, 441)

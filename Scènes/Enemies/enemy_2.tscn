@@ -9,7 +9,7 @@ LeftLimitPath = NodePath("../LeftLimit")
 RightLimitPath = NodePath("../RightLimit")
 
 [node name="LeftLimit" type="Node2D" parent="."]
-position = Vector2(-120, 1)
+position = Vector2(-200, 1)
 
 [node name="RightLimit" type="Node2D" parent="."]
-position = Vector2(118, 0)
+position = Vector2(200, 0)

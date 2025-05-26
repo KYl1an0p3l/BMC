@@ -16,10 +16,14 @@ public partial class ItemStackGui : Panel
     }
 
     public void UpdateItems(InventorySlot slot){
-        if(slot == null){
-            //backgroundSprite.Frame = 0; si plus tard on veut une texture alternative
+        if (slot == null || slot.Item == null) {
             itemSprite.Visible = false;
             amountLabel.Visible = false;
+            return;
+        }
+
+        if (slot.Item.Texture == null) {
+            itemSprite.Visible = false;
         }
         else{
             //backgroundSprite.Frame = 1; si plus tard on veut une texture alternative

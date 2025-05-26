@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://hbkda834us1g"]
+[gd_scene load_steps=20 format=3 uid="uid://hbkda834us1g"]
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
 [ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
+[ext_resource type="Resource" uid="uid://c010tpdy07x58" path="res://Scènes/Enemies/Enemy1.tres" id="2_mwefl"]
 [ext_resource type="AudioStream" uid="uid://bc6tbg6on6xkk" path="res://Texture/sound1.mp3" id="3_aiow1"]
 [ext_resource type="AudioStream" uid="uid://cr6nkuq63j8dj" path="res://Texture/sound2.mp3" id="4_y0o3x"]
 [ext_resource type="AudioStream" uid="uid://2wovh8l5vc83" path="res://Texture/sound3.mp3" id="5_mwefl"]
@@ -108,6 +109,7 @@ points = PackedVector2Array(44, -7, 56, 35, -52, 35, -51, 11, -12, -33, 28, -28)
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("1_80chd")
+ennemy = ExtResource("2_mwefl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(3, -4)
@@ -115,11 +117,11 @@ scale = Vector2(2.4, 2.4)
 shape = SubResource("RectangleShape2D_80chd")
 
 [node name="RayLeft" type="RayCast2D" parent="."]
-target_position = Vector2(-32, 48)
+target_position = Vector2(-25, 48)
 collision_mask = 5
 
 [node name="RayRight" type="RayCast2D" parent="."]
-target_position = Vector2(32, 48)
+target_position = Vector2(25, 48)
 collision_mask = 5
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -131,15 +133,15 @@ frame_progress = 0.229129
 
 [node name="Sound1" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_aiow1")
-volume_db = -80.0
+volume_db = 5.0
 
 [node name="Sound2" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_y0o3x")
-volume_db = -80.0
+volume_db = 3.0
 
 [node name="Sound3" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_mwefl")
-volume_db = -80.0
+volume_db = 10.0
 
 [node name="DamageArea" type="Area2D" parent="."]
 collision_layer = 16
@@ -147,3 +149,9 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
 shape = SubResource("ConvexPolygonShape2D_y0o3x")
+
+[node name="RayWallRight" type="RayCast2D" parent="."]
+target_position = Vector2(60, 30)
+
+[node name="RayWallLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-60, 30)

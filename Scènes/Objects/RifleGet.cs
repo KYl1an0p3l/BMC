@@ -18,13 +18,7 @@ public partial class RifleGet : Area2D
             hasGun = true;
             GetNode<CollisionShape2D>("rifleGetCollision").CallDeferred("set_disabled", true);
             GetNode<Sprite2D>("rifleGetCollision/rifleGetSprite").Visible = false;
-            if (inv == null)
-            {
-                GD.PrintErr("Inventory est null dans RifleGet !");
-                return;
-            }
             inv.Insert(itemRes);
-
         }
     }
 }

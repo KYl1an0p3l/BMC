@@ -3,8 +3,7 @@ using System;
 
 public partial class Enemy2 : CharacterBody2D
 {
-    [Export] public float MoveSpeed = 100f;
-    [Export] public int Health = 4;
+    [Export] private Ennemies ennemy;
     [Export] public NodePath PlayerPath;
     [Export] public PackedScene ammo;
     [Export] public NodePath LeftLimitPath;
@@ -14,6 +13,8 @@ public partial class Enemy2 : CharacterBody2D
     private int direction = 1;
     private Vector2 velocity;
     private RayCast2D _rayCast;
+    private RayCast2D rayLeft;
+    private RayCast2D rayRight;
     private AnimatedSprite2D animatedSprite2D;
     private Timer _timer;
     private Pp _player;
@@ -21,9 +22,16 @@ public partial class Enemy2 : CharacterBody2D
 
     public override void _Ready()
     {
+        var players = GetTree().GetNodesInGroup("player");
+        if (players.Count > 0 && players[0] is Pp player)
+        {
+            _player = player;
+        }
+
         _rayCast = GetNode<RayCast2D>("RayCast2D");
+        rayLeft = GetNode<RayCast2D>("RayLeft");
+        rayRight = GetNode<RayCast2D>("RayRight");
         _timer = GetNode<Timer>("Timer");
-        _player = GetNode<Pp>("../../PP");
 
         _timer.Timeout += OnTimerTimeout;
 
@@ -39,18 +47,40 @@ public partial class Enemy2 : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_player == null || !GodotObject.IsInstanceValid(_player))
+        {
+            var players = GetTree().GetNodesInGroup("player");
+            if (players.Count > 0 && players[0] is Pp player)
+            {
+                _player = player;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         Aim();
         CheckPlayerCollision();
 
-        velocity.X = MoveSpeed * direction;
+        velocity.X = ennemy.Speed * direction;
         Velocity = velocity;
         MoveAndSlide();
 
-        // Obtenir les limites gauche/droite, quelle que soit leur position
         float leftX = Mathf.Min(_leftLimit.GlobalPosition.X, _rightLimit.GlobalPosition.X);
         float rightX = Mathf.Max(_leftLimit.GlobalPosition.X, _rightLimit.GlobalPosition.X);
 
-        // Inverser direction si on atteint une des bornes
+
+        if (direction == -1 && rayLeft.IsColliding())
+        {
+            direction = 1;
+        }
+        else if (direction == 1 && rayRight.IsColliding())
+        {
+            direction = -1;
+        }
+
+        // Limites physiques de la salle
         if (direction < 0 && GlobalPosition.X <= _leftLimit.GlobalPosition.X)
         {
             direction = 1;
@@ -66,7 +96,6 @@ public partial class Enemy2 : CharacterBody2D
             animatedSprite2D.Play("left");
         else if (direction == 1)
             animatedSprite2D.Play("right");
-
     }
 
     private void Aim()
@@ -112,9 +141,9 @@ public partial class Enemy2 : CharacterBody2D
 
     public void TakeDamage(int amount)
     {
-        Health -= amount;
-        GD.Print($"Enemy2 touché ! Vie restante : {Health}");
-        if (Health <= 0)
+        ennemy.Health -= amount;
+        GD.Print($"Enemy2 touché ! Vie restante : {ennemy.Health}");
+        if (ennemy.Health <= 0)
         {
             QueueFree();
         }
@@ -132,7 +161,7 @@ public partial class Enemy2 : CharacterBody2D
         Node2D bullet = (Node2D)ammo.Instantiate();
         bullet.GlobalPosition = GlobalPosition;
 
-        if (bullet is Bullets bulletScript)
+        if (bullet is Bullets bulletScript && _player != null)
         {
             Vector2 direction = (_player.GlobalPosition - GlobalPosition).Normalized();
             bulletScript.SetDirection(direction);

@@ -1,17 +1,51 @@
-[gd_scene load_steps=2 format=3 uid="uid://bluq65friajhn"]
+[gd_scene load_steps=3 format=3 uid="uid://bdp6slg426ld5"]
 
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="1_wfw5n"]
+[ext_resource type="Texture2D" uid="uid://ibg48enfelgu" path="res://Texture/mur1.png" id="2_5rrbp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_akiuo"]
+size = Vector2(32, 200)
 
 [node name="TestTile4" type="Node2D"]
+visibility_layer = 4
 
 [node name="Panel" type="Panel" parent="."]
+self_modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(200, 200)
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Sprite2D" type="Sprite2D" parent="Panel"]
-position = Vector2(200, 200)
-rotation = 3.14159
-scale = Vector2(1.5625, 1.5625)
-texture = ExtResource("1_wfw5n")
-centered = false
+[node name="StaticBody2D2" type="StaticBody2D" parent="Panel"]
+position = Vector2(0, 32)
+rotation = -1.5708
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 100)
+shape = SubResource("RectangleShape2D_akiuo")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 16)
+texture = ExtResource("2_5rrbp")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 48)
+texture = ExtResource("2_5rrbp")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 80)
+texture = ExtResource("2_5rrbp")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 112)
+texture = ExtResource("2_5rrbp")
+
+[node name="Sprite2D5" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 144)
+texture = ExtResource("2_5rrbp")
+
+[node name="Sprite2D6" type="Sprite2D" parent="Panel/StaticBody2D2"]
+position = Vector2(16, 180)
+scale = Vector2(1, 1.25)
+texture = ExtResource("2_5rrbp")
+
+[node name="Center" type="Marker2D" parent="."]
+position = Vector2(98, 76)

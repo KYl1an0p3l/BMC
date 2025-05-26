@@ -14,6 +14,77 @@ public partial class SettingsUi : Panel
     }
 
     private Dictionary<Button, RemapData> remapBindings = new();
+    private bool useGamepadLabels = false;
+
+    private Dictionary<int, string> xboxButtonNames = new()
+    {
+        { 0, "A" }, { 1, "B" }, { 2, "X" }, { 3, "Y" },
+        { 4, "Back" }, { 5, "RB" }, { 6, "Back" }, { 7, "Start" },
+        { 8, "LStick" }, { 9, "LB" },
+        { 10, "RB" }, { 11, "Haut" }, { 12, "Bas" }, { 13, "Gauche" }, { 14, "Droite" }
+    };
+
+    public void SetInputMode(bool isGamepad)
+    {
+        useGamepadLabels = isGamepad;
+        UpdateLabels();
+    }
+
+    private void UpdateLabels()
+    {
+        foreach (var entry in remapBindings)
+        {
+            entry.Value.Label.Text = GetActionLabel(entry.Value.ActionName);
+        }
+    }
+
+    private string GetActionLabel(string action)
+    {
+        var events = InputMap.ActionGetEvents(action);
+        var labels = new List<string>();
+
+        foreach (var ev in events)
+        {
+            if (ev is InputEventJoypadButton joy)
+            {
+                labels.Add(GetJoypadButtonName((int)joy.ButtonIndex));
+            }
+            else if (ev is InputEventJoypadMotion motion)
+            {
+                labels.Add(GetStickDirectionLabel(motion));
+            }
+            else
+            {
+                labels.Add(ev.AsText());
+            }
+        }
+
+        return string.Join(" / ", labels);
+    }
+
+    private string GetJoypadButtonName(int index)
+    {
+        return xboxButtonNames.TryGetValue(index, out var name) ? name : $"Bouton {index}";
+    }
+
+    private string GetStickDirectionLabel(InputEventJoypadMotion motion)
+    {
+        int axis = (int)motion.Axis;
+
+        return (axis, motion.AxisValue) switch
+        {
+            (0, < 0) => "Stick gauche gauche",
+            (0, > 0) => "Stick gauche droite",
+            (1, < 0) => "Stick gauche haut",
+            (1, > 0) => "Stick gauche bas",
+            (2, < 0) => "Stick droit gauche",
+            (2, > 0) => "Stick droit droite",
+            (3, < 0) => "Stick droit haut",
+            (3, > 0) => "Stick droit bas",
+            _ => $"Axe {axis} {(motion.AxisValue > 0 ? "+" : "-")}"
+        };
+    }
+
     private RemapData currentRemap = null;
     private bool waitingForInput = false;
 
@@ -26,10 +97,11 @@ public partial class SettingsUi : Panel
         RegisterRemap("jumpButton", "jump");
         RegisterRemap("atkButton", "atk");
         RegisterRemap("atkSecButton", "atk_sec");
-        RegisterRemap("atkTerButton", "atk_ter");
-        RegisterRemap("atkQuaButton", "atk_qua");
-        RegisterRemap("invButton", "toggle_inventory_gui");
-        RegisterRemap("absButton", "abs");
+        RegisterRemap("atkTerButton", "atk_ter"); // LB
+        RegisterRemap("atkQuaButton", "atk_qua"); // RB
+        RegisterRemap("invButton", "toggle_inventory_gui"); // Back
+        RegisterRemap("absButton", "H"); // Stick haut
+        RegisterRemap("dashButton", "F");
 
         foreach (var entry in remapBindings)
         {
@@ -37,7 +109,6 @@ public partial class SettingsUi : Panel
             entry.Key.Pressed += () => OnRemapButtonPressed(entry.Key);
         }
 
-        // Focus initial automatique pour la manette
         remapBindings.Keys.First().GrabFocus();
     }
 
@@ -88,7 +159,7 @@ public partial class SettingsUi : Panel
                 return;
             }
 
-            ApplyRemap(currentRemap.ActionName, keyEvent, OS.GetKeycodeString(keyEvent.Keycode));
+            ApplyRemap(currentRemap.ActionName, keyEvent, keyEvent.AsText());
         }
         else if (@event is InputEventJoypadButton joypadEvent && joypadEvent.Pressed)
         {
@@ -99,7 +170,7 @@ public partial class SettingsUi : Panel
                 return;
             }
 
-            ApplyRemap(currentRemap.ActionName, joypadEvent, $"Joypad Button {joypadEvent.ButtonIndex}");
+            ApplyRemap(currentRemap.ActionName, joypadEvent, GetJoypadButtonName((int)joypadEvent.ButtonIndex));
         }
         else if (@event is InputEventJoypadMotion motionEvent)
         {
@@ -113,15 +184,7 @@ public partial class SettingsUi : Panel
                     return;
                 }
 
-                var motion = new InputEventJoypadMotion
-                {
-                    Axis = motionEvent.Axis,
-                    AxisValue = motionEvent.AxisValue,
-                    Device = motionEvent.Device
-                };
-
-                string direction = motionEvent.AxisValue > 0 ? "+" : "-";
-                ApplyRemap(currentRemap.ActionName, motion, $"Joypad Axis {motionEvent.Axis} {direction}");
+                ApplyRemap(currentRemap.ActionName, motionEvent, GetStickDirectionLabel(motionEvent));
             }
         }
     }

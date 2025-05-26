@@ -8,7 +8,8 @@ public partial class PauseMenu : Control
     private Button _quitButton;
     private Button _settingsReturnButton;
     private Panel settingsUi, screenPanel;
-
+    private bool openedWithGamepad = false;
+    
     public override void _Ready()
     {
         _resumeButton = GetNode<Button>("screenPanel/screenVBox/ResumeButton");
@@ -62,8 +63,11 @@ public partial class PauseMenu : Control
         if (!Visible)
             return;
 
+        // Détection du type d'entrée pour savoir si on utilise une manette
         if (@event is InputEventJoypadButton joypadButton && joypadButton.Pressed)
         {
+            openedWithGamepad = true;
+
             // Bouton A / Croix → activer le bouton sélectionné
             if (joypadButton.ButtonIndex == JoyButton.A)
             {
@@ -81,7 +85,12 @@ public partial class PauseMenu : Control
                     OnResumePressed();
             }
         }
+        else if (@event is InputEventKey keyEvent && keyEvent.Pressed)
+        {
+            openedWithGamepad = false;
+        }
     }
+
 
     private void OnResumePressed()
     {
@@ -94,7 +103,9 @@ public partial class PauseMenu : Control
         screenPanel.Visible = false;
         settingsUi.Visible = true;
 
-        // Focus automatique sur le premier bouton des settings
+        var settingsScript = settingsUi as SettingsUi;
+        settingsScript?.SetInputMode(openedWithGamepad);
+
         var firstSettingButton = settingsUi.GetNodeOrNull<Button>("lookUpButton");
         firstSettingButton?.GrabFocus();
     }

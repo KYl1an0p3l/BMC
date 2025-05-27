@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dur4gk3assrnd"]
 
-[ext_resource type="Script" uid="uid://ddv3bxlumxmq0" path="res://Pnj.cs" id="1_56t0w"]
-[ext_resource type="Texture2D" uid="uid://iqx72k3e4r6w" path="res://icon.svg" id="2_g6rp5"]
+[ext_resource type="Script" uid="uid://43xp7mv1kgg3" path="res://Pnj.cs" id="1_56t0w"]
+[ext_resource type="Texture2D" uid="uid://dvpwb04vymwce" path="res://Texture/pnj_sage.png" id="2_56t0w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_arvha"]
 size = Vector2(180, 150)
@@ -10,9 +10,9 @@ size = Vector2(180, 150)
 script = ExtResource("1_56t0w")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0.5, 0)
-scale = Vector2(0.492188, 1)
-texture = ExtResource("2_g6rp5")
+position = Vector2(0.5, -2)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_56t0w")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 32

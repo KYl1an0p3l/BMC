@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dyhmmc6fv7wpw"]
 
-[ext_resource type="Script" uid="uid://fyq62fbesuwu" path="res://DialogueBox.cs" id="1_v2ehh"]
+[ext_resource type="Script" uid="uid://igb5rorcmdsa" path="res://DialogueBox.cs" id="1_v2ehh"]
 
 [node name="DialogueBox" type="CanvasLayer"]
 process_mode = 3
@@ -22,10 +22,10 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -501.0
-offset_top = -1.0
-offset_right = 499.0
-offset_bottom = 199.0
+offset_left = -472.0
+offset_top = 20.0
+offset_right = 472.0
+offset_bottom = 182.0
 grow_horizontal = 2
 autowrap_mode = 3
 

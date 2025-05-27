@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://luqh65dw0efb" path="res://TileMap/RoomManager.tscn" id="2_nc1n8"]
 [ext_resource type="PackedScene" uid="uid://dhrm6i3ps1tu6" path="res://Scènes/Enemies/enemy_2.tscn" id="3_w6rll"]
 
-[node name="ProcTest" type="CanvasLayer"]
+[node name="ProcTest" type="Node2D"]
 
 [node name="RoomManager" parent="." instance=ExtResource("2_nc1n8")]
 EnemiesCollection = Array[PackedScene]([ExtResource("2_jv3k1"), ExtResource("3_w6rll")])

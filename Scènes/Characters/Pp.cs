@@ -52,8 +52,8 @@ public partial class Pp : CharacterBody2D
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    [Export] private int maxHealth = 3;
-    private int currentHealth;
+    [Export] public int maxHealth = 3;
+    public int currentHealth;
     private HBoxContainer heartsContainer;
     private HealthBar healthBar;
 

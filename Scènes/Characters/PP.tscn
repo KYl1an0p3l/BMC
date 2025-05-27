@@ -1,7 +1,7 @@
 [gd_scene load_steps=68 format=3 uid="uid://dm7x7l6f8rjjw"]
 
 [ext_resource type="Script" uid="uid://ddel2hkbdg4jg" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
-[ext_resource type="Script" uid="uid://i2m6dvayvebv" path="res://Scènes/Characters/Camera2d.cs" id="2_4if1y"]
+[ext_resource type="Script" path="res://Scènes/Characters/Camera2d.cs" id="2_4if1y"]
 [ext_resource type="Texture2D" uid="uid://c5mdfhebj6pqr" path="res://Texture/player_scythe_attack.png" id="2_gccba"]
 [ext_resource type="Texture2D" uid="uid://cewq7s1gbpa67" path="res://Texture/down_atk.png" id="3_d2t0o"]
 [ext_resource type="Texture2D" uid="uid://cg431tpk3dcu2" path="res://Texture/player_walk.png" id="4_d2t0o"]
@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://dwb18l37rro65" path="res://Scènes/UIDs/hotbaR.tscn" id="13_ssi71"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kueoj"]
-size = Vector2(49, 115)
+size = Vector2(41, 115)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2t5d6"]
 atlas = ExtResource("2_gccba")
@@ -420,7 +420,7 @@ script = ExtResource("1_71e7l")
 script = ExtResource("2_4if1y")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2.5, 3.5)
+position = Vector2(1.5, 3.5)
 shape = SubResource("RectangleShape2D_kueoj")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

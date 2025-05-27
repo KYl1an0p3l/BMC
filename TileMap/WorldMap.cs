@@ -100,7 +100,5 @@ public partial class WorldMap : Node
 
 			return _savedId;
 		}
-
-		
 	}
 }

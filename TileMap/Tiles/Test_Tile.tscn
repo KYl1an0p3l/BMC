@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dwtc5y74i8nku" path="res://Texture/plateforme1.png" id="2_obcr8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ooych"]
-size = Vector2(46, 22)
+size = Vector2(38, 22)
 
 [node name="TestTile" type="Node2D"]
 visibility_layer = 4
@@ -17,12 +17,12 @@ offset_bottom = 40.0
 [node name="StaticBody2D" type="StaticBody2D" parent="Panel"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/StaticBody2D"]
-position = Vector2(101, 96)
+position = Vector2(102, 96)
 shape = SubResource("RectangleShape2D_ooych")
 
 [node name="Sprite2D" type="Sprite2D" parent="Panel/StaticBody2D"]
-position = Vector2(101, 96)
-scale = Vector2(0.75, 0.875)
+position = Vector2(103.5, 96)
+scale = Vector2(0.614286, 0.875)
 texture = ExtResource("2_obcr8")
 
 [node name="Center" type="Marker2D" parent="."]

@@ -38,6 +38,16 @@ public partial class Enemy1 : CharacterBody2D
 
     public override void _Process(double delta)
     {
+        if (!IsOnFloor())
+        {
+            ennemy._velocity.Y += 400;
+            if (ennemy._velocity.Y > 800)
+            {
+                ennemy._velocity.Y = 800;
+            }
+            return;
+        }
+
         if (overlappingPlayer != null && !overlappingPlayer.IsInvincible())
         {
             overlappingPlayer.TakeDamage(1);

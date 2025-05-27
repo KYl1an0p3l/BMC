@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bhqsa1sm8db5n" path="res://Scènes/Enemies/Enemy1.cs" id="1_80chd"]
 [ext_resource type="Texture2D" uid="uid://dw77hqjppg2j2" path="res://Texture/ennemi.png" id="2_0xxas"]
-[ext_resource type="Resource" path="res://Scènes/Enemies/Enemy1.tres" id="2_mwefl"]
+[ext_resource type="Resource" uid="uid://c010tpdy07x58" path="res://Scènes/Enemies/Enemy1.tres" id="2_mwefl"]
 [ext_resource type="AudioStream" uid="uid://bc6tbg6on6xkk" path="res://Texture/sound1.mp3" id="3_aiow1"]
 [ext_resource type="AudioStream" uid="uid://cr6nkuq63j8dj" path="res://Texture/sound2.mp3" id="4_y0o3x"]
 [ext_resource type="AudioStream" uid="uid://2wovh8l5vc83" path="res://Texture/sound3.mp3" id="5_mwefl"]

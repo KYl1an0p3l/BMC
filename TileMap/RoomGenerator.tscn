@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://koojb7ovffl3"]
+
+[ext_resource type="Script" uid="uid://bpchv5q2e4o1j" path="res://TileMap/RoomGenerator.cs" id="1_g5lsu"]
+[ext_resource type="Texture2D" uid="uid://dppiunx7croab" path="res://Texture/bg_proc.png" id="2_6a1am"]
+
+[node name="RoomGenerator" type="Node2D"]
+script = ExtResource("1_g5lsu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-44, -17)
+scale = Vector2(0.980546, 0.832101)
+texture = ExtResource("2_6a1am")
+centered = false

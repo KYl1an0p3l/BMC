@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://luqh65dw0efb"]
+
+[ext_resource type="Script" uid="uid://csvrw8tcbhpeg" path="res://TileMap/RoomManager.cs" id="1_p2vc3"]
+[ext_resource type="PackedScene" uid="uid://koojb7ovffl3" path="res://TileMap/RoomGenerator.tscn" id="2_f6orh"]
+
+[node name="RoomManager" type="Node2D"]
+script = ExtResource("1_p2vc3")
+
+[node name="RoomGenerator" parent="." instance=ExtResource("2_f6orh")]

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://2en4b5yge18j"]
+
+[ext_resource type="Script" uid="uid://cyecq30ni5k40" path="res://TileMap/WorldMap.cs" id="1_odjuh"]
+
+[node name="WorldMap" type="Node"]
+script = ExtResource("1_odjuh")
+FlatMap = []

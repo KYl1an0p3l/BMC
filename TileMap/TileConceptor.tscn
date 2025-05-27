@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://c6ncsmbwxwnb2"]
+
+[ext_resource type="Script" uid="uid://dlpcyif8qyf1w" path="res://TileMap/TileConceptor.cs" id="1_sppbv"]
+[ext_resource type="Resource" uid="uid://ytj41yr4wjf5" path="res://TileMap/Tiles/Test9.tres" id="2_mq7ce"]
+
+[node name="Test" type="Node"]
+script = ExtResource("1_sppbv")
+MyTileData = ExtResource("2_mq7ce")

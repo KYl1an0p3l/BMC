@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq.Expressions;
 
 public partial class Pp : CharacterBody2D
 {
@@ -13,29 +14,49 @@ public partial class Pp : CharacterBody2D
     private Area2D zoneAtkArea, zone_get_rifle, zoneRifleAtkArea;
     
     private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
-    private AnimatedSprite2D zoneAtkSprite,zoneRifleSprite;
+    private AnimatedSprite2D zoneRifleSprite;
     private enum AttackDirection { Left, Right, Up, Down }
     private AttackDirection currentAttackDirection = AttackDirection.Right;
     private AttackDirection lastHorizontalDirection = AttackDirection.Right;
     private bool isDownwardAttack = false;
+    private bool isUpwardAttack = false;
     private bool isAttacking = false;
+
+    private bool isShooting = false;    
     
     [Export] private float pogo_jump_power = -670f;
     [Export] private float pogo_jump_duration = 0.25f; 
-    [Export] private float jump_power = -970f; // force 
+    [Export] private float jump_power = -770f; // force 
     private float jump_elapsed = 0f;// chronomètre
     private bool isJumping = false;
     [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton
     private bool pogoJumped = false;
- 
+    private int jumpCount = 0;
+    [Export] private int maxJumps = 2;
+
+    private int healsalle = 3; 
+    private float hKeyHoldTime = 0f;
+    private float healInterval = 1f;   //heal
+    private float healTimer = 0f;
+    private bool isHealingActive = false;
+    private bool bloquer_actions=false;
+
+    [Export] private float dashSpeed = 800f; 
+    [Export] private float dashDuration = 0.2f;
+    [Export] private float dashCooldown = 0.5f;
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+    private Vector2 dashDirection = Vector2.Zero;
 
     private Vector2 velocity;
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    private int maxHealth = 3;
+    [Export] private int maxHealth = 3;
     private int currentHealth;
     private HBoxContainer heartsContainer;
+    private HealthBar healthBar;
 
     private bool isHitBoxTriggered = false;
 
@@ -46,6 +67,11 @@ public partial class Pp : CharacterBody2D
     private bool knockbackJumped = false;
     private float knockback_elapsed = 0f;
     [Export] private float knockback_duration = 0.25f;
+
+    [Export] private float KB_hit_force = 250f;
+    private bool is_KB_hit = false;
+    [Export] private float KB_hit_duration = 0.1f;
+    private float KB_hit_elapsed = 0f;
 
     private DeadScreen deadScreen;
     private bool hasGun, isDead = false;
@@ -59,11 +85,24 @@ public partial class Pp : CharacterBody2D
     private float parryKnockbackForce = 800f;
     [Export] private float parry_knockback_duration = 0.5f;
     private float parry_knockback_elapsed = 0f;
-    [Export] private Inventory inventory;
+    private Inventory inventory;
     private InventoryGui inventory_ui;
+    InventoryItems ScythObj, RifleObj;
+
     public override void _Ready()
     {
+        isDead = false;
+
+        inventory = GameState.Instance.PlayerInventory;
+        RichTextLabel richText = GetNode<RichTextLabel>("UI/heal");
+        richText.ParseBbcode("[color=orange][font_size=24]HEALS LEFT :[/font_size][/color] [color=white][font_size=24]" + healsalle.ToString() + "[/font_size][/color]");
+
+        var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
+        reloadSprite.Stop();                // Arrête l'animation
+        reloadSprite.Visible = false;       // Cache le sprite
+
         screenSize = GetViewportRect().Size;
+        AddToGroup("player");
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
@@ -72,46 +111,63 @@ public partial class Pp : CharacterBody2D
         zoneRifleAtkArea = GetNode<Area2D>("RifleAtk");
 
         zone_atk = zoneAtkArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        zoneAtkSprite = zoneAtkArea.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         zone_atk_rifle = (CollisionShape2D)GetNode("RifleAtk/RifleCollision");
         zoneRifleSprite = zoneRifleAtkArea.GetNode<AnimatedSprite2D>("RifleAnimation");
 
         invincibilityTimer = GetNode<Timer>("InvincibilityTimer");
         invincibilityTimer.Timeout += OnInvincibilityTimeout;
 
+        ScythObj = GD.Load<InventoryItems>("res://Inventory/Faux.tres");
+        RifleObj = GD.Load<InventoryItems>("res://Inventory/Gun.tres");
+
         zoneAtkArea.Monitoring = true;
         zoneAtkArea.Monitorable = true;
-        zoneAtkSprite.Visible = false;
 
         zoneRifleAtkArea.Monitoring = true;
         zoneRifleAtkArea.Monitorable = true;
         zoneRifleSprite.Visible = true;
 
-        zone_get_rifle = GetNode<Area2D>("../rifleGet");
-        zone_get_rifle.BodyEntered += rifle_get;
-
+        if (GetParent().Name == "DevTestMap")
+        {
+            zone_get_rifle = GetNode<Area2D>("../rifleGet");
+        }
         CollisionLayer = 1 << 1; // couche 2 : joueur
         CollisionMask = 1 << 0;  // couche 1 : sol
 
-        deadScreen = GetNode<DeadScreen>("../DeadScreen");
-        
-        inventory_ui = GetNode<InventoryGui>("../CanvasLayer/InventoryGui");
+        deadScreen = GetNode<DeadScreen>("CanvasLayer/DeadScreen");
+
+        inventory_ui = GetNode<InventoryGui>("CanvasLayer/InventoryGui");
+
 
         currentHealth = maxHealth;
-        heartsContainer = GetNode<HealthBar>("../CanvasLayer/HealthBar");
-        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        healthBar = GetNode<HealthBar>("CanvasLayer/HealthBar");
+        healthBar.SetMaxHearts(maxHealth);
+        healthBar.UpdateHearts(currentHealth);
 
         reloadTimer = new Timer();
         AddChild(reloadTimer);
         reloadTimer.OneShot = true;
         reloadTimer.WaitTime = 2.0f; // 2 secondes pour recharger
         reloadTimer.Timeout += OnReloadFinished;
-        
+
         parryArea = GetNode<Area2D>("Parry");
         parryShape = parryArea.GetNode<CollisionShape2D>("CollisionShape2D");
         parryArea.Monitoring = true;
         parryArea.Monitorable = true;
-        
+        this.Name = "PP";
+        // Réattache le CanvasLayer si besoin
+        var canvasLayer = GetTree().Root.GetNodeOrNull<CanvasLayer>("CanvasLayer");
+        if (canvasLayer != null && canvasLayer.GetParent() != this)
+        {
+            GetTree().Root.RemoveChild(canvasLayer);
+            AddChild(canvasLayer);
+        }
+
+        deadScreen.HideDeathScreen();
+
+
+        // Mise à jour de l'inventaire si tout est prêt
+        inventory_ui?.UpdateInventory();
     }   
 
 
@@ -126,16 +182,84 @@ public partial class Pp : CharacterBody2D
             HandleGravity(delta);
             return;
         }
+        if (dashCooldownTimer > 0)
+            dashCooldownTimer -= (float)delta;
+
+        if (isDashing && !bloquer_actions)
+        {
+            dashTimer -= (float)delta;
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+                Velocity = Vector2.Zero;
+            }
+            else
+            {
+                Velocity = dashDirection * dashSpeed;
+                MoveAndSlide();
+                return; // Empêche les autres actions pendant le dash
+            }
+        }
+        else if (Input.IsActionJustPressed("F") && dashCooldownTimer <= 0 && !bloquer_actions)//touche f 
+        {
+            isDashing = true;
+            dashTimer = dashDuration;
+            dashCooldownTimer = dashCooldown;
+
+            if (Input.IsActionPressed("q"))
+                dashDirection = Vector2.Left;
+            else if (Input.IsActionPressed("d"))
+                dashDirection = Vector2.Right;
+            else
+                dashDirection = LookingLeft ? Vector2.Left : Vector2.Right;
+        }
+        if (Input.IsActionPressed("H") && IsOnFloor() && healsalle >= 1 && currentHealth <= maxHealth - 1){
+
+            hKeyHoldTime += (float)delta;
+            bloquer_actions=true;
+            if (hKeyHoldTime >= 1.0f)
+            {
+                isHealingActive = true;
+                healTimer += (float)delta;
+                if (healTimer >= healInterval){
+
+
+                    currentHealth = Mathf.Min(currentHealth + 1, maxHealth);
+                    healsalle -= 1;
+                    GetNode<RichTextLabel>("UI/heal").ParseBbcode("[color=orange][font_size=24]HEALS LEFT : [/font_size][/color] [color=white][font_size=24]" + healsalle.ToString() + "[/font_size][/color]");
+                    GD.Print("vie_salle: ", healsalle);
+                    healthBar.UpdateHearts(currentHealth);
+                    healTimer = 0f;
+
+                    if (healsalle < 1 || currentHealth >= maxHealth)
+                    {
+                        isHealingActive = false;
+                        bloquer_actions=false;
+                    }
+                }
+            }
+        }
+        else {
+
+
+            hKeyHoldTime = 0f;
+            healTimer = 0f;
+            isHealingActive = false;
+            bloquer_actions=false;
+
+
+
+        }
+
         velocity = new Vector2();
 
-        if (!isAttacking)
+        if (!isAttacking || !isShooting)
             UpdateAttackDirection();
         if(!inventory_ui.Visible){
             Sauter();
             HandleAttack();
             Rifle(); 
             HandleParry();
-            dropAll();
         }
         HandleMovement(delta);
         HandleGravity(delta);
@@ -143,61 +267,149 @@ public partial class Pp : CharacterBody2D
     }
 
     private void Sauter(){
-        if (IsOnFloor() && Input.IsActionJustPressed("jump")) {
+        if (Input.IsActionJustPressed("jump")&& jumpCount < maxJumps && !bloquer_actions) {
             isJumping = true;
             jump_elapsed = 0f;
+            jumpCount++;
         }
     }
     private void HandleMovement(double delta)
     {
+        bool isUnderForcedMovement = false;
+
         if (isParryKnockback)
         {
             parry_knockback_elapsed += (float)delta;
             if (parry_knockback_elapsed < parry_knockback_duration)
             {
                 velocity.X = Mathf.Lerp(velocity.X, parryKnockbackForce, 1.0f);
+                isUnderForcedMovement = true;
             }
             else
             {
                 isParryKnockback = false;
             }
         }
-        if (isKnockback || isParryKnockback) return;
-        velocity.X = 0;
-        if (Input.IsActionPressed("d"))
+
+        if (is_KB_hit)
         {
-            velocity.X++;
-            LookingLeft = false;
+            KB_hit_elapsed += (float)delta;
+            if (KB_hit_elapsed < KB_hit_duration)
+            {
+                velocity.X = Mathf.Lerp(velocity.X, KB_hit_force, 1.0f);
+                isUnderForcedMovement = true;
+            }
+            else
+            {
+                is_KB_hit = false;
+            }
         }
 
-        if (Input.IsActionPressed("q"))
+        // Si en knockback (ou parry), ne traiter que l'animation mais PAS les inputs
+        if (!isUnderForcedMovement && !isKnockback && !bloquer_actions)
         {
-            velocity.X--;
-            LookingLeft = true;
+            velocity.X = 0;
+
+            if (Input.IsActionPressed("d"))
+            {
+                velocity.X++;
+                LookingLeft = false;
+            }
+
+            if (Input.IsActionPressed("q"))
+            {
+                velocity.X--;
+                LookingLeft = true;
+            }
+
+            if (velocity.Length() > 0)
+            {
+                velocity = velocity.Normalized() * SPEED;
+            }
         }
 
+// ANIMATION (toujours traitée)
         if (velocity.Length() > 0)
         {
-            velocity = velocity.Normalized() * SPEED;
-            animatedSprite.Play("gauche");
+            if (bloquer_actions && !isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "charge_heal_left" : "charge_heal_right");
+            }
+            else if (isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "heal_left" : "heal_right");
+            }
+            if (isDashing)
+            {
+                animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
+            }
+            else if (!IsOnFloor() && !isDashing && !isDownwardAttack && !isUpwardAttack)
+            {
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
+            }
+            else if (isAttacking)
+            {
+                if (isDownwardAttack)
+                    animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
+                else if (isUpwardAttack)
+                    animatedSprite.Play(LookingLeft ? "up_atk_left" : "up_atk_right");
+                else
+                    animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
+            }
+            else if (isShooting)
+            {
+                animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
+            }
+            else
+            {
+                animatedSprite.Play(LookingLeft ? "gauche" : "droite");
+            }
         }
-        else
+        else if (velocity.Length() == 0)
         {
-            animatedSprite.Stop();
+            if (bloquer_actions && !isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "charge_heal_left" : "charge_heal_right");
+            }
+            else if (isHealingActive)
+            {
+                animatedSprite.Play(LookingLeft ? "heal_left" : "heal_right");
+            }
+            else if (isDashing)
+            {
+                animatedSprite.Play(LookingLeft ? "dash_left" : "dash_right");
+            }
+            else if (!IsOnFloor() && !isDashing && !isDownwardAttack && !isUpwardAttack)
+            {
+                animatedSprite.Play(LookingLeft ? "jump_left" : "jump_right");
+            }
+            else if (isAttacking)
+            {
+                if (isDownwardAttack)
+                    animatedSprite.Play(LookingLeft ? "down_atk_left" : "down_atk_right");
+                else if (isUpwardAttack)
+                    animatedSprite.Play(LookingLeft ? "up_atk_left" : "up_atk_right");
+                else
+                    animatedSprite.Play(LookingLeft ? "atk_left" : "atk_right");
+            }
+            else if (isShooting)
+            {
+                animatedSprite.Play(LookingLeft ? "rifle_left" : "rifle_right");
+            }
+            else
+            {
+                animatedSprite.Play(LookingLeft ? "idle_left" : "idle_right");
+            }
         }
 
-        animatedSprite.Animation = "gauche";
-
-        if (!isAttacking)
-            animatedSprite.FlipH = velocity.X > 0;
-
-
+        // Application du mouvement
         Position += velocity * (float)delta;
         Position = new Vector2(
             Mathf.Clamp(Position.X, 0, screenSize.X),
             Mathf.Clamp(Position.Y, 0, screenSize.Y)
         );
     }
+
 
     private void HandleGravity(double delta)
     {
@@ -240,11 +452,12 @@ public partial class Pp : CharacterBody2D
         }
         else if (!IsOnFloor())
         {
-            velocity.Y += (gravity / 2);
+            velocity.Y += (gravity / 1.55f);
         }
         else
         {
             velocity.Y = 0;
+            jumpCount = 0;
         }
 
 
@@ -262,19 +475,16 @@ public partial class Pp : CharacterBody2D
     private void UpdateAttackDirection()
     {
         isDownwardAttack=false;
+        isUpwardAttack = false;
         Vector2 atkOffset;
         GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
-        float spriteRotation = 0f;
-        bool flipH = false;
         if (Input.IsActionPressed("z"))
         {
             currentAttackDirection = AttackDirection.Up;
-            spriteRotation = -Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("s") && !IsOnFloor())
         {
             currentAttackDirection = AttackDirection.Down;
-            spriteRotation = Mathf.Pi / 2; 
         }
         else if (Input.IsActionPressed("q"))
         {
@@ -294,6 +504,7 @@ public partial class Pp : CharacterBody2D
         switch (currentAttackDirection)
         {
             case AttackDirection.Up:
+                isUpwardAttack = true;
                 atkOffset = new Vector2(5, -30);
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(10, -30);
                 GetNode<Area2D>("RifleAtk").RotationDegrees = -90;
@@ -307,15 +518,13 @@ public partial class Pp : CharacterBody2D
                 break;
 
             case AttackDirection.Left:
-                atkOffset = new Vector2(-70, 60);
-                flipH = true;
+                atkOffset = new Vector2(-20, 60);
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(-1200, -20);
                 break;
 
             case AttackDirection.Right:
             default:
                 atkOffset = new Vector2(85, 60);
-                flipH = false;
                 GetNode<Area2D>("RifleAtk").Position = new Vector2(0, -20);
                 break;
         }
@@ -333,31 +542,25 @@ public partial class Pp : CharacterBody2D
                 case AttackDirection.Left:
                 case AttackDirection.Right:
                 default:
-                    shape.Size = new Vector2(60, 90);
+                    shape.Size = new Vector2(40, 90);
                     break;
             }
         }
         zoneAtkArea.GlobalPosition = GlobalPosition + atkOffset;
-        zoneAtkSprite.Rotation = spriteRotation;
-        zoneAtkSprite.FlipH = flipH;
-        zoneAtkSprite.FlipV = false;
     }
     private void HandleAttack()
     {
-        if (isKnockback|| isParryKnockback) return;
-        if (Input.IsActionJustPressed("atk") && !isAttacking)
+        if (bloquer_actions || isKnockback|| isParryKnockback || string.IsNullOrWhiteSpace(ScythObj?.ActionName)) return;
+        else if (Input.IsActionJustPressed(ScythObj.ActionName) && !isAttacking && !isShooting)
         {
             isAttacking = true;
             UpdateAttackDirection();
-            animatedSprite.FlipH = (currentAttackDirection == AttackDirection.Left);
-            zoneAtkSprite.Visible = true;
-            zoneAtkSprite.Play("default");
 
             // Capture les ennemis présents au moment de l'attaque
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2)
+                if (body is Enemy1 || body is Enemy2 || body is BossTest)
                     initialTargets.Add(body);
             }
 
@@ -371,6 +574,11 @@ public partial class Pp : CharacterBody2D
                         jump_elapsed = 0f;
                         pogoJumped = true;
                     }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    }
                 }
                 else if (body is Enemy2 enemy2)
                 {
@@ -381,6 +589,28 @@ public partial class Pp : CharacterBody2D
                         jump_elapsed = 0f;
                         pogoJumped = true;
                     }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    
+                    }
+                }
+                else if (body is BossTest boss)
+                {
+                    GD.Print("Enemy2 touché !");
+                    boss.TakeDamage(2);
+                    if (isDownwardAttack)
+                    {
+                        jump_elapsed = 0f;
+                        pogoJumped = true;
+                    }
+                    else{
+                        is_KB_hit = true;
+                        KB_hit_elapsed = 0f;
+                        KB_hit_force = LookingLeft ? 550f : -550f;
+                    
+                    }
                 }
             }
 
@@ -390,18 +620,18 @@ public partial class Pp : CharacterBody2D
             disableTimer.Timeout += () =>
             {
                 isAttacking = false;
-                zoneAtkSprite.Stop();
-                zoneAtkSprite.Frame = 0;
-                zoneAtkSprite.Visible = false;
+                animatedSprite.Stop();
+                animatedSprite.Frame = 0;
             };
         }
     }
 
     private void Rifle(){
         GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
-        if (isReloading || isKnockback || isAttacking || !hasGun || isParryKnockback)
+        if (bloquer_actions || isReloading || isKnockback || isAttacking || isShooting || string.IsNullOrWhiteSpace(RifleObj?.ActionName))
             return;
-        if(Input.IsActionJustPressed("atk_sec")){
+        else if(Input.IsActionJustPressed(RifleObj.ActionName)){
+            isShooting = true;
             bulletsFired++;
             UpdateAttackDirection();
             GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
@@ -409,7 +639,7 @@ public partial class Pp : CharacterBody2D
             var initialTargets = new Godot.Collections.Array<Node>();
             foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
             {
-                if (body is Enemy1 || body is Enemy2)
+                if (body is Enemy1 || body is Enemy2 || body is BossTest)
                     initialTargets.Add(body);
             }
 
@@ -424,16 +654,26 @@ public partial class Pp : CharacterBody2D
                     GD.Print("Enemy2 touché !");
                     enemy2.TakeDamage(1);
                 }
+                else if (body is BossTest boss)
+                {
+                    GD.Print("Enemy2 touché !");
+                    boss.TakeDamage(1);
+                }
             }
             if (bulletsFired >= maxBullets)
             {
                 isReloading = true;
+
+                var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite"); // reload
+                reloadSprite.Visible = true;
+                reloadSprite.Play("reload");
+
                 reloadTimer.Start();
             }
             var disableTimer = GetTree().CreateTimer(0.3f);
             disableTimer.Timeout += () =>
             {
-                isAttacking = false;
+                isShooting = false;
                 zoneRifleSprite.Visible = false;
             };
         }
@@ -465,23 +705,6 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void rifle_get(Node body){
-        if(body == this){
-            hasGun = true;
-            GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", true);
-            GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = false;
-        }
-    }
-    
-
-    private void dropAll(){
-        if(Input.IsActionJustPressed("drop")){
-            hasGun = false;
-            GetNode<CollisionShape2D>("../rifleGet/rifleGetCollision").CallDeferred("set_disabled", false);
-            GetNode<Sprite2D>("../rifleGet/rifleGetCollision/rifleGetSprite").Visible = true;
-        }
-    }
-
     public bool IsInvincible() => isHitBoxTriggered;
 
     public void TakeDamage(int amount)
@@ -501,7 +724,7 @@ public partial class Pp : CharacterBody2D
 
         currentHealth -= amount;
         currentHealth = Mathf.Max(0, currentHealth);
-        ((HealthBar)heartsContainer).UpdateHearts(currentHealth);
+        healthBar.UpdateHearts(currentHealth);
 
         GD.Print($"Vie restante du joueur : {currentHealth}");
 
@@ -510,6 +733,13 @@ public partial class Pp : CharacterBody2D
 
         if (currentHealth <= 0){
             isDead = true;
+            // Détache le CanvasLayer contenant DeadScreen avant de supprimer Pp
+            var canvasLayer = GetNode<CanvasLayer>("CanvasLayer"); // ou le nom exact du CanvasLayer
+            if (canvasLayer.GetParent() == this)
+            {
+                RemoveChild(canvasLayer);
+                GetTree().Root.AddChild(canvasLayer); // ou GetTree().CurrentScene si tu veux le rattacher à la scène active
+            }
             deadScreen.death_screen();
             var deathTimer = GetTree().CreateTimer(1.0); 
             deathTimer.Timeout += () => {
@@ -529,5 +759,8 @@ public partial class Pp : CharacterBody2D
     {
         bulletsFired = 0;
         isReloading = false;
+        var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
+        reloadSprite.Stop();                // Arrête l'animation
+        reloadSprite.Visible = false;       // Cache le sprite
     }
 }

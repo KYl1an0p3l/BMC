@@ -1,20 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://rl66xgvjto6r"]
+[gd_scene load_steps=6 format=3 uid="uid://rl66xgvjto6r"]
 
 [ext_resource type="PackedScene" uid="uid://dm7x7l6f8rjjw" path="res://Scènes/Characters/PP.tscn" id="1_5o6mk"]
 [ext_resource type="Script" uid="uid://c3gdnd8q1qnvy" path="res://Scènes/Maps/DevTestMap.cs" id="1_th3oj"]
 [ext_resource type="PackedScene" uid="uid://6b7dr5eh7u6e" path="res://Scènes/Objects/dev_ground.tscn" id="2_qqe0n"]
-[ext_resource type="PackedScene" uid="uid://dpkx506301r13" path="res://Scènes/UIDs/healthBar.tscn" id="4_4abne"]
 [ext_resource type="PackedScene" uid="uid://cpibpk2mo4uwe" path="res://Scènes/Objects/rifleGet.tscn" id="5_n2upc"]
-[ext_resource type="PackedScene" uid="uid://hbkda834us1g" path="res://Scènes/Enemies/Enemy1.tscn" id="5_th3oj"]
-[ext_resource type="PackedScene" uid="uid://7n6upiyta52b" path="res://Scènes/UIDs/deadScreen.tscn" id="6_0r5kt"]
-[ext_resource type="PackedScene" uid="uid://dh3b6mrl6pl2u" path="res://Scènes/UIDs/MenuPause.tscn" id="9_kddde"]
-[ext_resource type="PackedScene" uid="uid://bcml4a71nde7h" path="res://Scènes/UIDs/InventoryGui.tscn" id="9_pqyoj"]
-[ext_resource type="PackedScene" uid="uid://dhrm6i3ps1tu6" path="res://Scènes/Enemies/enemy_2.tscn" id="10_kddde"]
+[ext_resource type="PackedScene" uid="uid://dur4gk3assrnd" path="res://Scènes/Characters/pnj.tscn" id="6_0r5kt"]
 
 [node name="DevTestMap" type="Node2D"]
 script = ExtResource("1_th3oj")
 
-[node name="PP" parent="." instance=ExtResource("1_5o6mk")]
+[node name="PP" parent="." groups=["player"] instance=ExtResource("1_5o6mk")]
 position = Vector2(159, 256)
 
 [node name="DevGround" parent="." instance=ExtResource("2_qqe0n")]
@@ -23,27 +18,5 @@ position = Vector2(123, 175)
 [node name="rifleGet" parent="." instance=ExtResource("5_n2upc")]
 position = Vector2(4, 0)
 
-[node name="DeadScreen" parent="." instance=ExtResource("6_0r5kt")]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="HealthBar" parent="CanvasLayer" instance=ExtResource("4_4abne")]
-
-[node name="InventoryGui" parent="CanvasLayer" instance=ExtResource("9_pqyoj")]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -230.0
-offset_right = 360.0
-offset_bottom = 230.0
-
-[node name="Enemy1" parent="." instance=ExtResource("5_th3oj")]
-position = Vector2(900, 551)
-
-[node name="MenuPause" parent="." instance=ExtResource("9_kddde")]
-
-[node name="Enemy2" parent="." instance=ExtResource("10_kddde")]
-position = Vector2(737, 343)
+[node name="PNJ" parent="." instance=ExtResource("6_0r5kt")]
+position = Vector2(997, 514)

@@ -316,7 +316,8 @@ ammo = ExtResource("2_6am00")
 position = Vector2(0, -15)
 scale = Vector2(0.25, 0.25)
 sprite_frames = SubResource("SpriteFrames_6am00")
-animation = &"dash_right"
+animation = &"dash_left"
+frame_progress = 0.422284
 
 [node name="BossBar" type="ProgressBar" parent="."]
 offset_left = -90.0
@@ -347,10 +348,10 @@ shape = SubResource("CircleShape2D_yiibx")
 
 [node name="RaycastWall2" type="RayCast2D" parent="."]
 scale = Vector2(1, 1)
-target_position = Vector2(-120, 0)
+target_position = Vector2(-136, -40)
 
 [node name="RaycastWall" type="RayCast2D" parent="."]
-target_position = Vector2(120, 0)
+target_position = Vector2(136, 40)
 
 [node name="RaycastGround" type="RayCast2D" parent="."]
 target_position = Vector2(100, 110)
@@ -360,14 +361,12 @@ scale = Vector2(1, 1)
 target_position = Vector2(-100, 110)
 
 [node name="MeleeRange" type="Area2D" parent="."]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeRange"]
 position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_jn7ss")
 
 [node name="Attaque" type="Area2D" parent="."]
-visible = false
 collision_layer = 16
 collision_mask = 2
 
@@ -378,7 +377,6 @@ shape = SubResource("RectangleShape2D_fvhnc")
 [node name="AimRay" type="RayCast2D" parent="."]
 
 [node name="Up_Shot" type="Area2D" parent="."]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Up_Shot"]
 position = Vector2(0, -188.75)

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Bullets : Area2D
+public partial class Plumes : Area2D
 {
     [Export] public float Speed = 300f;
     private Vector2 _direction = Vector2.Right;

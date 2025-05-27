@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://mu266qwb3dps"]
+
+[ext_resource type="Script" uid="uid://d3akisa5skdg0" path="res://Scènes/Objects/RifleProjectile.cs" id="1_41if8"]
+[ext_resource type="Texture2D" uid="uid://c600kd3v5ddb" path="res://Texture/shot.png" id="1_b6pu6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_41if8"]
+size = Vector2(108.8, 9)
+
+[node name="RifleProjectile" type="Area2D"]
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("1_41if8")
+
+[node name="RifleCollision" type="CollisionShape2D" parent="."]
+scale = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_41if8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -0.5)
+scale = Vector2(0.1, 1)
+texture = ExtResource("1_b6pu6")

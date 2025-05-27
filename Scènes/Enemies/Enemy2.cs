@@ -164,7 +164,7 @@ public partial class Enemy2 : CharacterBody2D
         Node2D bullet = (Node2D)ammo.Instantiate();
         bullet.GlobalPosition = GlobalPosition;
 
-        if (bullet is Bullets bulletScript && _player != null)
+        if (bullet is Plumes bulletScript && _player != null)
         {
             Vector2 direction = (_player.GlobalPosition - GlobalPosition).Normalized();
             bulletScript.SetDirection(direction);

@@ -1,0 +1,104 @@
+[gd_scene load_steps=10 format=4 uid="uid://cvn0741ly7g3j"]
+
+[ext_resource type="Texture2D" uid="uid://dedinmig1hnfw" path="res://Texture/tileset.png" id="1_rc718"]
+[ext_resource type="PackedScene" uid="uid://bg0geiocit546" path="res://Scènes/Enemies/Boss_test.tscn" id="2_rc718"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0vteh"]
+texture = ExtResource("1_rc718")
+texture_region_size = Vector2i(32, 32)
+3:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_wx21n"]
+sources/0 = SubResource("TileSetAtlasSource_0vteh")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_odhnu"]
+size = Vector2(1142, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lu2y1"]
+size = Vector2(60, 401)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qku82"]
+size = Vector2(96.5, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0vteh"]
+size = Vector2(32, 32.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wx21n"]
+size = Vector2(32, 144)
+
+[node name="bossRoom" type="Node2D"]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+position = Vector2(0, 160)
+tile_map_data = PackedByteArray("AAACACQAAAADAAAAAAAPAB8AAAADAAAAAAARAB8AAAADAAAAAAATAB8AAAADAAAAAAAsAC4AAAADAAAAAAArAC4AAAADAAAAAAAqAC4AAAADAAAAAAApAC4AAAADAAAAAAAoAC4AAAADAAAAAAAnAC4AAAADAAAAAAAmAC4AAAADAAAAAAAlAC4AAAADAAAAAAAkAC4AAAADAAAAAAAjAC4AAAADAAAAAAAiAC4AAAADAAAAAAAhAC4AAAADAAAAAAAgAC4AAAADAAAAAAAfAC4AAAADAAAAAAAeAC4AAAADAAAAAAAdAC4AAAADAAAAAAAcAC4AAAADAAAAAAAbAC4AAAADAAAAAAAaAC4AAAADAAAAAAAZAC4AAAADAAAAAAAYAC4AAAADAAAAAAAXAC4AAAADAAAAAAAWAC4AAAADAAAAAAAVAC4AAAADAAAAAAAUAC4AAAADAAAAAAATAC4AAAADAAAAAAASAC4AAAADAAAAAAARAC4AAAADAAAAAAAQAC4AAAADAAAAAAAPAC4AAAADAAAAAAAOAC4AAAADAAAAAAANAC4AAAADAAAAAAAMAC4AAAADAAAAAAALAC4AAAADAAAAAAAKAC4AAAADAAAAAAAJAC4AAAADAAAAAAAIAC4AAAADAAAAAAAHAC4AAAADAAAAAAAGAC4AAAADAAAAAAAFAC4AAAADAAAAAAAEAC4AAAADAAAAAAADAC4AAAADAAAAAAACAC4AAAADAAAAAAABAC4AAAADAAAAAAAAAC4AAAADAAAAAAAAAC0AAAADAAAAAAAAACwAAAADAAAAAAAAACsAAAADAAAAAAAAACoAAAADAAAAAAAAACkAAAADAAAAAAAAACgAAAADAAAAAAAAACcAAAADAAAAAAAAACYAAAADAAAAAAAAACUAAAADAAAAAAAAACQAAAADAAAAAAAAACMAAAADAAAAAAAAACIAAAADAAAAAAAAACEAAAADAAAAAAAAACAAAAADAAAAAAAAAB8AAAADAAAAAAAAAB4AAAADAAAAAAAAAB0AAAADAAAAAAAAABwAAAADAAAAAAAAABsAAAADAAAAAAAAABoAAAADAAAAAAAAABkAAAADAAAAAAAAABgAAAADAAAAAAAAABcAAAADAAAAAAAtAC4AAAADAAAAAAAuAC4AAAADAAAAAAAvAC4AAAADAAAAAAAxAC4AAAADAAAAAAAzAC4AAAADAAAAAAA1AC4AAAADAAAAAAA3AC4AAAADAAAAAAA5AC4AAAADAAAAAAA7AC4AAAADAAAAAAA9AC4AAAADAAAAAAA/AC4AAAADAAAAAABBAC4AAAADAAAAAABDAC4AAAADAAAAAABFAC4AAAADAAAAAABFAC0AAAADAAAAAABGACsAAAADAAAAAABHACkAAAADAAAAAABHACcAAAADAAAAAABGACUAAAADAAAAAABGACMAAAADAAAAAABGACEAAAADAAAAAABGAB8AAAADAAAAAABGAB0AAAADAAAAAABGABwAAAADAAAAAABHABoAAAADAAAAAABHABkAAAADAAAAAABGABkAAAADAAAAAABGABgAAAADAAAAAAA=")
+tile_set = SubResource("TileSet_wx21n")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="TileMapLayer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D"]
+position = Vector2(563.75, 744)
+shape = SubResource("RectangleShape2D_odhnu")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="TileMapLayer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D2"]
+position = Vector2(-6, 560.5)
+shape = SubResource("RectangleShape2D_lu2y1")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="TileMapLayer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D3"]
+position = Vector2(279.75, 504)
+shape = SubResource("RectangleShape2D_qku82")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="TileMapLayer"]
+position = Vector2(350, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(-310, 584)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(762, 728)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(778, 696)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(794, 664)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(794, 632)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(778, 600)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(794, 424)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(778, 408)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(778, 392)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D4"]
+position = Vector2(794, 408)
+shape = SubResource("RectangleShape2D_0vteh")
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="TileMapLayer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/StaticBody2D5"]
+position = Vector2(1128, 512)
+shape = SubResource("RectangleShape2D_wx21n")
+
+[node name="Boss" parent="." instance=ExtResource("2_rc718")]
+position = Vector2(897, 764)

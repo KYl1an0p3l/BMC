@@ -122,11 +122,19 @@ public partial class BossTest : CharacterBody2D
             dashTimer -= (float)delta;
             dashElapsed += (float)delta;
 
+            // Fin du dash si le temps est écoulé
+            if (dashTimer <= 0f)
+            {
+                GD.Print("Fin du dash (temps écoulé)");
+                isDashing = false;
+                velocity = Vector2.Zero;
+                Velocity = velocity;
+                MoveAndSlide();
+                return;
+            }
+
             bool goingLeft = dashDirection.X < 0;
-            if (goingLeft)
-                currentDirection = "left";
-            else
-                currentDirection = "right";
+            currentDirection = goingLeft ? "left" : "right";
 
             if (goingLeft)
             {
@@ -161,11 +169,10 @@ public partial class BossTest : CharacterBody2D
 
             Velocity = velocity;
             MoveAndSlide();
-
-            // Ensure the dash animation is played during the dash
             Sprite.Play("dash_" + dashDirectionName);
             return;
         }
+
 
         Aim();
 
@@ -194,7 +201,8 @@ public partial class BossTest : CharacterBody2D
 
     private void UpdateAnimation()
     {
-        if (isPlayerInUpShotZone) return;
+        if (isPlayerInUpShotZone)
+            return;
 
         if (isAttacking)
             return;
@@ -215,7 +223,11 @@ public partial class BossTest : CharacterBody2D
         }
 
         // Direction normale
-        currentDirection = player.GlobalPosition.X < GlobalPosition.X ? "left" : "right";
+        if (Mathf.Abs(player.GlobalPosition.X - GlobalPosition.X) > 2f) // tolérance de 10 pixels
+        {
+            currentDirection = player.GlobalPosition.X < GlobalPosition.X ? "left" : "right";
+        }
+
 
         if (Mathf.Abs(velocity.X) > 1.0f)
             Sprite.Play(currentDirection);

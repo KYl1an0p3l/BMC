@@ -11,4 +11,4 @@
 EnemiesCollection = Array[PackedScene]([ExtResource("2_jv3k1"), ExtResource("3_w6rll")])
 
 [node name="WorldMap" parent="." instance=ExtResource("1_klkiu")]
-FlatMap = [["intro", "P", "P", "P"]]
+FlatMap = [["intro", "P", "P", "P", "bossRoom"]]

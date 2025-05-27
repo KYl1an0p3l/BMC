@@ -13,7 +13,7 @@ public partial class RoomManager : Node2D
     private RoomGenerator _proc;   // votre générateur semi‐procédural
     private Node2D _currentRoom;
     private Random _random;
-    private CharacterBody2D _player;
+    private Pp _player;
     private Vector2I exitTaken;
 
     public override void _Ready()
@@ -30,7 +30,7 @@ public partial class RoomManager : Node2D
 
         GD.Print("StartLoading called");
         LoadRoom(WorldMap.Instance.Move(new Vector2I(0, 0)));
-        _player = _currentRoom.GetNode<CharacterBody2D>("PP");
+        _player = _currentRoom.GetNode<Pp>("PP");
         
     }
 
@@ -49,13 +49,31 @@ public partial class RoomManager : Node2D
 
     private void LoadRoom(string roomId)
     {
+        if (_currentRoom != null && _currentRoom.GetParent() != null)
+        {
+            _currentRoom.GetParent().CallDeferred("remove_child", _currentRoom);
+            _currentRoom.QueueFree(); // Détruit la salle précédente
+        }
         if (roomId == "P")
         {
             _random = new Random();
             _currentRoom = _proc.Generate();
-            var children = _currentRoom.GetChildren();
+            var excludedPositions = new Godot.Collections.Array<Vector2>
+            {
+                _proc.VEntryWorldPos,
+                _proc.VEndWorldPos
+            };
+
+            // Récupère les enfants à considérer
+            var validChildren = _currentRoom.GetChildren()
+                .Where(child =>
+                    child is Node2D node &&
+                    !excludedPositions.Any(pos => node.GlobalPosition.DistanceTo(pos) < 1.0)
+                )
+                .Cast<Node2D>()
+                .ToList();
             int countToPick = GD.RandRange(1, 3);
-            var shuffled = children.OrderBy(_ => _random.Next()).ToList();
+            var shuffled = validChildren.OrderBy(_ => _random.Next()).ToList();
             var selectedChildren = shuffled.Take(countToPick);
             foreach (var child in selectedChildren)
             {
@@ -78,30 +96,29 @@ public partial class RoomManager : Node2D
                                 {
                                     direction = Vector2.Left, // ou Right selon le cas
                                     isMoving = true,
-                                    Speed = 50f,
+                                    Speed = 80f,
                                     Gravity = 980f,
                                     MaxFallSpeed = 300f,
-                                    Health = 3,
+                                    Health = 6,
                                     _velocity = Vector2.Zero
                                 };
                             }
                             if (enemyInstance != null)
                             {
                                 enemyInstance.GlobalPosition = position;
-                                CallDeferred("add_child", enemyInstance);
+                                _currentRoom.CallDeferred("add_child", enemyInstance);
                             }
                         }
                     }
                 }
             }
 
-                CallDeferred("add_child", _currentRoom);
+            CallDeferred("add_child", _currentRoom);
             if (_player.GetParent() != _currentRoom)
             {
-                GD.Print("Ajout du joueur à la salle procédurale");
                 _player.GetParent()?.RemoveChild(_player);
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
-                _player = playerScene.Instantiate<CharacterBody2D>();
+                _player = playerScene.Instantiate<Pp>();
                 _player.AddToGroup("player");
                 _currentRoom.CallDeferred("add_child", _player);
                 if (exitTaken == new Vector2I(1, 0))
@@ -111,7 +128,7 @@ public partial class RoomManager : Node2D
                 GD.Print($"Position du joueur : {_player.GlobalPosition}");
 
             }
-            
+
         }
         else
         {
@@ -121,14 +138,13 @@ public partial class RoomManager : Node2D
             CallDeferred("add_child", _currentRoom);
             if (roomId == "intro")
             {
-                _player = _currentRoom.GetNode<CharacterBody2D>("PP");
+                _player = _currentRoom.GetNode<Pp>("PP");
             }
             else if (_player.GetParent() != _currentRoom)
             {
-                GD.Print("Ajout du joueur à la salle procédurale");
-                _player.GetParent()?.RemoveChild(_player);
+                _player.GetParent()?.RemoveChild(_player); 
                 var playerScene = GD.Load<PackedScene>("res://Scènes/Characters/PP.tscn");
-                _player = playerScene.Instantiate<CharacterBody2D>();
+                _player = playerScene.Instantiate<Pp>();
                 _currentRoom.CallDeferred("add_child", _player);
                 if (exitTaken == new Vector2I(1, 0))
                     _player.GlobalPosition = _proc.VEntryWorldPos;

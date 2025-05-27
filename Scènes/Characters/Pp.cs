@@ -7,14 +7,14 @@ public partial class Pp : CharacterBody2D
     [Export] private int SPEED = 200;
     private float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
     [Export] private int MAX_FALL_SPEED = 50;
+    private PackedScene rifleProjectileScene;
 
     private AnimatedSprite2D animatedSprite;
     private CollisionShape2D collisionShape2D;
 
-    private Area2D zoneAtkArea, zone_get_rifle, zoneRifleAtkArea;
+    private Area2D zoneAtkArea, zone_get_rifle;
     
-    private CollisionShape2D zone_atk, zone_atk_rifle, rifleGetDisable;
-    private AnimatedSprite2D zoneRifleSprite;
+    private CollisionShape2D zone_atk, rifleGetDisable;
     private enum AttackDirection { Left, Right, Up, Down }
     private AttackDirection currentAttackDirection = AttackDirection.Right;
     private AttackDirection lastHorizontalDirection = AttackDirection.Right;
@@ -25,11 +25,11 @@ public partial class Pp : CharacterBody2D
     private bool isShooting = false;    
     
     [Export] private float pogo_jump_power = -670f;
-    [Export] private float pogo_jump_duration = 0.25f; 
+    [Export] private float pogo_jump_duration = 0.3f; 
     [Export] private float jump_power = -770f; // force 
     private float jump_elapsed = 0f;// chronomètre
     private bool isJumping = false;
-    [Export] private float max_jump_hold_time = 0.25f;//durée max d'apui bouton
+    [Export] private float max_jump_hold_time = 0.3f;//durée max d'apui bouton
     private bool pogoJumped = false;
     private int jumpCount = 0;
     [Export] private int maxJumps = 2;
@@ -53,8 +53,8 @@ public partial class Pp : CharacterBody2D
     private Vector2 screenSize;
     private bool LookingLeft = false;
 
-    [Export] private int maxHealth = 3;
-    private int currentHealth;
+    [Export] public int maxHealth = 3;
+    public int currentHealth;
     private HBoxContainer heartsContainer;
     private HealthBar healthBar;
 
@@ -108,25 +108,18 @@ public partial class Pp : CharacterBody2D
         collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 
         zoneAtkArea = GetNode<Area2D>("ZoneAtk");
-        zoneRifleAtkArea = GetNode<Area2D>("RifleAtk");
 
         zone_atk = zoneAtkArea.GetNode<CollisionShape2D>("CollisionShape2D");
-        zone_atk_rifle = (CollisionShape2D)GetNode("RifleAtk/RifleCollision");
-        zoneRifleSprite = zoneRifleAtkArea.GetNode<AnimatedSprite2D>("RifleAnimation");
 
         invincibilityTimer = GetNode<Timer>("InvincibilityTimer");
         invincibilityTimer.Timeout += OnInvincibilityTimeout;
 
         ScythObj = GD.Load<InventoryItems>("res://Inventory/Faux.tres");
         RifleObj = GD.Load<InventoryItems>("res://Inventory/Gun.tres");
+        rifleProjectileScene = GD.Load<PackedScene>("res://Scènes/Objects/rifle_projectile.tscn");
 
         zoneAtkArea.Monitoring = true;
         zoneAtkArea.Monitorable = true;
-
-        zoneRifleAtkArea.Monitoring = true;
-        zoneRifleAtkArea.Monitorable = true;
-        zoneRifleSprite.Visible = true;
-
         if (GetParent().Name == "DevTestMap")
         {
             zone_get_rifle = GetNode<Area2D>("../rifleGet");
@@ -477,7 +470,6 @@ public partial class Pp : CharacterBody2D
         isDownwardAttack=false;
         isUpwardAttack = false;
         Vector2 atkOffset;
-        GetNode<Area2D>("RifleAtk").RotationDegrees = 0;
         if (Input.IsActionPressed("z"))
         {
             currentAttackDirection = AttackDirection.Up;
@@ -506,26 +498,20 @@ public partial class Pp : CharacterBody2D
             case AttackDirection.Up:
                 isUpwardAttack = true;
                 atkOffset = new Vector2(5, -30);
-                GetNode<Area2D>("RifleAtk").Position = new Vector2(10, -30);
-                GetNode<Area2D>("RifleAtk").RotationDegrees = -90;
                 break;
 
             case AttackDirection.Down:
                 atkOffset = new Vector2(5, 165);
                 isDownwardAttack = true;
-                GetNode<Area2D>("RifleAtk").Position = new Vector2(-13, 40);
-                GetNode<Area2D>("RifleAtk").RotationDegrees = 90;
                 break;
 
             case AttackDirection.Left:
                 atkOffset = new Vector2(-20, 60);
-                GetNode<Area2D>("RifleAtk").Position = new Vector2(-1200, -20);
                 break;
 
             case AttackDirection.Right:
             default:
                 atkOffset = new Vector2(85, 60);
-                GetNode<Area2D>("RifleAtk").Position = new Vector2(0, -20);
                 break;
         }
 
@@ -626,59 +612,64 @@ public partial class Pp : CharacterBody2D
         }
     }
 
-    private void Rifle(){
-        GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = false;
+    private void Rifle()
+    {
         if (bloquer_actions || isReloading || isKnockback || isAttacking || isShooting || string.IsNullOrWhiteSpace(RifleObj?.ActionName))
             return;
-        else if(Input.IsActionJustPressed(RifleObj.ActionName)){
+
+        if (Input.IsActionJustPressed(RifleObj.ActionName))
+        {
             isShooting = true;
             bulletsFired++;
             UpdateAttackDirection();
-            GetNode<AnimatedSprite2D>("RifleAtk/RifleAnimation").Visible = true;
-            // Capture les ennemis présents au moment de l'attaque
-            var initialTargets = new Godot.Collections.Array<Node>();
-            foreach (var body in zoneRifleAtkArea.GetOverlappingBodies())
-            {
-                if (body is Enemy1 || body is Enemy2 || body is BossTest)
-                    initialTargets.Add(body);
-            }
 
-            foreach (var body in initialTargets)
+            // Instanciation du projectile
+            var projectile = (RifleProjectile)rifleProjectileScene.Instantiate();
+
+            // Définir la direction du tir
+            projectile.Direction = currentAttackDirection switch
             {
-                if (body is Enemy1 enemy1)
-                {
-                    enemy1.TakeDamage(1);
-                }
-                else if (body is Enemy2 enemy2)
-                {
-                    GD.Print("Enemy2 touché !");
-                    enemy2.TakeDamage(1);
-                }
-                else if (body is BossTest boss)
-                {
-                    GD.Print("Enemy2 touché !");
-                    boss.TakeDamage(1);
-                }
-            }
+                AttackDirection.Up => Vector2.Up,
+                AttackDirection.Down => Vector2.Down,
+                AttackDirection.Left => Vector2.Left,
+                AttackDirection.Right => Vector2.Right,
+                _ => Vector2.Right
+            };
+
+            // Définir la position de spawn du projectile
+            Vector2 spawnOffset = currentAttackDirection switch
+            {
+                AttackDirection.Up => new Vector2(10, -30),
+                AttackDirection.Down => new Vector2(-13, 40),
+                AttackDirection.Left => new Vector2(-60, 20),
+                AttackDirection.Right => new Vector2(40, 20),
+                _ => Vector2.Zero
+            };
+
+            projectile.GlobalPosition = GlobalPosition + spawnOffset;
+
+            // Ajouter à la scène
+            GetParent().AddChild(projectile);
+            
+
+            // Gestion du rechargement
             if (bulletsFired >= maxBullets)
             {
                 isReloading = true;
-
-                var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite"); // reload
+                var reloadSprite = GetNode<AnimatedSprite2D>("ReloadSprite");
                 reloadSprite.Visible = true;
                 reloadSprite.Play("reload");
-
                 reloadTimer.Start();
             }
+
+            // Timer pour réinitialiser l'état de tir
             var disableTimer = GetTree().CreateTimer(0.3f);
             disableTimer.Timeout += () =>
             {
                 isShooting = false;
-                zoneRifleSprite.Visible = false;
             };
         }
     }
-
 
     private void HandleParry()
     {

@@ -157,6 +157,9 @@ public partial class Enemy2 : CharacterBody2D
     private void Shoot()
     {
         if (ammo == null) return;
+        if (_player == null || !GodotObject.IsInstanceValid(_player))
+            return;
+
         GD.Print("Tir !");
         Node2D bullet = (Node2D)ammo.Instantiate();
         bullet.GlobalPosition = GlobalPosition;

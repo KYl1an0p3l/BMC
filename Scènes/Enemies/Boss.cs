@@ -138,7 +138,7 @@ public partial class Boss : CharacterBody2D
         Node2D bullet = (Node2D)ammo.Instantiate();
         bullet.GlobalPosition = GlobalPosition + direction * 10f;
 
-        if (bullet is Bullets bulletScript)
+        if (bullet is Spike bulletScript)
         {
             bulletScript.SetDirection(direction);
         }

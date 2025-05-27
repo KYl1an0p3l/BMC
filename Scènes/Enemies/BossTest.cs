@@ -28,6 +28,8 @@ public partial class BossTest : CharacterBody2D
     private ProgressBar bossBar;
     private RayCast2D raycastWall;
     private RayCast2D raycastGround;
+    private RayCast2D raycastWall2;
+    private RayCast2D raycastGround2;
     private float detectionRadius = 0f;
     private float meleeRangeWidth = 0f;
     private bool playerInAttackZone = false;
@@ -40,6 +42,8 @@ public partial class BossTest : CharacterBody2D
     private Pp playerInUpShotZone = null;
     private bool upShotCoroutineRunning = false;
 
+    private string currentDirection = "right";
+
     public override void _Ready()
     {
         maxHealth = Health;
@@ -47,6 +51,8 @@ public partial class BossTest : CharacterBody2D
         player = GetTree().GetFirstNodeInGroup("player") as Pp;
         raycastWall = GetNode<RayCast2D>("RaycastWall");
         raycastGround = GetNode<RayCast2D>("RaycastGround");
+        raycastWall2 = GetNode<RayCast2D>("RaycastWall2");
+        raycastGround2 = GetNode<RayCast2D>("RaycastGround2");
         bossBar = GetNode<ProgressBar>("BossBar");
         bossBar.MaxValue = maxHealth;
         bossBar.Value = Health;
@@ -112,10 +118,22 @@ public partial class BossTest : CharacterBody2D
             dashTimer -= (float)delta;
             dashElapsed += (float)delta;
 
-            if (dashTimer <= 0)
+            bool goingLeft = dashDirection.X < 0;
+
+            if (goingLeft)
             {
-                isDashing = false;
-                velocity = Vector2.Zero;
+                raycastWall2.ForceRaycastUpdate();
+                raycastGround2.ForceRaycastUpdate();
+
+                if (dashElapsed >= dashMinTime && (raycastWall2.IsColliding() || !raycastGround2.IsColliding()))
+                {
+                    isDashing = false;
+                    velocity = Vector2.Zero;
+                }
+                else
+                {
+                    velocity = dashDirection * DashSpeed;
+                }
             }
             else
             {
@@ -129,12 +147,14 @@ public partial class BossTest : CharacterBody2D
                 }
                 else
                 {
-                    velocity = dashDirection * DashSpeed;
-                    Velocity = velocity;
-                    MoveAndSlide();
-                    return;
+                    velocity.X = dashDirection.X * DashSpeed;
                 }
             }
+
+            Velocity = velocity;
+            MoveAndSlide();
+
+            if (isDashing) return;
         }
 
         Aim();
@@ -150,7 +170,7 @@ public partial class BossTest : CharacterBody2D
             {
                 FollowPlayer();
             }
-            else if (distance >= detectionRadius && dashCooldownTimer <= 0 && !isShootingSequenceRunning)
+            else if (distance >= detectionRadius && dashCooldownTimer <= 0 && !isShootingSequenceRunning && IsOnFloor())
             {
                 _ = ShootTwiceThenDash();
             }
@@ -158,6 +178,28 @@ public partial class BossTest : CharacterBody2D
             Velocity = velocity;
             MoveAndSlide();
         }
+
+        UpdateAnimation();
+    }
+
+
+
+    private void UpdateAnimation()
+    {
+        if (isPlayerInUpShotZone) return;
+
+        if (player.GlobalPosition.X < GlobalPosition.X)
+            currentDirection = "left";
+        else
+            currentDirection = "right";
+
+        if (isDashing)
+            return;
+
+        if (Mathf.Abs(velocity.X) > 0.1f)
+            Sprite.Play(currentDirection);
+        else
+            Sprite.Play("idle_" + currentDirection);
     }
 
     private async Task ShootTwiceThenDash()
@@ -184,15 +226,42 @@ public partial class BossTest : CharacterBody2D
 
     private void UpdateRaycasts(bool left)
     {
+        if (left)
+        {
+            raycastWall2.Enabled = true;
+            raycastGround2.Enabled = true;
+            raycastWall.Enabled = false;
+            raycastGround.Enabled = false;
+        }
+        else
+        {
+            raycastWall.Enabled = true;
+            raycastGround.Enabled = true;
+            raycastWall2.Enabled = false;
+            raycastGround2.Enabled = false;
+        }
+
         Vector2 wallTarget = new Vector2(left ? -120 : 120, 0);
-        Vector2 groundTarget = new Vector2(left ? 100 : 100, 110);
-        raycastWall.TargetPosition = wallTarget;
-        raycastGround.TargetPosition = groundTarget;
+        Vector2 groundTarget = new Vector2(left ? -100 : 100, 110);
+
+        if (left)
+        {
+            raycastWall2.TargetPosition = wallTarget;
+            raycastGround2.TargetPosition = groundTarget;
+        }
+        else
+        {
+            raycastWall.TargetPosition = wallTarget;
+            raycastGround.TargetPosition = groundTarget;
+        }
     }
 
     private async void StartDashSequence()
     {
         if (player == null || !GodotObject.IsInstanceValid(player)) return;
+
+        // Empêche le dash si le boss n'est pas au sol
+        if (!IsOnFloor()) return;
 
         isChargingDash = true;
         dashCooldownTimer = DashCooldown;
@@ -299,7 +368,7 @@ public partial class BossTest : CharacterBody2D
         Node2D bullet = (Node2D)ammo.Instantiate();
         bullet.GlobalPosition = GlobalPosition;
 
-        if (bullet is Bullets bulletScript)
+        if (bullet is Spike bulletScript)
             bulletScript.SetDirection(direction);
 
         GetTree().CurrentScene.AddChild(bullet);

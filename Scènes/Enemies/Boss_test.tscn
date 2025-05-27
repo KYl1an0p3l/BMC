@@ -1,34 +1,101 @@
-[gd_scene load_steps=14 format=3 uid="uid://bg0geiocit546"]
+[gd_scene load_steps=23 format=3 uid="uid://bg0geiocit546"]
 
 [ext_resource type="Script" uid="uid://c8hw2ucufb4d2" path="res://Scènes/Enemies/BossTest.cs" id="1_jn7ss"]
-[ext_resource type="PackedScene" uid="uid://bh2xc1yqt5jje" path="res://Scènes/Objects/bullets.tscn" id="2_fvhnc"]
-[ext_resource type="Texture2D" uid="uid://3qropflgmdmt" path="res://Texture/boss_base.png" id="3_fvhnc"]
+[ext_resource type="PackedScene" uid="uid://bcwptjqtanmac" path="res://Scènes/Objects/spike.tscn" id="2_6am00"]
+[ext_resource type="Texture2D" uid="uid://cftk0raya1shh" path="res://Texture/boss_walk.png" id="3_6am00"]
+[ext_resource type="Texture2D" uid="uid://ch1mpdowtlq0v" path="res://Texture/boss_idle.png" id="3_tvikb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8cib"]
+atlas = ExtResource("3_tvikb")
+region = Rect2(0, 0, 880, 1152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c10s2"]
+atlas = ExtResource("3_tvikb")
+region = Rect2(880, 0, 880, 1152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cjdsd"]
+atlas = ExtResource("3_tvikb")
+region = Rect2(0, 1152, 880, 1152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v4toi"]
+atlas = ExtResource("3_tvikb")
+region = Rect2(880, 1152, 880, 1152)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g0qfk"]
+atlas = ExtResource("3_6am00")
+region = Rect2(1952, 0, 976, 1040)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uewxw"]
+atlas = ExtResource("3_6am00")
+region = Rect2(0, 0, 976, 1040)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o66bc"]
+atlas = ExtResource("3_6am00")
+region = Rect2(976, 0, 976, 1040)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvhnc"]
+atlas = ExtResource("3_6am00")
+region = Rect2(0, 1040, 976, 1040)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6am00"]
-atlas = ExtResource("3_fvhnc")
-region = Rect2(0, 0, 996, 1272)
+atlas = ExtResource("3_6am00")
+region = Rect2(1952, 1040, 976, 1040)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tvikb"]
-atlas = ExtResource("3_fvhnc")
-region = Rect2(996, 0, 996, 1272)
+atlas = ExtResource("3_6am00")
+region = Rect2(976, 1040, 976, 1040)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6am00"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6am00")
+"texture": SubResource("AtlasTexture_s8cib")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c10s2")
+}],
+"loop": true,
+"name": &"idle_left",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cjdsd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v4toi")
+}],
+"loop": true,
+"name": &"idle_right",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g0qfk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uewxw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o66bc")
 }],
 "loop": true,
 "name": &"left",
-"speed": 5.0
+"speed": 3.0
 }, {
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fvhnc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6am00")
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_tvikb")
 }],
 "loop": true,
 "name": &"right",
-"speed": 5.0
+"speed": 3.0
 }]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvikb"]
@@ -57,10 +124,10 @@ position = Vector2(1, 0)
 scale = Vector2(0.8, 0.8)
 collision_layer = 4
 script = ExtResource("1_jn7ss")
-ammo = ExtResource("2_fvhnc")
+ammo = ExtResource("2_6am00")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -25)
+position = Vector2(0, -15)
 scale = Vector2(0.25, 0.25)
 sprite_frames = SubResource("SpriteFrames_6am00")
 animation = &"left"
@@ -92,11 +159,19 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
 shape = SubResource("CircleShape2D_yiibx")
 
+[node name="RaycastWall2" type="RayCast2D" parent="."]
+scale = Vector2(1, 1)
+target_position = Vector2(-120, 0)
+
 [node name="RaycastWall" type="RayCast2D" parent="."]
 target_position = Vector2(120, 0)
 
 [node name="RaycastGround" type="RayCast2D" parent="."]
 target_position = Vector2(100, 110)
+
+[node name="RaycastGround2" type="RayCast2D" parent="."]
+scale = Vector2(1, 1)
+target_position = Vector2(-100, 110)
 
 [node name="MeleeRange" type="Area2D" parent="."]
 
@@ -115,6 +190,7 @@ shape = SubResource("RectangleShape2D_fvhnc")
 [node name="AimRay" type="RayCast2D" parent="."]
 
 [node name="Up_Shot" type="Area2D" parent="."]
+visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Up_Shot"]
 position = Vector2(0, -188.75)

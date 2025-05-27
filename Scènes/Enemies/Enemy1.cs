@@ -3,7 +3,7 @@ using System;
 
 public partial class Enemy1 : CharacterBody2D
 {
-    [Export] private Ennemies ennemy;
+    [Export] public Ennemies ennemy;
     private AnimatedSprite2D Sprite;    
     private AudioStreamPlayer2D[] Sounds;
     private RayCast2D rayLeft;
@@ -53,7 +53,6 @@ public partial class Enemy1 : CharacterBody2D
         // Animation
         if (ennemy.isMoving)
         {
-
             if (ennemy.direction == Vector2.Left)
                 Sprite.Play("left");
             else if (ennemy.direction == Vector2.Right)
@@ -83,21 +82,33 @@ public partial class Enemy1 : CharacterBody2D
         {
             if (ennemy.direction == Vector2.Left)
             {
-                if (!rayLeft.IsColliding() || rayWallLeft.IsColliding())
+                bool ignoreRay = false;
+                if (rayLeft.IsColliding())
+                {
+                    var collider = rayLeft.GetCollider() as Node;
+                    if (collider != null && collider.Name == "Test_Tile")
+                        ignoreRay = true;
+                }
+
+                if (!ignoreRay && (!rayLeft.IsColliding() || rayWallLeft.IsColliding()))
                     ennemy.direction = Vector2.Right;
             }
             else if (ennemy.direction == Vector2.Right)
             {
-                if (!rayRight.IsColliding() || rayWallRight.IsColliding())
+                bool ignoreRay = false;
+                if (rayRight.IsColliding())
+                {
+                    var collider = rayRight.GetCollider() as Node;
+                    if (collider != null && collider.Name == "Test_Tile")
+                        ignoreRay = true;
+                }
+
+                if (!ignoreRay && (!rayRight.IsColliding() || rayWallRight.IsColliding()))
                     ennemy.direction = Vector2.Left;
             }
         }
     }
-        private void PlayRandomSound()
-    {
-        int index = (int)(GD.Randi() % (ulong)Sounds.Length);
-        Sounds[index].Play();
-    }
+
     private void OnBodyEntered(Node body)
     {
         if (body is Pp player)

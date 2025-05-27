@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcwptjqtanmac"]
+
+[ext_resource type="Script" uid="uid://cnoysbytivqhq" path="res://Scènes/Objects/Spike.cs" id="1_438y3"]
+[ext_resource type="Texture2D" uid="uid://dwmfiwk723rvg" path="res://Texture/epines_projectile.png" id="2_4icab"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qnqhd"]
+size = Vector2(14.5, 21)
+
+[node name="Spike" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_438y3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_4icab")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(7.15256e-07, 0.5)
+scale = Vector2(0.7, 1.05)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_qnqhd")

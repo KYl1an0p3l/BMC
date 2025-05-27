@@ -72,6 +72,19 @@ public partial class RoomManager : Node2D
                         if (enemyScene != null)
                         {
                             Node2D enemyInstance = enemyScene.Instantiate() as Node2D;
+                            if (enemyInstance is Enemy1 enemy1)
+                            {
+                                enemy1.ennemy = new Ennemies
+                                {
+                                    direction = Vector2.Left, // ou Right selon le cas
+                                    isMoving = true,
+                                    Speed = 50f,
+                                    Gravity = 980f,
+                                    MaxFallSpeed = 300f,
+                                    Health = 3,
+                                    _velocity = Vector2.Zero
+                                };
+                            }
                             if (enemyInstance != null)
                             {
                                 enemyInstance.GlobalPosition = position;

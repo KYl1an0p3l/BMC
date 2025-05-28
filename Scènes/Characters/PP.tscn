@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://dm7x7l6f8rjjw"]
+[gd_scene load_steps=100 format=3 uid="uid://dm7x7l6f8rjjw"]
 
 [ext_resource type="Script" uid="uid://ddel2hkbdg4jg" path="res://Scènes/Characters/Pp.cs" id="1_71e7l"]
 [ext_resource type="Script" uid="uid://i2m6dvayvebv" path="res://Scènes/Characters/Camera2d.cs" id="2_4if1y"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://bpaj4l1lluihi" path="res://Texture/player_dash.png" id="5_lqsfl"]
 [ext_resource type="Texture2D" uid="uid://dnrkrpg1t0sgo" path="res://Texture/player_gun.png" id="5_otdr5"]
 [ext_resource type="Texture2D" uid="uid://oju2ygkovtq8" path="res://Texture/player_attack_down.png" id="6_l7sd1"]
-[ext_resource type="Texture2D" uid="uid://c600kd3v5ddb" path="res://Texture/shot.png" id="7_4if1y"]
 [ext_resource type="Texture2D" uid="uid://be3a1ypnv1l5f" path="res://Texture/reload.png" id="7_gccba"]
 [ext_resource type="PackedScene" uid="uid://dyhmmc6fv7wpw" path="res://Scènes/UIDs/DialogueBox.tscn" id="8_kueoj"]
 [ext_resource type="Texture2D" uid="uid://c3wybk6sxsoae" path="res://Texture/player_idle.png" id="8_rh62x"]
@@ -21,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://dwb18l37rro65" path="res://Scènes/UIDs/hotbar.tscn" id="13_ssi71"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kueoj"]
-size = Vector2(55, 110)
+size = Vector2(41, 110)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2t5d6"]
 atlas = ExtResource("2_gccba")
@@ -626,20 +625,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plho4"]
 size = Vector2(40, 90)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gccba"]
-size = Vector2(1088, 9)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_gccba"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_4if1y")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_otdr5"]
 size = Vector2(40, 90)
 
@@ -692,10 +677,12 @@ collision_mask = 17
 script = ExtResource("1_71e7l")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+limit_smoothed = true
+position_smoothing_enabled = true
 script = ExtResource("2_4if1y")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 0)
+position = Vector2(1.5, 3.5)
 shape = SubResource("RectangleShape2D_kueoj")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -717,19 +704,6 @@ shape = SubResource("RectangleShape2D_plho4")
 [node name="InvincibilityTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="RifleAtk" type="Area2D" parent="."]
-position = Vector2(0, -20)
-collision_layer = 8
-collision_mask = 4
-
-[node name="RifleCollision" type="CollisionShape2D" parent="RifleAtk"]
-position = Vector2(583, 27)
-shape = SubResource("RectangleShape2D_gccba")
-
-[node name="RifleAnimation" type="AnimatedSprite2D" parent="RifleAtk"]
-position = Vector2(584, 27)
-sprite_frames = SubResource("SpriteFrames_gccba")
-
 [node name="Parry" type="Area2D" parent="."]
 position = Vector2(87, 61)
 collision_layer = 8
@@ -749,10 +723,9 @@ frame_progress = 0.796673
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="heal" type="RichTextLabel" parent="UI"]
-offset_left = 900.0
-offset_top = 50.0
-offset_right = 1100.0
-offset_bottom = 250.0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 300.0
 bbcode_enabled = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

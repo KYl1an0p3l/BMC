@@ -20,6 +20,7 @@ public partial class BossTest : CharacterBody2D
     private Pp overlappingPlayer = null;
     private float dashCooldownTimer = 0f;
     private bool isDashing = false;
+    private bool isAttacking = false;
     private bool isChargingDash = false;
     private float dashTimer = 0f;
     private float dashElapsed = 0f;
@@ -43,6 +44,7 @@ public partial class BossTest : CharacterBody2D
     private bool upShotCoroutineRunning = false;
 
     private string currentDirection = "right";
+    private string dashDirectionName = "right"; // Added to store dash direction
 
     public override void _Ready()
     {
@@ -98,6 +100,13 @@ public partial class BossTest : CharacterBody2D
             if (player == null) return;
         }
 
+        if (isAttacking)
+        {
+            velocity = Vector2.Zero;
+            Velocity = velocity;
+            MoveAndSlide();
+            return;
+        }
         float distance = GlobalPosition.DistanceTo(player.GlobalPosition);
 
         if (!IsOnFloor())
@@ -108,17 +117,24 @@ public partial class BossTest : CharacterBody2D
         if (dashCooldownTimer > 0)
             dashCooldownTimer -= (float)delta;
 
-        if (player.GlobalPosition.X < GlobalPosition.X)
-            Sprite.Play("left");
-        else
-            Sprite.Play("right");
-
         if (isDashing)
         {
             dashTimer -= (float)delta;
             dashElapsed += (float)delta;
 
+            // Fin du dash si le temps est écoulé
+            if (dashTimer <= 0f)
+            {
+                GD.Print("Fin du dash (temps écoulé)");
+                isDashing = false;
+                velocity = Vector2.Zero;
+                Velocity = velocity;
+                MoveAndSlide();
+                return;
+            }
+
             bool goingLeft = dashDirection.X < 0;
+            currentDirection = goingLeft ? "left" : "right";
 
             if (goingLeft)
             {
@@ -132,7 +148,7 @@ public partial class BossTest : CharacterBody2D
                 }
                 else
                 {
-                    velocity = dashDirection * DashSpeed;
+                    velocity.X = dashDirection.X * DashSpeed;
                 }
             }
             else
@@ -153,9 +169,10 @@ public partial class BossTest : CharacterBody2D
 
             Velocity = velocity;
             MoveAndSlide();
-
-            if (isDashing) return;
+            Sprite.Play("dash_" + dashDirectionName);
+            return;
         }
+
 
         Aim();
 
@@ -174,29 +191,45 @@ public partial class BossTest : CharacterBody2D
             {
                 _ = ShootTwiceThenDash();
             }
-
-            Velocity = velocity;
-            MoveAndSlide();
         }
+
+        Velocity = velocity;
+        MoveAndSlide();
 
         UpdateAnimation();
     }
 
-
-
     private void UpdateAnimation()
     {
-        if (isPlayerInUpShotZone) return;
-
-        if (player.GlobalPosition.X < GlobalPosition.X)
-            currentDirection = "left";
-        else
-            currentDirection = "right";
-
-        if (isDashing)
+        if (isPlayerInUpShotZone)
             return;
 
-        if (Mathf.Abs(velocity.X) > 0.1f)
+        if (isAttacking)
+            return;
+
+        if (isChargingDash)
+        {
+            // On utilise la direction actuelle du joueur
+            currentDirection = player.GlobalPosition.X < GlobalPosition.X ? "left" : "right";
+            Sprite.Play("charge_dash_" + currentDirection);
+            return;
+        }
+
+        if (isDashing)
+        {
+            // On utilise la direction mémorisée au début du dash
+            Sprite.Play("dash_" + dashDirectionName);
+            return;
+        }
+
+        // Direction normale
+        if (Mathf.Abs(player.GlobalPosition.X - GlobalPosition.X) > 2f) // tolérance de 10 pixels
+        {
+            currentDirection = player.GlobalPosition.X < GlobalPosition.X ? "left" : "right";
+        }
+
+
+        if (Mathf.Abs(velocity.X) > 1.0f)
             Sprite.Play(currentDirection);
         else
             Sprite.Play("idle_" + currentDirection);
@@ -259,8 +292,6 @@ public partial class BossTest : CharacterBody2D
     private async void StartDashSequence()
     {
         if (player == null || !GodotObject.IsInstanceValid(player)) return;
-
-        // Empêche le dash si le boss n'est pas au sol
         if (!IsOnFloor()) return;
 
         isChargingDash = true;
@@ -269,20 +300,39 @@ public partial class BossTest : CharacterBody2D
         Velocity = velocity;
         MoveAndSlide();
 
+        // → Animation de charge
+        string chargeAnim = player.GlobalPosition.X < GlobalPosition.X ? "charge_dash_left" : "charge_dash_right";
+        Sprite.Play(chargeAnim);
+
         await ToSignal(GetTree().CreateTimer(DashChargeTime), "timeout");
 
         if (player == null || !GodotObject.IsInstanceValid(player)) return;
 
         dashDirection = (player.GlobalPosition - GlobalPosition).Normalized();
+        dashDirectionName = dashDirection.X < 0 ? "left" : "right"; // ← mémorise la direction
+        isChargingDash = false;
         isDashing = true;
         dashTimer = DashDuration;
         dashElapsed = 0f;
-        isChargingDash = false;
     }
 
-    private void MeleeAttack()
+    private async void MeleeAttack()
     {
+        if (isAttacking) return;
+
         GD.Print("Boss attaque au corps à corps !");
+        isAttacking = true;
+
+        string atkAnim = player.GlobalPosition.X < GlobalPosition.X ? "atk_left" : "atk_right";
+        Sprite.Play(atkAnim);
+
+        velocity = Vector2.Zero;
+        Velocity = velocity;
+        MoveAndSlide();
+
+        await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
+
+        isAttacking = false;
     }
 
     private void OnBodyEntered(Node body)
@@ -353,6 +403,7 @@ public partial class BossTest : CharacterBody2D
 
         attackCoroutineRunning = false;
     }
+
     private void Aim()
     {
         if (player == null || !GodotObject.IsInstanceValid(player)) return;
@@ -360,6 +411,7 @@ public partial class BossTest : CharacterBody2D
         float distance = GlobalPosition.DistanceTo(player.GlobalPosition);
         aimRay.TargetPosition = aimDirection * distance;
     }
+
     private void Shoot(Vector2 direction)
     {
         if (ammo == null) return;
@@ -373,6 +425,7 @@ public partial class BossTest : CharacterBody2D
 
         GetTree().CurrentScene.AddChild(bullet);
     }
+
     private void OnUpShotZoneEntered(Node body)
     {
         if (body is Pp p)
@@ -392,6 +445,7 @@ public partial class BossTest : CharacterBody2D
             playerInUpShotZone = null;
         }
     }
+
     private async Task HandleUpShotZone()
     {
         upShotCoroutineRunning = true;
@@ -413,6 +467,4 @@ public partial class BossTest : CharacterBody2D
 
         upShotCoroutineRunning = false;
     }
-
-
 }

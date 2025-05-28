@@ -108,6 +108,7 @@ points = PackedVector2Array(44, -7, 56, 35, -52, 35, -51, 11, -12, -33, 28, -28)
 
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 4
+collision_mask = 9
 script = ExtResource("1_80chd")
 ennemy = ExtResource("2_mwefl")
 

@@ -17,7 +17,7 @@ ResourceScriptDirectories=Array[String](["res://"])
 [application]
 
 config/name="BMC"
-run/main_scene="uid://rl66xgvjto6r"
+run/main_scene="uid://cu4oa8vb5p4o1"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 

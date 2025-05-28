@@ -72,7 +72,7 @@ public partial class RoomManager : Node2D
                 )
                 .Cast<Node2D>()
                 .ToList();
-            int countToPick = GD.RandRange(1, 3);
+            int countToPick = GD.RandRange(3, 6);
             var shuffled = validChildren.OrderBy(_ => _random.Next()).ToList();
             var selectedChildren = shuffled.Take(countToPick);
             foreach (var child in selectedChildren)

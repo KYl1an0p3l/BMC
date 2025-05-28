@@ -294,7 +294,7 @@ bg_color = Color(1, 0, 0, 1)
 radius = 100.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_yiibx"]
-radius = 500.0
+radius = 450.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jn7ss"]
 size = Vector2(250, 150)
@@ -310,6 +310,7 @@ position = Vector2(1, 0)
 scale = Vector2(0.8, 0.8)
 collision_layer = 4
 script = ExtResource("1_jn7ss")
+Speed = 110
 ammo = ExtResource("2_6am00")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -347,7 +348,6 @@ collision_mask = 2
 shape = SubResource("CircleShape2D_yiibx")
 
 [node name="RaycastWall2" type="RayCast2D" parent="."]
-scale = Vector2(1, 1)
 target_position = Vector2(-136, -40)
 
 [node name="RaycastWall" type="RayCast2D" parent="."]
@@ -357,7 +357,6 @@ target_position = Vector2(136, 40)
 target_position = Vector2(100, 110)
 
 [node name="RaycastGround2" type="RayCast2D" parent="."]
-scale = Vector2(1, 1)
 target_position = Vector2(-100, 110)
 
 [node name="MeleeRange" type="Area2D" parent="."]
